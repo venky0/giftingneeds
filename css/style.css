@@ -2735,7 +2735,7 @@ button, input, select, textarea {
 /* Hero Section */
 .hero-mockup {
   position: relative;
-  background: linear-gradient(90deg, rgba(16,2,11,0.96) 0%, rgba(16,2,11,0.7) 50%, rgba(16,2,11,0.2) 100%), url('../images/diwali_hero_bg.jpg') center right / cover no-repeat;
+  background: linear-gradient(90deg, rgba(25,4,26,0.98) 0%, rgba(25,4,26,0.75) 50%, rgba(25,4,26,0.2) 100%), url('../images/diwali_hero_bg.jpg') center right / cover no-repeat;
   height: 520px;
   display: flex;
   align-items: center;
