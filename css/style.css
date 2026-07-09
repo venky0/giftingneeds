@@ -2581,3 +2581,512 @@ button, input, select, textarea {
   color: #0A3427;
   border: 1px solid var(--gold);
 }
+
+/* ======================================================
+   HOMEPAGE MOCKUP REDESIGN STYLING OVERRIDES
+   ====================================================== */
+
+.announcement-bar-mockup {
+  background: #0d010b;
+  color: #ffffff;
+  padding: 8px 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+.announcement-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.announcement-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.announcement-right {
+  display: flex;
+  gap: 20px;
+}
+.announcement-right a {
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s;
+}
+.announcement-right a:hover {
+  color: #D4AF37;
+}
+
+.header-mockup {
+  background: #19041a;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+.header-container-mockup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 1.5rem;
+}
+.logo-mockup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-text-mockup {
+  display: flex;
+  flex-direction: column;
+}
+.logo-title-mockup {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.logo-sub-mockup {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  color: #D4AF37;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.nav-links-mockup {
+  display: flex;
+  gap: 25px;
+}
+.nav-link-mockup {
+  font-family: 'Outfit', sans-serif;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  font-size: 13px;
+  position: relative;
+  padding: 4px 0;
+}
+.nav-link-mockup:hover, .nav-link-mockup.active {
+  color: #D4AF37;
+}
+.nav-link-mockup.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #D4AF37;
+}
+.nav-actions-mockup {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.phone-widget-mockup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+.cart-widget-mockup {
+  position: relative;
+  color: #ffffff;
+  cursor: pointer;
+}
+.cart-badge-mockup {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #F3C63F;
+  color: #0c020a;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  font-size: 9px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-quote-mockup {
+  background: #FAD877;
+  color: #1a0800;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(250, 216, 119, 0.2);
+  transition: all 0.3s;
+}
+.btn-quote-mockup:hover {
+  background: #f3c63f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(250, 216, 119, 0.35);
+}
+
+/* Hero Section */
+.hero-mockup {
+  position: relative;
+  background: linear-gradient(90deg, rgba(16,2,11,0.96) 0%, rgba(16,2,11,0.7) 50%, rgba(16,2,11,0.2) 100%), url('../images/diwali_hero_bg.jpg') center right / cover no-repeat;
+  height: 520px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+.hero-content-mockup {
+  max-width: 580px;
+  z-index: 10;
+}
+.hero-tag-mockup {
+  font-family: 'Outfit', sans-serif;
+  color: #D4AF37;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-title-mockup {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.hero-desc-mockup {
+  font-family: 'Outfit', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+.hero-buttons-mockup {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.btn-hero-gold {
+  background: #FAD877;
+  color: #1a0800;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 15px rgba(250, 216, 119, 0.2);
+  transition: all 0.3s;
+}
+.btn-hero-gold:hover {
+  background: #f3c63f;
+  transform: translateY(-2px);
+}
+.btn-hero-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid #ffffff;
+  padding: 11px 22px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.btn-hero-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+.link-hero-download {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 10px;
+}
+.link-hero-download:hover {
+  color: #D4AF37;
+}
+
+/* Diwali Shield Badge */
+.diwali-badge-mockup {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  width: 140px;
+  height: 140px;
+  border: 2px dashed rgba(212, 175, 55, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  animation: spinSlow 30s linear infinite;
+  z-index: 10;
+}
+.diwali-badge-inner-mockup {
+  background: radial-gradient(circle, #851322 0%, #44050e 100%);
+  border: 2px solid #D4AF37;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(133, 19, 34, 0.5);
+}
+.diwali-badge-text-top {
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: #D4AF37;
+  text-transform: uppercase;
+}
+.diwali-badge-text-year {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 2px 0;
+}
+.diwali-badge-text-bot {
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+}
+
+/* Features Ribbon */
+.features-ribbon-mockup {
+  background: #3c0326;
+  color: #ffffff;
+  padding: 16px 0;
+  border-bottom: 2px solid #D4AF37;
+}
+.features-ribbon-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.features-ribbon-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+  min-width: 180px;
+}
+.features-ribbon-item:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+@media (max-width: 768px) {
+  .features-ribbon-item:not(:last-child) {
+    border-right: none;
+  }
+}
+.features-ribbon-icon {
+  font-size: 20px;
+  color: #D4AF37;
+}
+.features-ribbon-text {
+  display: flex;
+  flex-direction: column;
+}
+.features-ribbon-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.features-ribbon-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Categories Showcase Redesign */
+.exclusive-collection-header-mockup {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(15, 76, 58, 0.12);
+  padding-bottom: 1.25rem;
+}
+.exclusive-label-mockup {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #0F4C3A;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: block;
+}
+.exclusive-title-mockup {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: #1a0800;
+  font-weight: 700;
+}
+.btn-view-categories-mockup {
+  border: 1px solid #0F4C3A;
+  color: #0F4C3A;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.btn-view-categories-mockup:hover {
+  background: #0F4C3A;
+  color: #ffffff;
+}
+.categories-slider-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+  scrollbar-width: thin;
+}
+.category-card-mockup {
+  flex: 0 0 220px;
+  height: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  color: #ffffff;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.category-card-mockup:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+.category-card-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 65%, transparent 100%);
+  z-index: 1;
+}
+.category-card-mockup img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: transform 0.5s;
+}
+.category-card-mockup:hover img {
+  transform: scale(1.08);
+}
+.category-card-info-mockup {
+  position: relative;
+  z-index: 2;
+}
+.category-card-title-mockup {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.category-card-desc-mockup {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.category-card-btn-mockup {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 4px 12px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.category-card-mockup:hover .category-card-btn-mockup {
+  background: #D4AF37;
+  color: #1a0800;
+  border-color: #D4AF37;
+}
+
+/* Bottom Features Ribbon */
+.bottom-features-mockup {
+  background: #fbf9f5;
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 24px 0;
+}
+.bottom-features-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.bottom-features-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 220px;
+  justify-content: center;
+}
+.bottom-features-icon {
+  font-size: 24px;
+  color: #0F4C3A;
+}
+.bottom-features-text {
+  display: flex;
+  flex-direction: column;
+}
+.bottom-features-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a0800;
+}
+.bottom-features-desc {
+  font-size: 10px;
+  color: #666;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+

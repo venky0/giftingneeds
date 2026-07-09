@@ -23,143 +23,237 @@
   </style>
 
   <!-- ============================================================
+       TOP ANNOUNCEMENT BAR
+       ============================================================ -->
+  <div class="announcement-bar-mockup">
+    <div class="container announcement-flex">
+      <div class="announcement-left">
+        <span style="color:#D4AF37; font-size:12px;">🪔</span> Make this Diwali memorable with custom corporate gifts that speak your brand.
+      </div>
+      <div class="announcement-right">
+        <a href="contact.html">Bulk Orders</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="about.html">Pan India Delivery</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="solutions.html">Custom Branding</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
        NAVBAR
        ============================================================ -->
-  <header class="navbar" id="main-header">
-    <div class="container navbar-container">
-      <a href="index.html" class="nav-logo" id="header-logo-link">
-        <div class="nav-logo-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4V8h16v11zM15 9.5c0 .83-.67 1.5-1.5 1.5h-3c-.83 0-1.5-.67-1.5-1.5V9H7v3c0 2.76 2.24 5 5 5s5-2.24 5-5V9h-2v.5z"/>
-          </svg>
-        </div>
-        <div class="nav-logo-text">
-          <span>GIFTING NEEDS</span>
-          <span class="nav-logo-sub">Corporate Solutions</span>
+  <header class="header-mockup">
+    <div class="container header-container-mockup">
+      <a href="index.html" class="logo-mockup">
+        <div style="color: #D4AF37; font-size: 24px;">🎁</div>
+        <div class="logo-text-mockup">
+          <span class="logo-title-mockup">GIFTING NEEDS</span>
+          <span class="logo-sub-mockup">Corporate Gifting Simplified</span>
         </div>
       </a>
 
-      <nav class="nav-links" id="main-navigation">
-        <a href="index.html" class="nav-link active" id="nav-home">Home</a>
-        <a href="products.html" class="nav-link" id="nav-products">Products</a>
-        <a href="solutions.html" class="nav-link" id="nav-solutions">Custom Kits</a>
-        <a href="about.html" class="nav-link" id="nav-about">About Us</a>
-        <a href="contact.html" class="nav-link" id="nav-contact">Contact</a>
+      <nav class="nav-links-mockup">
+        <a href="index.html" class="nav-link-mockup active">Home</a>
+        <a href="products.html" class="nav-link-mockup">Shop by Category <span style="font-size:9px; vertical-align:middle;">▼</span></a>
+        <a href="solutions.html" class="nav-link-mockup">Build Your Hamper</a>
+        <a href="about.html" class="nav-link-mockup">About Us</a>
+        <a href="solutions.html" class="nav-link-mockup">Our Work</a>
+        <a href="contact.html" class="nav-link-mockup">Contact Us</a>
       </nav>
 
-      <div class="nav-actions">
-        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Light/Dark Theme">
-          <!-- SVG icon filled dynamically in JS -->
-        </button>
-        <a href="solutions.html" class="btn btn-outline" id="nav-cta-btn">Build A Kit</a>
-        <button class="menu-btn" id="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+      <div class="nav-actions-mockup">
+        <a href="tel:+919964751885" class="phone-widget-mockup">
+          <span>📞</span> +91 99647 51885
+        </a>
+        <a href="solutions.html" class="cart-widget-mockup">
+          <span style="font-size: 18px;">🛒</span>
+          <span class="cart-badge-mockup" id="cart-counter">0</span>
+        </a>
+        <a href="https://wa.me/919964751885?text=Hi%20Gifting%20Needs,%20we%20want%20to%20get%20a%20bulk%20quote%20for%20Diwali." target="_blank" class="btn-quote-mockup">
+          Get Bulk Quote <span>💬</span>
+        </a>
       </div>
     </div>
   </header>
 
   <!-- ============================================================
-       10-SLIDE HERO SLIDESHOW
+       HERO SECTION
        ============================================================ -->
-  <section class="hero-slider-section" id="hero-carousel">
-    <div class="slider-container" id="slider-container">
-      
-      <!-- Slider Arrows -->
-      <button class="slider-arrow slider-arrow-prev" id="slider-prev" aria-label="Previous Slide">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <button class="slider-arrow slider-arrow-next" id="slider-next" aria-label="Next Slide">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
+  <section class="hero-mockup">
+    <div class="container" style="position: relative; height: 100%; display: flex; align-items: center;">
+      <div class="hero-content-mockup">
+        <div class="hero-tag-mockup">
+          <span>🪔</span> Premium Corporate Gifts
+        </div>
+        <h1 class="hero-title-mockup">Celebrate Deepavali with Joy, Gratitude & Thoughtful Gifting</h1>
+        <p class="hero-desc-mockup">
+          Premium corporate gifts, custom branded for your business. Bulk orders. Pan India delivery. On-time, every time.
+        </p>
+        <div class="hero-buttons-mockup">
+          <a href="products.html" class="btn-hero-gold">Explore Diwali Collection</a>
+          <a href="solutions.html" class="btn-hero-outline">Build Your Hamper</a>
+          <a href="diwali_email_final.html" class="link-hero-download" target="_blank">
+            <span>📥</span> Download Catalogue
+          </a>
+        </div>
+      </div>
 
-      <!-- Dots Indicators -->
-      <div class="slider-dots" id="slider-dots-container"></div>
+      <!-- Rotating Shield Badge -->
+      <div class="diwali-badge-mockup">
+        <div class="diwali-badge-inner-mockup">
+          <span class="diwali-badge-text-top">Diwali</span>
+          <span class="diwali-badge-text-year">2026</span>
+          <span class="diwali-badge-text-bot">Collection</span>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ============================================================
-       INFINITE SERVICES TICKER
+       FEATURES BANNER
        ============================================================ -->
-  <section class="services-ticker-section" id="services-scroll-ticker">
-    <div class="ticker-title">Our Solutions & Services</div>
-    <div class="ticker-wrap">
-      <div class="ticker-track services-track" id="services-ticker-track">
-        <div class="service-pill">
-          <div class="service-pill-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-          </div>
-          <span class="service-pill-text">Employee Joining & Welcome Kits</span>
+  <section class="features-ribbon-mockup">
+    <div class="container features-ribbon-container">
+      <div class="features-ribbon-item">
+        <div class="features-ribbon-icon">📦</div>
+        <div class="features-ribbon-text">
+          <span class="features-ribbon-title">Minimum Order</span>
+          <span class="features-ribbon-val">50 Units</span>
         </div>
-        <div class="service-pill">
-          <div class="service-pill-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-              <path d="M4 22h16" />
-              <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
-              <path d="M12 2a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z" />
-            </svg>
-          </div>
-          <span class="service-pill-text">Rewards & Recognition Programs</span>
+      </div>
+      <div class="features-ribbon-item">
+        <div class="features-ribbon-icon">✒️</div>
+        <div class="features-ribbon-text">
+          <span class="features-ribbon-title">Custom Branding</span>
+          <span class="features-ribbon-val">Free Mockup</span>
         </div>
-        <div class="service-pill">
-          <div class="service-pill-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m11 17 2 2a1 1 0 1 0 3-3" />
-              <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.83-3.83a3 3 0 0 0-4.24 0l-2.12 2.12a1 1 0 0 0 0 1.42l4.24 4.24" />
-              <path d="M2 13a6 6 0 0 1 10.5-4.5" />
-              <path d="M22 11a6 6 0 0 0-10.5 4.5" />
-            </svg>
-          </div>
-          <span class="service-pill-text">Dealer & Channel Partner Incentives</span>
+      </div>
+      <div class="features-ribbon-item">
+        <div class="features-ribbon-icon">🛡️</div>
+        <div class="features-ribbon-text">
+          <span class="features-ribbon-title">Premium Quality</span>
+          <span class="features-ribbon-val">Assured</span>
         </div>
-        <div class="service-pill">
-          <div class="service-pill-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 3h20" />
-              <path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3" />
-              <path d="m7 21 5-5 5 5" />
-            </svg>
-          </div>
-          <span class="service-pill-text">Conference & Event Merchandise</span>
+      </div>
+      <div class="features-ribbon-item">
+        <div class="features-ribbon-icon">🚚</div>
+        <div class="features-ribbon-text">
+          <span class="features-ribbon-title">Pan India Delivery</span>
+          <span class="features-ribbon-val">On Time</span>
         </div>
-        <div class="service-pill">
-          <div class="service-pill-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
-              <path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14" />
-              <path d="M8 6v8" />
-            </svg>
-          </div>
-          <span class="service-pill-text">Promotional & Marketing Campaign Gifts</span>
+      </div>
+      <div class="features-ribbon-item">
+        <div class="features-ribbon-icon">🤝</div>
+        <div class="features-ribbon-text">
+          <span class="features-ribbon-title">Dedicated Support</span>
+          <span class="features-ribbon-val">Always</span>
         </div>
-        <div class="service-pill">
-          <div class="service-pill-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="8" width="18" height="4" rx="1" />
-              <path d="M12 8v13" />
-              <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" />
-              <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />
-            </svg>
-          </div>
-          <span class="service-pill-text">Seasonal & Festive Gifting Solutions</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SHOP BY CATEGORY SHOWCASE
+       ============================================================ -->
+  <section class="container section-py" id="categories-section">
+    <div class="exclusive-collection-header-mockup">
+      <div>
+        <span class="exclusive-label-mockup">Exclusive Collection</span>
+        <h2 class="exclusive-title-mockup">Shop by Category</h2>
+      </div>
+      <a href="products.html" class="btn-view-categories-mockup">View All Categories</a>
+    </div>
+
+    <div class="categories-slider-container">
+      <!-- Card 1: Diwali Hampers -->
+      <a href="products.html?category=hampers" class="category-card-mockup" style="background-color: #16072b;">
+        <img src="images/festive_hamper.png" alt="Diwali Gift Hampers">
+        <div class="category-card-bg-overlay"></div>
+        <div class="category-card-info-mockup">
+          <h3 class="category-card-title-mockup">Diwali Gift Hampers</h3>
+          <p class="category-card-desc-mockup">Premium hampers to delight every relationship.</p>
+          <span class="category-card-btn-mockup">Explore</span>
         </div>
-        <div class="service-pill">
-          <div class="service-pill-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-              <path d="m15 5 4 4" />
-            </svg>
-          </div>
-          <span class="service-pill-text">Customized Branded Merchandise</span>
+      </a>
+
+      <!-- Card 2: Tech & Accessories -->
+      <a href="products.html?category=tech" class="category-card-mockup" style="background-color: #7d3c0a;">
+        <img src="images/extracted_tech.png" alt="Tech & Accessories">
+        <div class="category-card-bg-overlay"></div>
+        <div class="category-card-info-mockup">
+          <h3 class="category-card-title-mockup">Tech & Accessories</h3>
+          <p class="category-card-desc-mockup">Useful tech gifts they'll love.</p>
+          <span class="category-card-btn-mockup">Explore</span>
+        </div>
+      </a>
+
+      <!-- Card 3: Drinkware Collection -->
+      <a href="products.html?category=drinkware" class="category-card-mockup" style="background-color: #6e0a1e;">
+        <img src="images/vacuum_bottles.png" alt="Drinkware Collection">
+        <div class="category-card-bg-overlay"></div>
+        <div class="category-card-info-mockup">
+          <h3 class="category-card-title-mockup">Drinkware Collection</h3>
+          <p class="category-card-desc-mockup">Stylish, durable & brandable.</p>
+          <span class="category-card-btn-mockup">Explore</span>
+        </div>
+      </a>
+
+      <!-- Card 4: Eco Friendly Gifts -->
+      <a href="products.html?category=eco" class="category-card-mockup" style="background-color: #1a3d1e;">
+        <img src="images/extracted_eco.png" alt="Eco-Friendly Gifts">
+        <div class="category-card-bg-overlay"></div>
+        <div class="category-card-info-mockup">
+          <h3 class="category-card-title-mockup">Eco-Friendly Gifts</h3>
+          <p class="category-card-desc-mockup">Sustainable choices for a better future.</p>
+          <span class="category-card-btn-mockup">Explore</span>
+        </div>
+      </a>
+
+      <!-- Card 5: Apparel & Lifestyle -->
+      <a href="products.html?category=apparel" class="category-card-mockup" style="background-color: #3d1a3d;">
+        <img src="images/custom_apparel.png" alt="Apparel & Lifestyle">
+        <div class="category-card-bg-overlay"></div>
+        <div class="category-card-info-mockup">
+          <h3 class="category-card-title-mockup">Apparel & Lifestyle</h3>
+          <p class="category-card-desc-mockup">Wear your brand with pride.</p>
+          <span class="category-card-btn-mockup">Explore</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       BOTTOM BRANDING BENIFITS ROW
+       ============================================================ -->
+  <section class="bottom-features-mockup">
+    <div class="container bottom-features-container">
+      <div class="bottom-features-item">
+        <div class="bottom-features-icon">🎁</div>
+        <div class="bottom-features-text">
+          <span class="bottom-features-title">Free Custom Branding</span>
+          <span class="bottom-features-desc">Make it truly yours</span>
+        </div>
+      </div>
+      <div class="bottom-features-item">
+        <div class="bottom-features-icon">💻</div>
+        <div class="bottom-features-text">
+          <span class="bottom-features-title">Virtual Mockup</span>
+          <span class="bottom-features-desc">Preview before you print</span>
+        </div>
+      </div>
+      <div class="bottom-features-item">
+        <div class="bottom-features-icon">🛡️</div>
+        <div class="bottom-features-text">
+          <span class="bottom-features-title">Quality Assurance</span>
+          <span class="bottom-features-desc">Every time, on every order</span>
+        </div>
+      </div>
+      <div class="bottom-features-item">
+        <div class="bottom-features-icon">⏱️</div>
+        <div class="bottom-features-text">
+          <span class="bottom-features-title">Timely Delivery</span>
+          <span class="bottom-features-desc">Your deadlines, our priority</span>
         </div>
       </div>
     </div>
@@ -182,170 +276,6 @@
         <div class="ticker-item"><span class="ticker-item-logo">🔋 BAJAJ</span></div>
         <div class="ticker-item"><span class="ticker-item-logo">⚡ VOLTAS</span></div>
         <div class="ticker-item"><span class="ticker-item-logo">💎 RELIANCE</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       BENEFIT PILLS
-       ============================================================ -->
-  <section class="container section-py" id="benefits-overview">
-    <div class="section-title-wrapper">
-      <span class="section-label">Why Choose Gifting Needs</span>
-      <h2 class="section-title">Unlock the Power of Strategic Gifting</h2>
-      <p class="section-desc">We bridge high-end, customized craftsmanship with scalable logistics to deliver premium corporate boxes on time, every time — across every corner of India.</p>
-    </div>
-
-    <div class="benefit-pills-row">
-      <div class="benefit-pill">
-        <div class="benefit-icon">✒️</div>
-        <span class="benefit-text">Free Custom Logo Branding</span>
-      </div>
-      <div class="benefit-pill">
-        <div class="benefit-icon">🌱</div>
-        <span class="benefit-text">Eco-Friendly & Sustainable Products</span>
-      </div>
-      <div class="benefit-pill">
-        <div class="benefit-icon">🚀</div>
-        <span class="benefit-text">Pan-India Courier Fulfillment</span>
-      </div>
-      <div class="benefit-pill">
-        <div class="benefit-icon">📦</div>
-        <span class="benefit-text">No Setup Charges Above MOQ</span>
-      </div>
-      <div class="benefit-pill">
-        <div class="benefit-icon">🛡️</div>
-        <span class="benefit-text">Premium Quality Check Certified</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       CATEGORIES SHOWCASE (JATRAMELA STYLE CARDS)
-       ============================================================ -->
-  <section class="container section-py" id="categories-section">
-    <div class="section-title-wrapper">
-      <span class="section-label">Browse Our Solutions</span>
-      <h2 class="section-title">Tailored Categories For Every Occasion</h2>
-      <p class="section-desc">Explore curated corporate gifts. Select a category below to browse and customize individual products.</p>
-    </div>
-
-    <div class="category-grid" id="category-cards-grid">
-      <!-- Welcome Kits Card -->
-      <a href="solutions.html" class="category-card" id="cat-welcome-card">
-        <div class="category-card-image" style="background: radial-gradient(circle, #1c3e34 0%, #0c201a 100%); overflow: hidden;">
-          <img src="images/welcome_kit_hero.jpg" alt="Employee Welcome Kits" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s ease;">
-        </div>
-        <div class="category-card-content">
-          <div class="category-card-icon">🎁</div>
-          <h3 class="category-card-title">Employee Welcome Kits</h3>
-          <p class="category-card-desc">Welcome new hires with thoughtful gifts that set the tone for a positive and memorable work experience.</p>
-        </div>
-      </a>
-
-      <!-- Tech Gadgets Card -->
-      <a href="products.html" class="category-card" id="cat-tech-card">
-        <div class="category-card-image" style="background: radial-gradient(circle, #1a2f3a 0%, #0d171d 100%); overflow: hidden;">
-          <img src="images/tech_gadgets_category.jpg" alt="Tech Gadgets" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s ease;">
-        </div>
-        <div class="category-card-content">
-          <div class="category-card-icon">🔋</div>
-          <h3 class="category-card-title">Custom Technology</h3>
-          <p class="category-card-desc">Fuel productivity and innovation with the latest tech gadgets, power banks, and wireless chargers.</p>
-        </div>
-      </a>
-
-      <!-- Eco Friendly Card -->
-      <a href="products.html" class="category-card" id="cat-eco-card">
-        <div class="category-card-image" style="background: radial-gradient(circle, #213c23 0%, #0d1e10 100%); overflow: hidden;">
-          <img src="images/eco_gifts_category.jpg" alt="Eco Friendly Gifts" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s ease;">
-        </div>
-        <div class="category-card-content">
-          <div class="category-card-icon">🌱</div>
-          <h3 class="category-card-title">Sustainable Green Gifts</h3>
-          <p class="category-card-desc">Make a statement with eco-friendly gifts that reflect your company's commitment to sustainability.</p>
-        </div>
-      </a>
-
-      <!-- Drinkware Card -->
-      <a href="products.html" class="category-card" id="cat-drinkware-card">
-        <div class="category-card-image" style="background: radial-gradient(circle, #3e2617 0%, #1e110a 100%); overflow: hidden;">
-          <img src="images/drinkware_category.jpg" alt="Premium Drinkware" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:transform 0.4s ease;">
-        </div>
-        <div class="category-card-content">
-          <div class="category-card-icon">🥤</div>
-          <h3 class="category-card-title">Premium Drinkware</h3>
-          <p class="category-card-desc">Quench your team's thirst for appreciation with customized flasks, copper bottles, and eco cups.</p>
-        </div>
-      </a>
-    </div>
-
-    <div style="text-align: center; margin-top: 3rem;">
-      <a href="products.html" class="btn btn-primary" id="view-all-products-btn">Explore Full Product Catalog</a>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       OUR SIMPLE 5-STEP ORDER PROCESS
-       ============================================================ -->
-  <section class="container section-py" id="order-process-section">
-    <div class="section-title-wrapper">
-      <span class="section-label">How It Works</span>
-      <h2 class="section-title">Simplified Gifting, End-to-End</h2>
-      <p class="section-desc">From selection to delivery, our streamlined process ensures seamless gifting experiences — from bulk procurement and custom logo printing to individual doorstep dispatch across India.</p>
-    </div>
-
-    <div class="process-timeline">
-      <div class="process-step">
-        <div class="process-number">1</div>
-        <div class="process-icon">📧</div>
-        <h3 class="process-title">1. Inquire</h3>
-        <p class="process-text">Share your bulk products list, budget, custom design requirements, and quantities (MOQ 50).</p>
-      </div>
-      
-      <div class="process-step">
-        <div class="process-number">2</div>
-        <div class="process-icon">📄</div>
-        <h3 class="process-title">2. Quote</h3>
-        <p class="process-text">Receive digital catalog recommendations, customized virtual brand mockups, and transparent wholesale quotes.</p>
-      </div>
-
-      <div class="process-step">
-        <div class="process-number">3</div>
-        <div class="process-icon">🤝</div>
-        <h3 class="process-title">3. Confirm</h3>
-        <p class="process-text">Review custom printed samples physically or via HD video, and confirm final order details.</p>
-      </div>
-
-      <div class="process-step">
-        <div class="process-number">4</div>
-        <div class="process-icon">🏭</div>
-        <h3 class="process-title">4. Produce</h3>
-        <p class="process-text">Precision B2B laser engraving, screen printing, and premium box packing with multi-tier quality checks.</p>
-      </div>
-
-      <div class="process-step">
-        <div class="process-number">5</div>
-        <div class="process-icon">🚚</div>
-        <h3 class="process-title">5. Deliver</h3>
-        <p class="process-text">Seamless doorstep dispatch and individual courier tracking directly to remote employees or offices across India.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       BUILD-A-KIT CTA SECTION
-       ============================================================ -->
-  <section style="background-color: var(--bg-section-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);" class="section-py" id="interactive-builder-teaser">
-    <div class="container" style="display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 800px;">
-      <span class="section-label">Interactive Configurator</span>
-      <h2 class="serif-font" style="font-size: clamp(2rem, 3.5vw, 3rem); color: var(--primary); margin-bottom: 1.5rem;">Craft Your Dream Corporate Gift Kit</h2>
-      <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1.1rem;">
-        Combine our best-selling items to create unique gift kits that reflect your brand's personality. Use our <strong>Build-A-Kit</strong> tool — pick your box, fill it with products, and get a real-time cost estimate with GST instantly.
-      </p>
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-        <a href="solutions.html" class="btn btn-gold">Launch Box Builder Widget</a>
-        <a href="contact.html" class="btn btn-outline">Schedule Virtual Call</a>
       </div>
     </div>
   </section>
@@ -485,7 +415,7 @@
        FLOATING QUICK CONTACT
        ============================================================ -->
   <div class="floating-contact-pannel" id="float-contact-buttons">
-    <a href="https://wa.me/916361054099?text=Hi%20Gifting%20Needs,%20we%20want%20to%20inquire%20about%20corporate%20welcome%20kits." target="_blank" class="float-btn float-btn-whatsapp" id="whatsapp-float-btn" aria-label="Chat on WhatsApp">
+    <a href="https://wa.me/919964751885?text=Hi%20Gifting%20Needs,%20we%20want%20to%20inquire%20about%20corporate%20welcome%20kits." target="_blank" class="float-btn float-btn-whatsapp" id="whatsapp-float-btn" aria-label="Chat on WhatsApp">
       <svg viewBox="0 0 24 24">
         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.57 1.978 14.1 1.953 12.006 1.953c-5.437 0-9.863 4.374-9.868 9.803-.001 1.77.476 3.5 1.378 5.027L2.5 21.007l4.147-1.853zm12.39-7.147c-.285-.143-1.687-.832-1.947-.927-.26-.096-.45-.143-.637.143-.188.285-.724.927-.887 1.116-.164.188-.327.21-.612.068-.285-.143-1.206-.444-2.296-1.416-.849-.757-1.423-1.693-1.59-1.977-.167-.285-.018-.439.124-.58.128-.127.285-.332.427-.497.143-.166.19-.285.285-.475.095-.19.047-.356-.024-.497-.07-.143-.637-1.537-.872-2.106-.23-.553-.46-.477-.63-.486-.164-.008-.352-.01-.54-.01-.188 0-.495.07-.754.356-.26.285-.99.967-.99 2.361 0 1.394 1.014 2.741 1.155 2.93.14.19 1.997 3.05 4.838 4.278.675.293 1.202.468 1.612.598.678.215 1.295.185 1.783.111.544-.08 1.687-.69 1.925-1.356.238-.665.238-1.233.167-1.357-.07-.123-.26-.19-.545-.333z"/>
       </svg>

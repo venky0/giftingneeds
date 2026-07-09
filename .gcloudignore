@@ -2,3 +2,11 @@ node_modules/
 .git/
 .DS_Store
 scratch/
+desktop_assets/
+diwali_newsletter.html
+diwali_email_simple.html
+diwali_email_final.html
+*.psd
+*.zip
+*.aep
+*.mp4
