@@ -341,8 +341,15 @@ const GiftingAPI = (() => {
     // Inquiries
     getInquiries: async () => {
       if (isWebServer) {
-        const res = await fetch(`${BASE_URL}/api/inquiries`, { headers: getHeaders() });
-        return await res.json();
+        try {
+          const res = await fetch(`${BASE_URL}/api/inquiries`, { headers: getHeaders() });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
+        } catch (err) {
+          console.warn("API Inquiries fetch failed, falling back to local database:", err);
+          const inquiries = getLocalData(STORAGE_KEYS.INQUIRIES, FALLBACK_INQUIRIES);
+          return { success: true, inquiries };
+        }
       } else {
         const inquiries = getLocalData(STORAGE_KEYS.INQUIRIES, FALLBACK_INQUIRIES);
         return { success: true, inquiries };
@@ -586,8 +593,17 @@ You can try these actions:
     // System event logs
     getLogs: async () => {
       if (isWebServer) {
-        const res = await fetch(`${BASE_URL}/api/logs`, { headers: getHeaders() });
-        return await res.json();
+        try {
+          const res = await fetch(`${BASE_URL}/api/logs`, { headers: getHeaders() });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
+        } catch (err) {
+          console.warn("API Logs fetch failed, falling back to local database:", err);
+          const logs = getLocalData(STORAGE_KEYS.LOGS, [
+            { date: new Date().toISOString(), event: "Client session established in localStorage database mode." }
+          ]);
+          return { success: true, logs };
+        }
       } else {
         const logs = getLocalData(STORAGE_KEYS.LOGS, [
           { date: new Date().toISOString(), event: "Client session established in localStorage database mode." }
