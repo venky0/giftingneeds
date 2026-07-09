@@ -842,7 +842,35 @@ async function loadDesignPanel() {
     document.getElementById('header-logo-sub-size').value = design.header.logoSubSize || '0.65rem';
     document.getElementById('header-cta-text').value = design.header.ctaText || 'Build A Kit';
     document.getElementById('header-cta-href').value = design.header.ctaHref || 'solutions.html';
-    document.getElementById('header-logo-image-url').value = design.header.logoImage || '';
+    const logoUrlInput = document.getElementById('header-logo-image-url');
+    logoUrlInput.value = design.header.logoImage || '';
+
+    const presetSelect = document.getElementById('header-logo-preset');
+    if (presetSelect && logoUrlInput) {
+      const currentValue = design.header.logoImage || '';
+      if (['uploads/gifting_needs_logo_dark.png', 'uploads/gifting_needs_logo_light.png', 'images/gifting_needs_logo.png'].includes(currentValue)) {
+        presetSelect.value = currentValue;
+      } else if (currentValue) {
+        presetSelect.value = 'custom';
+      } else {
+        presetSelect.value = 'uploads/gifting_needs_logo_dark.png';
+      }
+      
+      presetSelect.addEventListener('change', () => {
+        if (presetSelect.value !== 'custom') {
+          logoUrlInput.value = presetSelect.value;
+        }
+      });
+
+      logoUrlInput.addEventListener('input', () => {
+        const val = logoUrlInput.value.trim();
+        if (['uploads/gifting_needs_logo_dark.png', 'uploads/gifting_needs_logo_light.png', 'images/gifting_needs_logo.png'].includes(val)) {
+          presetSelect.value = val;
+        } else {
+          presetSelect.value = 'custom';
+        }
+      });
+    }
 
     const headerForm = document.getElementById('header-details-form');
     headerForm.removeEventListener('submit', handleHeaderFormSubmit);
@@ -850,7 +878,6 @@ async function loadDesignPanel() {
 
     // Bind Logo file uploader
     const logoFileInput = document.getElementById('header-logo-image-file');
-    const logoUrlInput = document.getElementById('header-logo-image-url');
     if (logoFileInput && logoUrlInput) {
       // Clean previous listener
       const newFileInput = logoFileInput.cloneNode(true);
@@ -861,6 +888,7 @@ async function loadDesignPanel() {
         if (!file) return;
 
         logoUrlInput.value = 'Uploading...';
+        if (presetSelect) presetSelect.value = 'custom';
 
         const reader = new FileReader();
         reader.onload = async (event) => {

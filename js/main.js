@@ -138,15 +138,20 @@ function injectGlobalDesign(design) {
   // 1. Header Branding logo text & image support
   if (design.header) {
     const navLogos = document.querySelectorAll('.nav-logo');
-    const isHome = document.querySelector('.hero-slider-section') !== null;
+    const isHome = document.querySelector('.hero-slider-section') !== null || document.querySelector('.hero-mockup') !== null;
     navLogos.forEach(el => {
       if (design.header.logoImage) {
         const isFooter = el.closest('footer') !== null;
+        const isMockupHeader = el.closest('.header-mockup') !== null;
         let initialLogoSrc = design.header.logoImage;
         let initialHeight = '56px';
         
         if (isFooter) {
           // Footer is always dark background, so always use light logo
+          initialLogoSrc = 'uploads/gifting_needs_logo_light.png';
+          initialHeight = '56px';
+        } else if (isMockupHeader) {
+          // Mockup header is always dark background, so always use light logo
           initialLogoSrc = 'uploads/gifting_needs_logo_light.png';
           initialHeight = '56px';
         } else if (isHome) {
@@ -425,7 +430,7 @@ function initNavbar() {
   const navLinks = document.querySelector('.nav-links');
 
   if (navbar) {
-    const isHome = document.querySelector('.hero-slider-section') !== null;
+    const isHome = document.querySelector('.hero-slider-section') !== null || document.querySelector('.hero-mockup') !== null;
     
     if (isHome) {
       const updateLogoOnScroll = () => {
