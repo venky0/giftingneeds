@@ -22,12 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
       
       errorMsg.style.display = 'none';
       
-      const res = await GiftingAPI.login(username, pass);
-      if (res.success) {
-        document.getElementById('login-overlay').classList.remove('active');
-        initDashboard(res);
-      } else {
-        errorMsg.textContent = res.message;
+      try {
+        const res = await GiftingAPI.login(username, pass);
+        if (res.success) {
+          document.getElementById('login-overlay').classList.remove('active');
+          initDashboard(res);
+        } else {
+          errorMsg.textContent = res.message;
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        console.error("Login exception:", err);
+        errorMsg.textContent = "Connection error: Please check your internet or server settings.";
         errorMsg.style.display = 'block';
       }
     });

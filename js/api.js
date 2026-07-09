@@ -131,16 +131,38 @@ const GiftingAPI = (() => {
     // Authentication
     login: async (username, password) => {
       if (isWebServer) {
-        const res = await fetch(`${BASE_URL}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-        const out = await res.json();
-        if (out.success) {
-          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(out));
+        try {
+          const res = await fetch(`${BASE_URL}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+          const out = await res.json();
+          if (out.success) {
+            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(out));
+          }
+          return out;
+        } catch (err) {
+          console.warn("API Login failed, trying fallback to live Cloud Run server:", err);
+          const liveUrl = 'https://giftingneeds-backend-748096979929.europe-north1.run.app';
+          if (BASE_URL !== liveUrl) {
+            try {
+              const res = await fetch(`${liveUrl}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+              });
+              const out = await res.json();
+              if (out.success) {
+                localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(out));
+              }
+              return out;
+            } catch (errLive) {
+              return { success: false, message: "Network connection failed. Could not connect to local or live server." };
+            }
+          }
+          return { success: false, message: "Network connection failed: " + err.message };
         }
-        return out;
       } else {
         // Local simulation
         const validUsers = [
