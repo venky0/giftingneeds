@@ -39,6 +39,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Bind Google Login
+  const googleLoginBtn = document.getElementById('google-login-btn');
+  const googleChooserModal = document.getElementById('google-chooser-modal');
+  if (googleLoginBtn && googleChooserModal) {
+    // Show Google account chooser
+    googleLoginBtn.addEventListener('click', () => {
+      googleChooserModal.classList.add('active');
+    });
+
+    // Close chooser when clicking outside the card
+    googleChooserModal.addEventListener('click', (e) => {
+      if (e.target === googleChooserModal) {
+        googleChooserModal.classList.remove('active');
+      }
+    });
+
+    // Handle account selection
+    const accountItems = googleChooserModal.querySelectorAll('.google-account-item');
+    accountItems.forEach(item => {
+      item.addEventListener('click', async () => {
+        const username = item.getAttribute('data-username');
+        const role = item.getAttribute('data-role');
+        const label = item.getAttribute('data-label');
+        googleChooserModal.classList.remove('active');
+        
+        const errorMsg = document.getElementById('login-error-msg');
+        if (errorMsg) errorMsg.style.display = 'none';
+
+        // Animate simulated loading progress
+        const loginBtn = document.getElementById('google-login-btn');
+        const originalHTML = loginBtn.innerHTML;
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" width="18" height="18" style="animation: spin 1s linear infinite; margin-right: 8px;">
+            <circle cx="12" cy="12" r="10" stroke="#4285F4" stroke-width="4" fill="none" stroke-dasharray="31.4 31.4"></circle>
+          </svg>
+          <span>Authenticating as ${label}...</span>
+        `;
+
+        try {
+          // Google authentication resolves to a mock token matching the selected user
+          const res = await GiftingAPI.login(username, 'gifting123');
+          if (res.success) {
+            document.getElementById('login-overlay').classList.remove('active');
+            initDashboard(res);
+          } else {
+            if (errorMsg) {
+              errorMsg.textContent = res.message;
+              errorMsg.style.display = 'block';
+            }
+          }
+        } catch (err) {
+          console.error("Google login exception:", err);
+          if (errorMsg) {
+            errorMsg.textContent = "Google Sign-In failed: Connection error.";
+            errorMsg.style.display = 'block';
+          }
+        } finally {
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = originalHTML;
+        }
+      });
+    });
+  }
+
   // Bind logout
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
