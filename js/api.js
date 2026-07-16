@@ -125,6 +125,10 @@ const GiftingAPI = (() => {
         return path;
       }
       const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+      // Serve local repository assets (under images/) directly from the local host
+      if (cleanPath.startsWith('images/')) {
+        return cleanPath;
+      }
       return BASE_URL ? `${BASE_URL}/${cleanPath}` : path;
     },
 
