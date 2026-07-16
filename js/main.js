@@ -146,27 +146,34 @@ function injectGlobalDesign(design) {
         let initialLogoSrc = design.header.logoImage;
         let initialHeight = '56px';
         
-        if (isFooter) {
-          // Footer is always dark background, so always use light logo
-          initialLogoSrc = 'uploads/gifting_needs_logo_light.png';
-          initialHeight = '56px';
-        } else if (isMockupHeader) {
-          // Mockup header is always dark background, so always use light logo
-          initialLogoSrc = 'uploads/gifting_needs_logo_light.png';
-          initialHeight = '56px';
-        } else if (isHome) {
-          const isScrolled = document.querySelector('.navbar') && document.querySelector('.navbar').classList.contains('scrolled');
-          if (!isScrolled) {
+        // Only dynamically swap between transparent presets if the logo isn't the original JPEG or a custom URL
+        if (design.header.logoImage !== 'images/gifting_needs_logo.png' && !design.header.logoImage.startsWith('http') && !design.header.logoImage.includes('uploads/Gifting_Needs_Logo')) {
+          if (isFooter) {
+            // Footer is always dark background, so always use light logo
             initialLogoSrc = 'uploads/gifting_needs_logo_light.png';
-            initialHeight = '72px';
+            initialHeight = '56px';
+          } else if (isMockupHeader) {
+            // Mockup header is always dark background, so always use light logo
+            initialLogoSrc = 'uploads/gifting_needs_logo_light.png';
+            initialHeight = '56px';
+          } else if (isHome) {
+            const isScrolled = document.querySelector('.navbar') && document.querySelector('.navbar').classList.contains('scrolled');
+            if (!isScrolled) {
+              initialLogoSrc = 'uploads/gifting_needs_logo_light.png';
+              initialHeight = '72px';
+            } else {
+              initialLogoSrc = 'uploads/gifting_needs_logo_dark.png';
+              initialHeight = '56px';
+            }
           } else {
+            // Non-home subpage header uses dark logo
             initialLogoSrc = 'uploads/gifting_needs_logo_dark.png';
             initialHeight = '56px';
           }
         } else {
-          // Non-home subpage header uses dark logo
-          initialLogoSrc = 'uploads/gifting_needs_logo_dark.png';
-          initialHeight = '56px';
+          // Respect the original JPEG logo or custom uploaded logo exactly
+          const isScrolled = document.querySelector('.navbar') && document.querySelector('.navbar').classList.contains('scrolled');
+          initialHeight = isHome && !isScrolled ? '72px' : '56px';
         }
         
         el.innerHTML = `<img src="${GiftingAPI.resolveImage(initialLogoSrc)}" alt="Gifting Needs" class="logo-img-tag" style="height: ${initialHeight}; max-height: ${initialHeight}; width: auto; object-fit: contain; display: block; transition: all 0.3s ease;">`;
