@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (designRes.success && designRes.design) {
       design = designRes.design;
+      window.GiftingDesign = design;
       
       // Update local configurator items from DB if present
       if (design.solutions) {
@@ -438,6 +439,8 @@ function initNavbar() {
 
   if (navbar) {
     const isHome = document.querySelector('.hero-slider-section') !== null || document.querySelector('.hero-mockup') !== null;
+    const design = window.GiftingDesign;
+    const logoImage = design && design.header ? design.header.logoImage : '';
     
     if (isHome) {
       const updateLogoOnScroll = () => {
@@ -445,12 +448,22 @@ function initNavbar() {
         if (!logoImg) return;
         if (window.scrollY > 40) {
           navbar.classList.add('scrolled');
-          logoImg.src = GiftingAPI.resolveImage('uploads/gifting_needs_logo_dark.png');
+          // Only swap to transparent dark preset if the active logo is not original JPEG or custom
+          if (logoImage && logoImage !== 'images/gifting_needs_logo.png' && !logoImage.startsWith('http') && !logoImage.includes('uploads/Gifting_Needs_Logo')) {
+            logoImg.src = GiftingAPI.resolveImage('uploads/gifting_needs_logo_dark.png');
+          } else if (logoImage) {
+            logoImg.src = GiftingAPI.resolveImage(logoImage);
+          }
           logoImg.style.height = '56px';
           logoImg.style.maxHeight = '56px';
         } else {
           navbar.classList.remove('scrolled');
-          logoImg.src = GiftingAPI.resolveImage('uploads/gifting_needs_logo_light.png');
+          // Only swap to transparent light preset if the active logo is not original JPEG or custom
+          if (logoImage && logoImage !== 'images/gifting_needs_logo.png' && !logoImage.startsWith('http') && !logoImage.includes('uploads/Gifting_Needs_Logo')) {
+            logoImg.src = GiftingAPI.resolveImage('uploads/gifting_needs_logo_light.png');
+          } else if (logoImage) {
+            logoImg.src = GiftingAPI.resolveImage(logoImage);
+          }
           logoImg.style.height = '72px';
           logoImg.style.maxHeight = '72px';
         }
@@ -465,7 +478,11 @@ function initNavbar() {
       navbar.classList.add('scrolled');
       const logoImg = document.querySelector('.navbar .logo-img-tag');
       if (logoImg) {
-        logoImg.src = GiftingAPI.resolveImage('uploads/gifting_needs_logo_dark.png');
+        if (logoImage && logoImage !== 'images/gifting_needs_logo.png' && !logoImage.startsWith('http') && !logoImage.includes('uploads/Gifting_Needs_Logo')) {
+          logoImg.src = GiftingAPI.resolveImage('uploads/gifting_needs_logo_dark.png');
+        } else if (logoImage) {
+          logoImg.src = GiftingAPI.resolveImage(logoImage);
+        }
         logoImg.style.height = '56px';
         logoImg.style.maxHeight = '56px';
       }
