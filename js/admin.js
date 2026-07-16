@@ -848,12 +848,12 @@ async function loadDesignPanel() {
     const presetSelect = document.getElementById('header-logo-preset');
     if (presetSelect && logoUrlInput) {
       const currentValue = design.header.logoImage || '';
-      if (['uploads/gifting_needs_logo_dark.png', 'uploads/gifting_needs_logo_light.png', 'images/gifting_needs_logo.png'].includes(currentValue)) {
+      if (['', 'uploads/gifting_needs_logo_dark.png', 'uploads/gifting_needs_logo_light.png', 'images/gifting_needs_logo.png'].includes(currentValue)) {
         presetSelect.value = currentValue;
       } else if (currentValue) {
         presetSelect.value = 'custom';
       } else {
-        presetSelect.value = 'uploads/gifting_needs_logo_dark.png';
+        presetSelect.value = '';
       }
       
       presetSelect.addEventListener('change', () => {
@@ -864,7 +864,7 @@ async function loadDesignPanel() {
 
       logoUrlInput.addEventListener('input', () => {
         const val = logoUrlInput.value.trim();
-        if (['uploads/gifting_needs_logo_dark.png', 'uploads/gifting_needs_logo_light.png', 'images/gifting_needs_logo.png'].includes(val)) {
+        if (['', 'uploads/gifting_needs_logo_dark.png', 'uploads/gifting_needs_logo_light.png', 'images/gifting_needs_logo.png'].includes(val)) {
           presetSelect.value = val;
         } else {
           presetSelect.value = 'custom';
