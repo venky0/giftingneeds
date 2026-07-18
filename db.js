@@ -958,10 +958,10 @@ const DEFAULT_STATE = {
     },
     "footer": {
       "logoDesc": "Crafting premium, sustainable, and highly personalized corporate hampers, welcome onboarding packs, and custom tech utilities since 2018.",
-      "copyright": "\u00a9 2026 Gifting Needs. All rights reserved. GSTIN: 29AAWFG9249H1ZH",
+      "copyright": "\u00a9 2026 NUNULAL PODDAR | Gifting Needs. All rights reserved. GSTIN: 29AAWFG9249H1ZH",
       "contactInfo": {
-        "address": "No.124 (Old No. 123/1) 8th Cross, 19th Main Road, Marenahalli Palya, 2nd Phase, J.P. Nagar, Bengaluru, Karnataka - 560078",
-        "email": "sales@giftingneeds.in",
+        "address": "No. 124 (Old No. 123/1), 8th Cross, 19th Main Road, Marenahalli Palya, 2nd Phase, J.P. Nagar, Bengaluru \u2013 560078, Karnataka, India",
+        "email": "nunulal@giftingneeds.in / sales@giftingneeds.in / info@giftingneeds.in",
         "phone": "+91 63610 54099",
         "phoneDesk": "+91 86189 67417"
       },
