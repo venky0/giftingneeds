@@ -3,72 +3,878 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Posters | Corporate Gifting Posters — Gifting Needs</title>
-  <meta name="description" content="Browse our premium corporate gifting posters — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
+  <title>Posters | Corporate Gifting Categories — Gifting Needs</title>
+  <meta name="description" content="Browse all 46 corporate gifting poster categories — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="stylesheet" href="css/style.css?v=1.1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       POSTERS PAGE — Gallery Styles
+       ============================================================ */
+    :root {
+      --pg-gold: #d4af37;
+      --pg-gold-glow: rgba(212,175,55,0.2);
+      --pg-bg: #0a0e17;
+      --pg-bg2: #121824;
+      --pg-card: rgba(22,30,46,0.85);
+      --pg-border: rgba(255,255,255,0.08);
+      --pg-text: #f8fafc;
+      --pg-muted: #64748b;
+      --pg-sub: #94a3b8;
+      --pg-radius: 16px;
+      --pg-trans: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --pg-bounce: 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    [data-theme="light"] {
+      --pg-bg: #f1f5f9;
+      --pg-bg2: #ffffff;
+      --pg-card: rgba(255,255,255,0.9);
+      --pg-border: rgba(0,0,0,0.08);
+      --pg-text: #0f172a;
+      --pg-muted: #94a3b8;
+      --pg-sub: #475569;
+    }
+
+    .pg-wrap { background: var(--pg-bg); font-family: 'Inter', sans-serif; }
+
+    /* ---- HERO ---- */
+    .pg-hero {
+      position: relative;
+      padding: 5rem 0 3.5rem;
+      overflow: hidden;
+      background: var(--pg-bg);
+    }
+    .pg-hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 55% at 50% 0%, rgba(212,175,55,0.13) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 10% 60%, rgba(99,102,241,0.07) 0%, transparent 60%);
+    }
+    .pg-hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(212,175,55,0.05) 1px, transparent 0);
+      background-size: 36px 36px;
+    }
+    .pg-hero-inner {
+      position: relative; z-index: 1;
+      max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+      text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
+    }
+    .pg-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .35rem 1rem;
+      background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.25);
+      border-radius: 9999px; font-size: .78rem; font-weight: 600;
+      color: var(--pg-gold); letter-spacing: .06em; text-transform: uppercase;
+    }
+    .pg-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+      font-weight: 800; color: var(--pg-text); line-height: 1.1; margin: 0;
+    }
+    .pg-title .gold {
+      background: linear-gradient(135deg,#f6d365 0%,#d4af37 45%,#b8860b 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .pg-subtitle {
+      max-width: 580px; font-size: 1rem; color: var(--pg-sub); line-height: 1.7;
+    }
+    .pg-stats {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      background: var(--pg-card); border: 1px solid var(--pg-border);
+      border-radius: 18px; padding: 1.1rem 2.2rem;
+      backdrop-filter: blur(16px);
+    }
+    .pg-stat { display: flex; flex-direction: column; align-items: center; gap: .15rem; }
+    .pg-stat-val { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--pg-gold); }
+    .pg-stat-lbl { font-size: .72rem; color: var(--pg-muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+    .pg-stat-div { width: 1px; height: 32px; background: var(--pg-border); }
+
+    /* ---- FILTER BAR ---- */
+    .pg-filter-bar {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(10,14,23,0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--pg-border);
+      padding: .8rem 0; box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    }
+    [data-theme="light"] .pg-filter-bar { background: rgba(248,250,252,0.94); }
+    .pg-filter-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; align-items: center; gap: .9rem;
+    }
+    .pg-search-wrap { position: relative; display: flex; align-items: center; flex-shrink: 0; }
+    .pg-search-icon { position: absolute; left: .7rem; width: 16px; color: var(--pg-muted); pointer-events: none; }
+    .pg-search {
+      background: var(--pg-card); border: 1px solid var(--pg-border);
+      border-radius: 8px; padding: .5rem .5rem .5rem 2.2rem;
+      font-size: .84rem; color: var(--pg-text); width: 190px;
+      transition: all var(--pg-trans); font-family: 'Inter', sans-serif; outline: none;
+    }
+    .pg-search:focus { border-color: var(--pg-gold); width: 230px; box-shadow: 0 0 0 3px rgba(212,175,55,.1); }
+    .pg-search::placeholder { color: var(--pg-muted); }
+    .pg-search-clear {
+      position: absolute; right: .5rem; background: none; border: none;
+      color: var(--pg-muted); cursor: pointer; padding: .2rem; display: none; font-size: 1rem;
+    }
+    .pg-search-clear.show { display: flex; }
+    .pg-tabs-scroll { flex: 1; overflow-x: auto; scrollbar-width: none; }
+    .pg-tabs-scroll::-webkit-scrollbar { display: none; }
+    .pg-tabs { display: flex; gap: .35rem; white-space: nowrap; }
+    .pg-tab {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .42rem .85rem; border-radius: 9999px;
+      border: 1px solid var(--pg-border); background: transparent;
+      color: var(--pg-sub); font-size: .78rem; font-weight: 500; cursor: pointer;
+      transition: all var(--pg-trans); white-space: nowrap; font-family: 'Inter', sans-serif;
+    }
+    .pg-tab:hover { border-color: rgba(212,175,55,.4); color: var(--pg-text); background: rgba(212,175,55,.05); }
+    .pg-tab.active { background: var(--pg-gold); border-color: var(--pg-gold); color: #0a0e17; font-weight: 700; }
+    .pg-tab-count {
+      background: rgba(0,0,0,.15); border-radius: 9999px;
+      padding: .04rem .38rem; font-size: .68rem; font-weight: 600;
+    }
+    .pg-view-modes { display: flex; gap: .3rem; flex-shrink: 0; }
+    .pg-view-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid var(--pg-border); background: transparent;
+      color: var(--pg-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all var(--pg-trans); font-size: 1rem;
+    }
+    .pg-view-btn:hover { color: var(--pg-text); border-color: rgba(212,175,55,.4); }
+    .pg-view-btn.active { background: rgba(212,175,55,.15); border-color: var(--pg-gold); color: var(--pg-gold); }
+
+    /* ---- GALLERY CONTAINER ---- */
+    .pg-container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .pg-results-info { padding: .9rem 0 0; font-size: .84rem; color: var(--pg-muted); min-height: 1.8rem; }
+    .pg-results-info strong { color: var(--pg-gold); font-weight: 700; }
+
+    /* ---- GROUP SECTION ---- */
+    .pg-group-section { margin-bottom: 3rem; }
+    .pg-group-header { display: flex; align-items: center; gap: .9rem; padding-top: 1.5rem; margin-bottom: 1.4rem; }
+    .pg-group-icon-box {
+      width: 48px; height: 48px; border-radius: 13px;
+      border: 1px solid; display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .pg-group-title { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .pg-group-count { font-size: .78rem; color: var(--pg-muted); margin: 0; }
+    .pg-group-line { flex: 1; height: 1px; }
+
+    /* ---- GRID ---- */
+    .pg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.6rem;
+    }
+    .pg-grid.compact { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.1rem; }
+
+    /* ---- CARD ---- */
+    .pg-card {
+      position: relative; border-radius: var(--pg-radius);
+      background: var(--pg-card); border: 1px solid var(--pg-border);
+      overflow: hidden; cursor: pointer;
+      transition: transform var(--pg-bounce), box-shadow var(--pg-trans), border-color var(--pg-trans);
+      display: flex; flex-direction: column;
+    }
+    .pg-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1.5px var(--card-accent, var(--pg-gold));
+      border-color: var(--card-accent, var(--pg-gold));
+    }
+    .pg-card-img-wrap {
+      position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden;
+      background: var(--pg-bg2);
+    }
+    .pg-grid.compact .pg-card-img-wrap { aspect-ratio: 1/1; }
+    .pg-card-img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      transition: transform .5s cubic-bezier(.25,.46,.45,.94), opacity .4s;
+      opacity: 0; transform: scale(1.04);
+      pointer-events: none; user-select: none; -webkit-user-drag: none;
+    }
+    .pg-card-img.loaded { opacity: 1; transform: scale(1); }
+    .pg-card:hover .pg-card-img.loaded { transform: scale(1.08); }
+    .pg-card-skeleton {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--pg-bg2) 25%, rgba(255,255,255,.04) 50%, var(--pg-bg2) 75%);
+      background-size: 200% 100%; animation: pgShimmer 1.5s infinite;
+      transition: opacity .3s;
+    }
+    .pg-card-img.loaded ~ .pg-card-skeleton, .pg-card-skeleton.hide { opacity: 0; pointer-events: none; }
+    @keyframes pgShimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    .pg-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.75) 100%);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity var(--pg-trans);
+    }
+    .pg-card:hover .pg-card-overlay { opacity: 1; }
+    .pg-card-overlay-inner {
+      display: flex; flex-direction: column; align-items: center; gap: .4rem;
+      transform: translateY(10px); transition: transform var(--pg-trans);
+    }
+    .pg-card:hover .pg-card-overlay-inner { transform: translateY(0); }
+    .pg-zoom-ring {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.3);
+      backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: #fff;
+    }
+    .pg-overlay-lbl { font-size: .88rem; font-weight: 600; color: #fff; }
+    .pg-img-count {
+      font-size: .72rem; color: rgba(255,255,255,.75);
+      background: rgba(255,255,255,.15); padding: .12rem .5rem; border-radius: 9999px;
+    }
+    .pg-group-dot {
+      position: absolute; top: .7rem; left: .7rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .95rem; box-shadow: 0 4px 12px rgba(0,0,0,.3); z-index: 2;
+    }
+    .pg-card-body { padding: 1rem 1.2rem 1.15rem; display: flex; flex-direction: column; gap: .45rem; flex: 1; }
+    .pg-card-icon-row { display: flex; align-items: flex-start; gap: .55rem; }
+    .pg-card-emoji { font-size: 1.3rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .pg-card-name {
+      font-family: 'Outfit', sans-serif; font-size: .93rem; font-weight: 700;
+      color: var(--pg-text); line-height: 1.3; margin: 0;
+      transition: color var(--pg-trans);
+    }
+    .pg-card:hover .pg-card-name { color: var(--card-accent, var(--pg-gold)); }
+    .pg-card-desc {
+      font-size: .76rem; color: var(--pg-muted); line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-card-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: auto; padding-top: .35rem; }
+    .pg-card-tag {
+      font-size: .65rem; font-weight: 600; color: var(--pg-muted);
+      background: var(--pg-bg2); border: 1px solid var(--pg-border);
+      border-radius: 4px; padding: .12rem .4rem;
+      text-transform: uppercase; letter-spacing: .04em; transition: all var(--pg-trans);
+    }
+    .pg-card:hover .pg-card-tag {
+      border-color: var(--card-accent, var(--pg-gold));
+      color: var(--card-accent, var(--pg-gold));
+      background: rgba(212,175,55,.06);
+    }
+
+    /* ---- EMPTY STATE ---- */
+    .pg-empty {
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      padding: 5rem 2rem; text-align: center;
+    }
+    .pg-empty-icon { font-size: 3.5rem; opacity: .4; }
+    .pg-empty h3 { font-family: 'Outfit', sans-serif; font-size: 1.3rem; color: var(--pg-text); margin: 0; }
+    .pg-empty p { color: var(--pg-muted); font-size: .88rem; margin: 0; }
+    .pg-empty-btn {
+      padding: .6rem 1.4rem; background: linear-gradient(135deg, var(--pg-gold), #b89228);
+      color: #0a0e17; border: none; border-radius: 8px; font-weight: 700;
+      font-size: .88rem; cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+
+    /* ---- LIGHTBOX ---- */
+    .pg-lb-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,.93); backdrop-filter: blur(20px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem; animation: pgLbIn .25s ease-out;
+    }
+    @keyframes pgLbIn { from{opacity:0} to{opacity:1} }
+    .pg-lb-box {
+      background: #0f172a; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px; width: 100%; max-width: 880px;
+      max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 30px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(212,175,55,.12);
+      animation: pgLbBoxIn .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    [data-theme="light"] .pg-lb-box { background: #fff; border-color: rgba(0,0,0,.1); }
+    @keyframes pgLbBoxIn { from{opacity:0;transform:scale(.94) translateY(18px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .pg-lb-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 1rem; padding: 1.2rem 1.4rem .9rem;
+      border-bottom: 1px solid rgba(255,255,255,.08); flex-shrink: 0;
+    }
+    [data-theme="light"] .pg-lb-head { border-color: rgba(0,0,0,.08); }
+    .pg-lb-meta { display: flex; align-items: flex-start; gap: .7rem; }
+    .pg-lb-emoji { font-size: 1.9rem; line-height: 1; }
+    .pg-lb-name { font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:700; color:#f8fafc; margin:0 0 .2rem; }
+    [data-theme="light"] .pg-lb-name { color:#0f172a; }
+    .pg-lb-desc { font-size: .76rem; color: #64748b; margin: 0; max-width: 380px; line-height: 1.5; }
+    .pg-lb-right { display:flex; align-items:center; gap:.65rem; flex-shrink:0; }
+    .pg-lb-counter {
+      font-size:.78rem; color:#64748b; font-weight:600;
+      background:rgba(255,255,255,.06); padding:.22rem .6rem;
+      border-radius:9999px; border:1px solid rgba(255,255,255,.08);
+    }
+    [data-theme="light"] .pg-lb-counter { background:rgba(0,0,0,.05); border-color:rgba(0,0,0,.08); }
+    .pg-lb-close {
+      width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1); color:#94a3b8; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+      transition:all var(--pg-trans);
+    }
+    .pg-lb-close:hover { background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.4); color:#ef4444; }
+    .pg-lb-img-area {
+      position:relative; flex:1; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.45); min-height:320px; max-height:52vh;
+    }
+    .pg-lb-img-wrap { width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    .pg-lb-img {
+      max-width:100%; max-height:100%; object-fit:contain;
+      border-radius:8px; pointer-events:none; user-select:none; -webkit-user-drag:none;
+      animation: pgImgIn .2s ease-out;
+    }
+    @keyframes pgImgIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
+    .pg-lb-nav {
+      position:absolute; top:50%; transform:translateY(-50%);
+      width:46px; height:46px; border-radius:50%;
+      background:rgba(0,0,0,.6); border:1px solid rgba(255,255,255,.15);
+      color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      font-size:1.3rem; transition:all var(--pg-trans); z-index:2;
+    }
+    .pg-lb-nav:hover { background:var(--pg-gold); border-color:var(--pg-gold); color:#0a0e17; }
+    .pg-lb-prev { left:1rem; }
+    .pg-lb-next { right:1rem; }
+    .pg-lb-thumbs {
+      display:flex; gap:.45rem; padding:.7rem 1.4rem;
+      border-top:1px solid rgba(255,255,255,.08); overflow-x:auto; scrollbar-width:none; flex-shrink:0;
+    }
+    [data-theme="light"] .pg-lb-thumbs { border-color:rgba(0,0,0,.08); }
+    .pg-lb-thumbs::-webkit-scrollbar { display:none; }
+    .pg-lb-thumb {
+      width:52px; height:52px; border-radius:7px; overflow:hidden;
+      border:2px solid rgba(255,255,255,.1); cursor:pointer; flex-shrink:0;
+      padding:0; background:none; transition:all var(--pg-trans);
+    }
+    .pg-lb-thumb:hover { border-color:rgba(212,175,55,.5); }
+    .pg-lb-thumb.active { border-color:var(--pg-gold); box-shadow:0 0 10px rgba(212,175,55,.3); }
+    .pg-lb-thumb img { width:100%; height:100%; object-fit:cover; pointer-events:none; -webkit-user-drag:none; }
+    .pg-lb-foot {
+      display:flex; align-items:center; gap:.45rem; flex-wrap:wrap;
+      padding:.7rem 1.4rem; border-top:1px solid rgba(255,255,255,.08); flex-shrink:0;
+    }
+    [data-theme="light"] .pg-lb-foot { border-color:rgba(0,0,0,.08); }
+    .pg-lb-tag {
+      font-size:.7rem; font-weight:600; color:var(--pg-gold);
+      background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.2);
+      border-radius:4px; padding:.18rem .5rem;
+    }
+    .pg-lb-cta {
+      display:inline-flex; align-items:center; gap:.35rem; margin-left:auto;
+      padding:.42rem .95rem; background:linear-gradient(135deg,var(--pg-gold),#b89228);
+      color:#0a0e17; border-radius:7px; font-size:.8rem; font-weight:700;
+      text-decoration:none; transition:all var(--pg-trans); border:none; cursor:pointer;
+      font-family:'Inter',sans-serif;
+    }
+    .pg-lb-cta:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(212,175,55,.3); }
+
+    /* ---- CTA SECTION ---- */
+    .pg-cta {
+      background: linear-gradient(135deg, rgba(212,175,55,.06) 0%, rgba(99,102,241,.04) 100%);
+      border-top: 1px solid var(--pg-border); padding: 3.5rem 0;
+    }
+    .pg-cta-inner { max-width:1280px; margin:0 auto; padding:0 1.5rem; text-align:center; }
+    .pg-cta-title { font-family:'Outfit',sans-serif; font-size:clamp(1.5rem,3.5vw,2rem); font-weight:700; color:var(--pg-text); margin:0 0 .6rem; }
+    .pg-cta-sub { font-size:.96rem; color:var(--pg-sub); max-width:480px; margin:0 auto 1.4rem; line-height:1.7; }
+    .pg-cta-btns { display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center; }
+    .pg-btn-gold {
+      display:inline-flex; align-items:center; gap:.4rem;
+      padding:.65rem 1.4rem; background:linear-gradient(135deg,var(--pg-gold),#b89228);
+      color:#0a0e17; border:none; border-radius:8px; font-weight:700;
+      font-size:.9rem; cursor:pointer; text-decoration:none; font-family:'Inter',sans-serif;
+      transition:all var(--pg-trans);
+    }
+    .pg-btn-gold:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(212,175,55,.3); }
+    .pg-btn-outline {
+      display:inline-flex; align-items:center; gap:.4rem;
+      padding:.65rem 1.4rem; background:transparent;
+      color:var(--pg-text); border:1px solid var(--pg-border); border-radius:8px;
+      font-weight:600; font-size:.9rem; cursor:pointer; text-decoration:none;
+      font-family:'Inter',sans-serif; transition:all var(--pg-trans);
+    }
+    .pg-btn-outline:hover { border-color:var(--pg-gold); color:var(--pg-gold); }
+    .pg-btn-wa {
+      display:inline-flex; align-items:center; gap:.4rem;
+      padding:.65rem 1.4rem; background:linear-gradient(135deg,#25d366,#128c7e);
+      color:#fff; border:none; border-radius:8px; font-weight:700;
+      font-size:.9rem; cursor:pointer; text-decoration:none; font-family:'Inter',sans-serif;
+      transition:all var(--pg-trans);
+    }
+    .pg-btn-wa:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(37,211,102,.3); }
+
+    /* ---- RESPONSIVE ---- */
+    @media(max-width:768px){
+      .pg-hero { padding:3.5rem 0 2.5rem; }
+      .pg-stats { padding:.9rem 1.2rem; gap:.7rem; }
+      .pg-filter-inner { flex-wrap:wrap; gap:.6rem; }
+      .pg-search { width:150px; }
+      .pg-search:focus { width:170px; }
+      .pg-view-modes { display:none; }
+      .pg-grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1.1rem; }
+      .pg-lb-box { max-height:95vh; }
+      .pg-lb-head { flex-direction:column; gap:.6rem; padding:1rem; }
+      .pg-lb-right { align-self:flex-end; }
+      .pg-lb-desc { display:none; }
+      .pg-lb-img-area { max-height:42vh; }
+      .pg-cta-btns { flex-direction:column; align-items:center; }
+      .pg-group-line { display:none; }
+    }
+    @media(max-width:480px){
+      .pg-grid { grid-template-columns:repeat(2,1fr); gap:.8rem; }
+      .pg-card-desc { display:none; }
+      .pg-stat-div { display:none; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Premium Loader Screen -->
-  <div id="site-loader" style="position: fixed; inset: 0; background: #051a14; z-index: 99999; display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease, visibility 0.4s ease;">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
-      <div style="width: 50px; height: 50px; border: 3px solid rgba(212,175,55,0.15); border-top-color: #D4AF37; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-      <div style="font-family: 'Playfair Display', serif; color: #D4AF37; letter-spacing: 0.15em; font-size: 1.3rem; font-weight: 700;">GIFTING NEEDS</div>
+  <!-- Loader -->
+  <div id="site-loader" style="position:fixed;inset:0;background:#051a14;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
+      <div style="width:50px;height:50px;border:3px solid rgba(212,175,55,.15);border-top-color:#D4AF37;border-radius:50%;animation:spin 1s linear infinite;"></div>
+      <div style="font-family:'Playfair Display',serif;color:#D4AF37;letter-spacing:.15em;font-size:1.3rem;font-weight:700;">GIFTING NEEDS</div>
     </div>
   </div>
-  <style>
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
-  <!-- ============================================================
-       NAVBAR
-       ============================================================ -->
+  <!-- NAVBAR -->
   <header class="navbar scrolled" id="main-header">
     <div class="container navbar-container">
       <a href="index.html" class="nav-logo" id="header-logo-link">
-        <img class="logo-img-tag" src="uploads/gifting_needs_logo_dark.png" alt="Gifting Needs" style="height: 56px; max-height: 56px; width: auto; object-fit: contain; display: block;">
+        <img class="logo-img-tag" src="uploads/gifting_needs_logo_dark.png" alt="Gifting Needs" style="height:56px;max-height:56px;width:auto;object-fit:contain;display:block;">
       </a>
-
       <nav class="nav-links" id="main-navigation">
-        <a href="index.html" class="nav-link " id="nav-home">Home</a>
-        <a href="products.html" class="nav-link " id="nav-products">Products</a>
+        <a href="index.html" class="nav-link" id="nav-home">Home</a>
+        <a href="products.html" class="nav-link" id="nav-products">Products</a>
         <a href="posters.html" class="nav-link active" id="nav-posters">Posters</a>
-        <a href="solutions.html" class="nav-link " id="nav-solutions">Custom Kits</a>
-        <a href="portfolio.html" class="nav-link " id="nav-portfolio">Portfolio</a>
-        <a href="about.html" class="nav-link " id="nav-about">About Us</a>
-        <a href="contact.html" class="nav-link " id="nav-contact">Contact</a>
+        <a href="solutions.html" class="nav-link" id="nav-solutions">Custom Kits</a>
+        <a href="portfolio.html" class="nav-link" id="nav-portfolio">Portfolio</a>
+        <a href="about.html" class="nav-link" id="nav-about">About Us</a>
+        <a href="contact.html" class="nav-link" id="nav-contact">Contact</a>
       </nav>
-
       <div class="nav-actions">
-        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Light/Dark Theme"></button>
+        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme"></button>
         <a href="solutions.html" class="btn btn-outline" id="nav-cta-btn">Build A Kit</a>
-        <button class="menu-btn" id="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
-          <span></span>
-          <span></span>
-          <span></span>
+        <button class="menu-btn" id="mobile-menu-toggle" aria-label="Toggle Menu">
+          <span></span><span></span><span></span>
         </button>
       </div>
     </div>
   </header>
 
   <!-- ============================================================
-       BLANK CONTENT AREA
+       POSTER GALLERY PAGE
        ============================================================ -->
-  <main style="min-height: calc(100vh - 300px); margin-top: 80px;">
-  </main>
+  <div class="pg-wrap" style="margin-top:80px;">
 
-  <!-- ============================================================
-       FOOTER
-       ============================================================ -->
+    <!-- HERO -->
+    <section class="pg-hero">
+      <div class="pg-hero-bg"></div>
+      <div class="pg-hero-inner">
+        <div class="pg-badge">🎁 Premium Corporate Gifting Solutions</div>
+        <h1 class="pg-title">Our <span class="gold">Posters</span> Categories</h1>
+        <p class="pg-subtitle">Explore 46+ curated gift categories — from luxury hampers to tech gadgets, all with custom branding &amp; pan-India delivery.</p>
+        <div class="pg-stats">
+          <div class="pg-stat"><span class="pg-stat-val">500+</span><span class="pg-stat-lbl">Products</span></div>
+          <div class="pg-stat-div"></div>
+          <div class="pg-stat"><span class="pg-stat-val">1000+</span><span class="pg-stat-lbl">Happy Clients</span></div>
+          <div class="pg-stat-div"></div>
+          <div class="pg-stat"><span class="pg-stat-val">100%</span><span class="pg-stat-lbl">Custom Branding</span></div>
+          <div class="pg-stat-div"></div>
+          <div class="pg-stat"><span class="pg-stat-val">Pan India</span><span class="pg-stat-lbl">Delivery</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTER BAR -->
+    <div class="pg-filter-bar" id="pg-filter-bar">
+      <div class="pg-filter-inner">
+        <div class="pg-search-wrap">
+          <svg class="pg-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" class="pg-search" id="pg-search" placeholder="Search products..." aria-label="Search products">
+          <button class="pg-search-clear" id="pg-search-clear" aria-label="Clear">✕</button>
+        </div>
+        <div class="pg-tabs-scroll">
+          <div class="pg-tabs" id="pg-tabs"></div>
+        </div>
+        <div class="pg-view-modes">
+          <button class="pg-view-btn active" id="pg-view-grid" title="Grid view">⊞</button>
+          <button class="pg-view-btn" id="pg-view-compact" title="Compact view">⊟</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS INFO -->
+    <div class="pg-container">
+      <div class="pg-results-info" id="pg-results-info"></div>
+
+      <!-- GALLERY -->
+      <div id="pg-gallery"></div>
+    </div>
+
+    <!-- CTA -->
+    <section class="pg-cta">
+      <div class="pg-cta-inner">
+        <h2 class="pg-cta-title">Ready to Gift with Impact?</h2>
+        <p class="pg-cta-sub">Get a custom catalogue, pricing and branding samples — bulk orders 100 to 10,000+ units.</p>
+        <div class="pg-cta-btns">
+          <a href="tel:+916361054099" class="pg-btn-gold">📞 +91 63610 54099</a>
+          <a href="mailto:sales@giftingneeds.in" class="pg-btn-outline">✉️ sales@giftingneeds.in</a>
+          <a href="https://wa.me/916361054099" target="_blank" rel="noopener" class="pg-btn-wa">💬 WhatsApp Us</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div id="pg-lightbox" style="display:none;" role="dialog" aria-modal="true" aria-label="Product poster viewer">
+    <div class="pg-lb-overlay" id="pg-lb-overlay">
+      <div class="pg-lb-box">
+        <div class="pg-lb-head">
+          <div class="pg-lb-meta">
+            <span class="pg-lb-emoji" id="lb-emoji"></span>
+            <div>
+              <h2 class="pg-lb-name" id="lb-name"></h2>
+              <p class="pg-lb-desc" id="lb-desc"></p>
+            </div>
+          </div>
+          <div class="pg-lb-right">
+            <span class="pg-lb-counter" id="lb-counter"></span>
+            <button class="pg-lb-close" id="lb-close" aria-label="Close">✕</button>
+          </div>
+        </div>
+        <div class="pg-lb-img-area">
+          <button class="pg-lb-nav pg-lb-prev" id="lb-prev" aria-label="Previous">‹</button>
+          <div class="pg-lb-img-wrap"><img id="lb-img" class="pg-lb-img" src="" alt="" draggable="false"></div>
+          <button class="pg-lb-nav pg-lb-next" id="lb-next" aria-label="Next">›</button>
+        </div>
+        <div class="pg-lb-thumbs" id="lb-thumbs"></div>
+        <div class="pg-lb-foot" id="lb-foot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/api.js?v=1.1"></script>
+  <script src="js/main.js?v=1.1"></script>
+  <script>
+  // ============================================================
+  // POSTER GALLERY DATA & ENGINE
+  // ============================================================
+  const GROUPS = [
+    {id:'gift-hampers',   label:'Gift Hampers',            icon:'🎁', color:'#d4af37'},
+    {id:'drinkware',      label:'Drinkware & Lifestyle',   icon:'☕', color:'#06b6d4'},
+    {id:'apparel-bags',   label:'Apparel & Bags',          icon:'👕', color:'#10b981'},
+    {id:'tech-gadgets',   label:'Tech & Gadgets',          icon:'🔋', color:'#6366f1'},
+    {id:'stationery',     label:'Stationery & Awards',     icon:'🏆', color:'#f59e0b'},
+    {id:'home-eco',       label:'Home, Eco & Wellness',    icon:'🌱', color:'#84cc16'},
+    {id:'festive',        label:'Festive & Seasonal',      icon:'🪔', color:'#ef4444'},
+    {id:'branding',       label:'Branding & Customisation',icon:'🎨', color:'#ec4899'},
+    {id:'corporate-programs', label:'Corporate Programs',  icon:'🌟', color:'#8b5cf6'},
+  ];
+
+  const CATEGORIES = [
+    {id:'chocolate-hampers', name:'Premium Chocolate Hampers', icon:'🍫', group:'gift-hampers', description:'Indulgent chocolate collections & gourmet gift boxes. Ferrero Rocher, luxury assortments and custom branded hampers.', tags:['Chocolate','Hampers','Gourmet','Festive'], images:['WhatsApp Image 2026-07-28 at 5.30.12 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM (1).jpeg']},
+    {id:'dry-fruit-hampers', name:'Dry Fruit Hampers', icon:'🥜', group:'gift-hampers', description:'Premium dry fruits, nuts & assorted hampers in elegant custom-branded packaging.', tags:['Dry Fruits','Nuts','Hampers','Health'], images:['WhatsApp Image 2026-07-28 at 5.30.12 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg']},
+    {id:'luxury-hampers', name:'Luxury Gift Hampers', icon:'🎁', group:'gift-hampers', description:'Curated luxury hampers combining premium products, custom branding and elegant packaging.', tags:['Luxury','Hampers','Premium','Corporate'], images:['WhatsApp Image 2026-07-28 at 5.30.13 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM (2).jpeg']},
+    {id:'custom-gift-boxes', name:'Custom Gift Boxes', icon:'🧺', group:'gift-hampers', description:'Bespoke gift boxes tailored to your brand — from single items to complete premium collections.', tags:['Custom','Gift Box','Packaging','Premium'], images:['WhatsApp Image 2026-07-28 at 5.30.14 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM.jpeg']},
+    {id:'copper-drinkware', name:'Copper Bottles & Drinkware', icon:'☕', group:'drinkware', description:'Artisan copper bottles, jugs and drinkware sets — Ayurvedic wellness gifts with premium customisation.', tags:['Copper','Bottles','Drinkware','Wellness'], images:['WhatsApp Image 2026-07-28 at 5.30.16 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.16 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.16 PM (2).jpeg']},
+    {id:'vacuum-bottles', name:'Vacuum Bottles & Flasks', icon:'🥤', group:'drinkware', description:'Double-walled stainless steel vacuum flasks and insulated bottles with logo engraving.', tags:['Flask','Vacuum','Insulated','Bottles'], images:['WhatsApp Image 2026-07-28 at 5.30.16 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.16 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.11 PM (1).jpeg']},
+    {id:'laptop-bags', name:'Laptop Bags & Backpacks', icon:'🧳', group:'apparel-bags', description:'Professional laptop bags, backpacks and business briefcases with custom logo embroidery.', tags:['Laptop Bag','Backpack','Business','Travel'], images:['WhatsApp Image 2026-07-28 at 5.30.11 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.11 PM (2).jpeg']},
+    {id:'polo-tshirts', name:'Polo T-Shirts & Corporate Apparel', icon:'👕', group:'apparel-bags', description:'Premium polo tees, formal wear and corporate apparel with embroidery and screen printing.', tags:['Polo','T-Shirt','Apparel','Uniform'], images:['WhatsApp Image 2026-07-28 at 5.30.17 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.17 PM (1).jpeg']},
+    {id:'hoodies-jackets', name:'Hoodies & Jackets', icon:'🧥', group:'apparel-bags', description:'Custom branded hoodies, windcheaters and corporate jackets — perfect for team gifting.', tags:['Hoodie','Jacket','Apparel','Corporate'], images:['WhatsApp Image 2026-07-28 at 5.30.17 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.18 PM.jpeg']},
+    {id:'caps-uniforms', name:'Caps & Uniforms', icon:'🧢', group:'apparel-bags', description:'Corporate caps, sports hats and full uniform solutions with embroidery and logo print.', tags:['Caps','Hats','Uniform','Branding'], images:['WhatsApp Image 2026-07-28 at 5.30.18 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.17 PM.jpeg']},
+    {id:'smart-watches', name:'Smart Watches', icon:'⌚', group:'tech-gadgets', description:'Feature-rich smartwatches with logo branding options — fitness tracking, notifications and premium looks.', tags:['Smart Watch','Wearable','Tech','Gadgets'], images:['WhatsApp Image 2026-07-28 at 5.30.11 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.15 PM.jpeg']},
+    {id:'earbuds-speakers', name:'Earbuds & Bluetooth Speakers', icon:'🎧', group:'tech-gadgets', description:'TWS earbuds, Bluetooth speakers and noise-cancelling headphones with custom branding.', tags:['Earbuds','Speakers','Bluetooth','Audio'], images:['WhatsApp Image 2026-07-28 at 5.30.11 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.15 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.15 PM (1).jpeg']},
+    {id:'powerbanks-gadgets', name:'Power Banks & Gadgets', icon:'🔋', group:'tech-gadgets', description:'Premium power banks, USB hubs, wireless chargers and smart accessories with logo printing.', tags:['Power Bank','Charger','USB','Gadgets'], images:['WhatsApp Image 2026-07-28 at 5.30.11 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.15 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.15 PM (2).jpeg']},
+    {id:'diaries-gift-sets', name:'Diaries & Executive Gift Sets', icon:'📔', group:'stationery', description:'Premium leather diaries, executive notebooks and stationery sets — ideal for corporate gifting.', tags:['Diary','Notebook','Stationery','Executive'], images:['WhatsApp Image 2026-07-28 at 5.30.19 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.19 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.19 PM (2).jpeg']},
+    {id:'premium-pens', name:'Premium Pens', icon:'🖊️', group:'stationery', description:'Luxury ballpoint pens, metal pens and pen sets with laser engraving for a personal touch.', tags:['Pens','Stationery','Laser Engraved','Premium'], images:['WhatsApp Image 2026-07-28 at 5.30.19 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.19 PM.jpeg']},
+    {id:'awards-trophies', name:'Awards, Trophies & Mementos', icon:'🏆', group:'stationery', description:'Custom trophies, acrylic awards, crystal mementos and recognition gifts for every achievement.', tags:['Trophy','Award','Memento','Recognition'], images:['WhatsApp Image 2026-07-28 at 5.30.19 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.19 PM.jpeg']},
+    {id:'home-appliances', name:'Home & Kitchen Appliances', icon:'🏠', group:'home-eco', description:'Smart home devices, kitchen appliances and lifestyle products — premium gifting solutions.', tags:['Home','Kitchen','Appliances','Lifestyle'], images:['WhatsApp Image 2026-07-28 at 5.30.21 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.21 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.21 PM (2).jpeg']},
+    {id:'eco-friendly', name:'Eco-Friendly Gift Sets', icon:'🌱', group:'home-eco', description:'Sustainable, eco-conscious gift sets made from natural & recycled materials with custom branding.', tags:['Eco','Sustainable','Green','Natural'], images:['WhatsApp Image 2026-07-28 at 5.30.21 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.21 PM (3).jpeg']},
+    {id:'brass-diwali', name:'Brass Articles & Diwali Gifts', icon:'🪔', group:'home-eco', description:'Traditional brass diyas, lamps, and artisan items — ideal for Diwali & premium gifting.', tags:['Brass','Diwali','Traditional','Artisan'], images:['WhatsApp Image 2026-07-28 at 5.30.21 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM (2).jpeg']},
+    {id:'diyas-candles', name:'Diyas, Candles & Festive Decor', icon:'🕯️', group:'festive', description:'Handcrafted diyas, aromatic candles and decorative festive items for gifting and decor.', tags:['Diya','Candle','Decor','Festive'], images:['WhatsApp Image 2026-07-28 at 5.30.12 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM (2).jpeg']},
+    {id:'diwali-gifting', name:'Diwali Corporate Gifting', icon:'🎉', group:'festive', description:'Celebrate Diwali with premium corporate hampers — diyas, sweets, dry fruits and branded gift combos.', tags:['Diwali','Festive','Corporate','Hampers'], images:['WhatsApp Image 2026-07-28 at 5.30.12 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.11 PM.jpeg']},
+    {id:'christmas-gifts', name:'Christmas Gifts', icon:'🎄', group:'festive', description:'Joyful Christmas corporate gifts — festive hampers, branded products and holiday gift sets.', tags:['Christmas','Festive','Gifts','Holiday'], images:['WhatsApp Image 2026-07-28 at 5.30.20 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg']},
+    {id:'new-year-gifts', name:'New Year Gifts', icon:'🎊', group:'festive', description:'Celebrate the new year with thoughtful corporate gifts, calendars, planners and premium combos.', tags:['New Year','Corporate','Gifts','Planner'], images:['WhatsApp Image 2026-07-28 at 5.30.20 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM (1).jpeg']},
+    {id:'logo-printing', name:'Logo Printing', icon:'🖨️', group:'branding', description:'High-quality logo printing on any corporate gift — bottles, bags, stationery and more.', tags:['Logo','Printing','Branding','Custom'], images:['WhatsApp Image 2026-07-28 at 5.30.22 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.22 PM (1).jpeg']},
+    {id:'uv-printing', name:'UV Printing', icon:'🎯', group:'branding', description:'Vibrant, photo-quality UV printing on hard surfaces — mugs, bottles, plaques and more.', tags:['UV Print','Photo Quality','Branding','Surface Print'], images:['WhatsApp Image 2026-07-28 at 5.30.22 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.22 PM.jpeg']},
+    {id:'laser-engraving', name:'Laser Engraving', icon:'✒️', group:'branding', description:'Precision laser engraving on metal, glass, wood and leather for a premium lasting finish.', tags:['Laser','Engraving','Metal','Premium'], images:['WhatsApp Image 2026-07-28 at 5.30.22 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.19 PM (1).jpeg']},
+    {id:'embroidery', name:'Embroidery', icon:'🧵', group:'branding', description:'High-quality embroidery on apparel, bags and caps — 3D stitched logos with lasting durability.', tags:['Embroidery','Apparel','Logo','Stitching'], images:['WhatsApp Image 2026-07-28 at 5.30.17 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.18 PM (1).jpeg']},
+    {id:'screen-printing', name:'Screen Printing', icon:'🖌️', group:'branding', description:'Cost-effective, bold screen printing for bulk apparel, bags and promotional merchandise.', tags:['Screen Print','Bulk','Apparel','T-Shirts'], images:['WhatsApp Image 2026-07-28 at 5.30.17 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.17 PM (1).jpeg']},
+    {id:'digital-printing', name:'Digital Printing', icon:'🖨️', group:'branding', description:'Full-colour digital printing for short runs, photo gifts and personalised corporate items.', tags:['Digital Print','Full Colour','Photo','Custom'], images:['WhatsApp Image 2026-07-28 at 5.30.22 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.22 PM (2).jpeg']},
+    {id:'name-personalisation', name:'Name Personalisation', icon:'🏷️', group:'branding', description:'Personalise every gift with individual names, initials and custom messages.', tags:['Personalise','Name','Initials','Custom'], images:['WhatsApp Image 2026-07-28 at 5.30.22 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg']},
+    {id:'premium-packaging', name:'Premium Gift Packaging', icon:'🎁', group:'branding', description:'Luxury gift boxes, ribbon wrapping, tissue paper and premium packaging for every occasion.', tags:['Packaging','Gift Box','Ribbon','Luxury'], images:['WhatsApp Image 2026-07-28 at 5.30.23 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM (1).jpeg']},
+    {id:'greeting-cards', name:'Greeting Cards', icon:'💌', group:'branding', description:'Custom-designed greeting cards to accompany your corporate gifts — personalised messages for every occasion.', tags:['Greeting Card','Custom','Message','Occasion'], images:['WhatsApp Image 2026-07-28 at 5.30.23 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg']},
+    {id:'thank-you-cards', name:'Thank You Cards', icon:'🙏', group:'branding', description:'Elegant thank-you cards for post-event gifting, client appreciation and employee recognition.', tags:['Thank You','Cards','Appreciation','Corporate'], images:['WhatsApp Image 2026-07-28 at 5.30.23 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM (1).jpeg']},
+    {id:'qr-code-branding', name:'QR Code Branding', icon:'📱', group:'branding', description:'Embed QR codes on gifts linking to your website, offer pages or personalised landing experiences.', tags:['QR Code','Digital','Tech','Branding'], images:['WhatsApp Image 2026-07-28 at 5.30.11 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.22 PM.jpeg']},
+    {id:'employee-rewards', name:'Employee Rewards', icon:'🎁', group:'corporate-programs', description:'Meaningful employee appreciation gifts — milestone rewards, recognition kits and morale boosters.', tags:['Employee','Rewards','Appreciation','HR'], images:['WhatsApp Image 2026-07-28 at 5.30.25 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.25 PM (1).jpeg']},
+    {id:'long-service-awards', name:'Long Service Awards', icon:'🏆', group:'corporate-programs', description:'Premium long service recognition gifts, custom trophies and tenure milestone awards.', tags:['Service Award','Trophy','Milestone','Recognition'], images:['WhatsApp Image 2026-07-28 at 5.30.19 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.25 PM.jpeg']},
+    {id:'client-appreciation', name:'Client Appreciation Gifts', icon:'🤝', group:'corporate-programs', description:'Thoughtful client gifts to build lasting relationships — premium hampers and branded merchandise.', tags:['Client','Appreciation','Relationship','Premium'], images:['WhatsApp Image 2026-07-28 at 5.30.24 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM (2).jpeg']},
+    {id:'dealer-incentive', name:'Dealer Incentive Programs', icon:'🏅', group:'corporate-programs', description:'Motivating dealer and channel partner incentive gifts to drive sales and loyalty.', tags:['Dealer','Incentive','Channel Partner','Loyalty'], images:['WhatsApp Image 2026-07-28 at 5.30.24 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.24 PM (2).jpeg']},
+    {id:'sales-promotion', name:'Sales Promotion Schemes', icon:'🎯', group:'corporate-programs', description:'Exciting sales promotion gift schemes to motivate teams, retailers and distributors.', tags:['Sales','Promotion','Scheme','Incentive'], images:['WhatsApp Image 2026-07-28 at 5.30.26 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.24 PM.jpeg']},
+    {id:'product-launch', name:'Product Launch Gifts', icon:'🚀', group:'corporate-programs', description:'Memorable product launch gifts that create buzz and reinforce your brand.', tags:['Launch','Events','Brand','Promotional'], images:['WhatsApp Image 2026-07-28 at 5.30.26 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.11 PM.jpeg']},
+    {id:'corporate-events', name:'Corporate Events & Conferences', icon:'🎤', group:'corporate-programs', description:'Curated gift sets for corporate events, summits, conferences and award nights.', tags:['Events','Conference','Summit','Corporate'], images:['WhatsApp Image 2026-07-28 at 5.30.26 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.25 PM (1).jpeg']},
+    {id:'welcome-kits', name:'Welcome Kits & Joining Kits', icon:'🎒', group:'corporate-programs', description:'Impressive employee onboarding kits with branded stationery, drinkware, tech and more.', tags:['Welcome Kit','Onboarding','Joining','Employee'], images:['WhatsApp Image 2026-07-28 at 5.30.27 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.27 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.11 PM (1).jpeg']},
+    {id:'executive-gifts', name:'Executive Gifts', icon:'💼', group:'corporate-programs', description:'Ultra-premium executive gift sets for CXOs, VVIPs and special occasions.', tags:['Executive','VVIP','Premium','Corporate'], images:['WhatsApp Image 2026-07-28 at 5.30.27 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.27 PM (3).jpeg']},
+  ];
+
+  // ---- State ----
+  let activeGroup = 'all';
+  let searchTerm = '';
+  let viewMode = 'grid';
+  let lightboxCat = null;
+  let lightboxIdx = 0;
+
+  // ---- Encode image path ----
+  function imgPath(name) { return 'products/' + encodeURIComponent(name); }
+
+  // ---- Filter ----
+  function getFiltered() {
+    return CATEGORIES.filter(cat => {
+      const g = activeGroup === 'all' || cat.group === activeGroup;
+      const q = searchTerm.toLowerCase();
+      const s = !q || cat.name.toLowerCase().includes(q) ||
+        cat.description.toLowerCase().includes(q) ||
+        cat.tags.some(t => t.toLowerCase().includes(q));
+      return g && s;
+    });
+  }
+
+  // ---- Build Tabs ----
+  function buildTabs() {
+    const wrap = document.getElementById('pg-tabs');
+    let html = `<button class="pg-tab active" data-group="all">🎯 <span>All Categories</span> <span class="pg-tab-count">${CATEGORIES.length}</span></button>`;
+    GROUPS.forEach(g => {
+      const cnt = CATEGORIES.filter(c => c.group === g.id).length;
+      html += `<button class="pg-tab" data-group="${g.id}" style="--tc:${g.color}">${g.icon} <span>${g.label}</span> <span class="pg-tab-count">${cnt}</span></button>`;
+    });
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('.pg-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeGroup = btn.dataset.group;
+        wrap.querySelectorAll('.pg-tab').forEach(b => {
+          b.classList.remove('active');
+          b.style.removeProperty('background');
+          b.style.removeProperty('border-color');
+          b.style.removeProperty('color');
+        });
+        btn.classList.add('active');
+        const g = GROUPS.find(x => x.id === activeGroup);
+        if (g) {
+          btn.style.background = g.color;
+          btn.style.borderColor = g.color;
+          btn.style.color = '#0a0e17';
+        }
+        renderGallery();
+      });
+    });
+  }
+
+  // ---- Build Card ----
+  function buildCard(cat) {
+    const g = GROUPS.find(x => x.id === cat.group);
+    const color = g ? g.color : '#d4af37';
+    const mainImg = imgPath(cat.images[0]);
+    const tags = cat.tags.slice(0, 3).map(t => `<span class="pg-card-tag">${t}</span>`).join('');
+    const countBadge = cat.images.length > 1 ? `<span class="pg-img-count">${cat.images.length} images</span>` : '';
+
+    const div = document.createElement('div');
+    div.className = 'pg-card';
+    div.style.setProperty('--card-accent', color);
+    div.setAttribute('tabindex', '0');
+    div.setAttribute('role', 'button');
+    div.setAttribute('aria-label', `View ${cat.name}`);
+    div.innerHTML = `
+      <div class="pg-card-img-wrap">
+        <img class="pg-card-img" src="${mainImg}" alt="${cat.name}" loading="lazy" draggable="false">
+        <div class="pg-card-skeleton"></div>
+        <div class="pg-card-overlay">
+          <div class="pg-card-overlay-inner">
+            <div class="pg-zoom-ring">🔍</div>
+            <span class="pg-overlay-lbl">View Posters</span>
+            ${countBadge}
+          </div>
+        </div>
+        <div class="pg-group-dot" style="background:${color}">${g ? g.icon : '🎁'}</div>
+      </div>
+      <div class="pg-card-body">
+        <div class="pg-card-icon-row">
+          <span class="pg-card-emoji">${cat.icon}</span>
+          <h3 class="pg-card-name">${cat.name}</h3>
+        </div>
+        <p class="pg-card-desc">${cat.description}</p>
+        <div class="pg-card-tags">${tags}</div>
+      </div>`;
+
+    const img = div.querySelector('.pg-card-img');
+    const skel = div.querySelector('.pg-card-skeleton');
+    img.addEventListener('load', () => { img.classList.add('loaded'); skel.classList.add('hide'); });
+    img.addEventListener('error', () => { skel.classList.add('hide'); });
+
+    div.addEventListener('click', () => openLightbox(cat, 0));
+    div.addEventListener('keydown', e => { if (e.key === 'Enter') openLightbox(cat, 0); });
+    return div;
+  }
+
+  // ---- Render Gallery ----
+  function renderGallery() {
+    const filtered = getFiltered();
+    const gallery = document.getElementById('pg-gallery');
+    const info = document.getElementById('pg-results-info');
+    gallery.innerHTML = '';
+
+    // Update results info
+    if (searchTerm) {
+      info.innerHTML = `<strong>${filtered.length}</strong> result${filtered.length !== 1 ? 's' : ''} for "<strong>${searchTerm}</strong>"`;
+    } else if (activeGroup !== 'all') {
+      const g = GROUPS.find(x => x.id === activeGroup);
+      info.innerHTML = `Showing <strong>${filtered.length}</strong> categories in <strong>${g ? g.label : ''}</strong>`;
+    } else { info.innerHTML = ''; }
+
+    if (filtered.length === 0) {
+      gallery.innerHTML = `<div class="pg-empty"><div class="pg-empty-icon">🔍</div><h3>No results found</h3><p>Try a different search term or select another category.</p><button class="pg-empty-btn" onclick="clearFilters()">Clear Filters</button></div>`;
+      return;
+    }
+
+    const gridClass = 'pg-grid' + (viewMode === 'compact' ? ' compact' : '');
+
+    if (activeGroup !== 'all' || searchTerm) {
+      const grid = document.createElement('div');
+      grid.className = gridClass;
+      grid.style.paddingTop = '1.5rem';
+      filtered.forEach(cat => grid.appendChild(buildCard(cat)));
+      gallery.appendChild(grid);
+    } else {
+      GROUPS.forEach(group => {
+        const items = filtered.filter(c => c.group === group.id);
+        if (!items.length) return;
+        const section = document.createElement('section');
+        section.className = 'pg-group-section';
+        section.innerHTML = `
+          <div class="pg-group-header">
+            <div class="pg-group-icon-box" style="background:${group.color}22;border-color:${group.color}44">
+              <span>${group.icon}</span>
+            </div>
+            <div>
+              <h2 class="pg-group-title" style="color:${group.color}">${group.label}</h2>
+              <p class="pg-group-count">${items.length} categories</p>
+            </div>
+            <div class="pg-group-line" style="background:linear-gradient(90deg,${group.color}55,transparent)"></div>
+          </div>`;
+        const grid = document.createElement('div');
+        grid.className = gridClass;
+        items.forEach(cat => grid.appendChild(buildCard(cat)));
+        section.appendChild(grid);
+        gallery.appendChild(section);
+      });
+    }
+  }
+
+  function clearFilters() { searchTerm = ''; activeGroup = 'all'; document.getElementById('pg-search').value = ''; document.getElementById('pg-search-clear').classList.remove('show'); document.querySelectorAll('.pg-tab').forEach((b,i)=>b.classList.toggle('active',i===0)); renderGallery(); }
+
+  // ---- Lightbox ----
+  function openLightbox(cat, idx) {
+    lightboxCat = cat; lightboxIdx = idx;
+    document.getElementById('pg-lightbox').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    renderLightbox();
+  }
+  function closeLightbox() {
+    document.getElementById('pg-lightbox').style.display = 'none';
+    document.body.style.overflow = '';
+    lightboxCat = null;
+  }
+  function renderLightbox() {
+    if (!lightboxCat) return;
+    const cat = lightboxCat; const idx = lightboxIdx;
+    document.getElementById('lb-emoji').textContent = cat.icon;
+    document.getElementById('lb-name').textContent = cat.name;
+    document.getElementById('lb-desc').textContent = cat.description;
+    document.getElementById('lb-counter').textContent = `${idx+1} / ${cat.images.length}`;
+
+    const lbImg = document.getElementById('lb-img');
+    lbImg.style.opacity = '0';
+    lbImg.src = imgPath(cat.images[idx]);
+    lbImg.alt = cat.name;
+    lbImg.onload = () => { lbImg.style.opacity = '1'; };
+
+    // Nav visibility
+    const hasMult = cat.images.length > 1;
+    document.getElementById('lb-prev').style.display = hasMult ? 'flex' : 'none';
+    document.getElementById('lb-next').style.display = hasMult ? 'flex' : 'none';
+
+    // Thumbnails
+    const thumbs = document.getElementById('lb-thumbs');
+    thumbs.style.display = hasMult ? 'flex' : 'none';
+    if (hasMult) {
+      thumbs.innerHTML = cat.images.map((img, i) =>
+        `<button class="pg-lb-thumb${i===idx?' active':''}" data-i="${i}" aria-label="Image ${i+1}"><img src="${imgPath(img)}" alt="" draggable="false"></button>`
+      ).join('');
+      thumbs.querySelectorAll('.pg-lb-thumb').forEach(btn => {
+        btn.addEventListener('click', () => { lightboxIdx = +btn.dataset.i; renderLightbox(); });
+      });
+    }
+
+    // Tags + CTA
+    document.getElementById('lb-foot').innerHTML =
+      cat.tags.map(t => `<span class="pg-lb-tag">#${t}</span>`).join('') +
+      `<a href="tel:+916361054099" class="pg-lb-cta">📞 Enquire Now</a>`;
+  }
+
+  // ---- Init ----
+  document.addEventListener('DOMContentLoaded', () => {
+    buildTabs();
+    renderGallery();
+
+    // Search
+    const searchEl = document.getElementById('pg-search');
+    const clearBtn = document.getElementById('pg-search-clear');
+    searchEl.addEventListener('input', () => {
+      searchTerm = searchEl.value;
+      clearBtn.classList.toggle('show', !!searchTerm);
+      renderGallery();
+    });
+    clearBtn.addEventListener('click', () => { searchTerm = ''; searchEl.value = ''; clearBtn.classList.remove('show'); renderGallery(); });
+
+    // View mode
+    document.getElementById('pg-view-grid').addEventListener('click', () => {
+      viewMode = 'grid';
+      document.getElementById('pg-view-grid').classList.add('active');
+      document.getElementById('pg-view-compact').classList.remove('active');
+      renderGallery();
+    });
+    document.getElementById('pg-view-compact').addEventListener('click', () => {
+      viewMode = 'compact';
+      document.getElementById('pg-view-compact').classList.add('active');
+      document.getElementById('pg-view-grid').classList.remove('active');
+      renderGallery();
+    });
+
+    // Lightbox controls
+    document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    document.getElementById('pg-lb-overlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeLightbox(); });
+    document.getElementById('lb-prev').addEventListener('click', () => { lightboxIdx = (lightboxIdx - 1 + lightboxCat.images.length) % lightboxCat.images.length; renderLightbox(); });
+    document.getElementById('lb-next').addEventListener('click', () => { lightboxIdx = (lightboxIdx + 1) % lightboxCat.images.length; renderLightbox(); });
+    document.addEventListener('keydown', e => {
+      if (!lightboxCat) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') { lightboxIdx = (lightboxIdx - 1 + lightboxCat.images.length) % lightboxCat.images.length; renderLightbox(); }
+      if (e.key === 'ArrowRight') { lightboxIdx = (lightboxIdx + 1) % lightboxCat.images.length; renderLightbox(); }
+    });
+  });
+  </script>
+
+  <!-- FOOTER -->
   <footer class="footer" id="main-footer">
     <div class="container">
       <div class="footer-top">
         <div>
-          <div class="nav-logo" style="margin-bottom: 1rem;">
-            <img class="logo-img-tag" src="uploads/gifting_needs_logo_light.png" alt="Gifting Needs" style="height: 56px; max-height: 56px; width: auto; object-fit: contain; display: block;">
+          <div class="nav-logo" style="margin-bottom:1rem;">
+            <img class="logo-img-tag" src="uploads/gifting_needs_logo_light.png" alt="Gifting Needs" style="height:56px;max-height:56px;width:auto;object-fit:contain;display:block;">
           </div>
           <p class="footer-logo-desc">Crafting premium, sustainable, and highly personalized corporate hampers, welcome onboarding packs, and custom tech utilities since 2018.</p>
           <div class="footer-socials">
@@ -77,7 +883,6 @@
             <a href="#" class="social-icon-btn">IG</a>
           </div>
         </div>
-
         <div>
           <h4 class="footer-title">Our Solutions</h4>
           <ul class="footer-links-list">
@@ -88,7 +893,6 @@
             <li><a href="products.html?category=hampers" class="footer-link">Festive Hampers</a></li>
           </ul>
         </div>
-
         <div>
           <h4 class="footer-title">Quick Links</h4>
           <ul class="footer-links-list">
@@ -100,24 +904,13 @@
             <li><a href="contact.html" class="footer-link">Get a Quote</a></li>
           </ul>
         </div>
-
         <div>
           <h4 class="footer-title">Get in Touch</h4>
-          <div class="footer-contact-item">
-            <span>📍</span>
-            <span>No. 124 (Old No. 123/1), 8th Cross, 19th Main Road, Marenahalli Palya, 2nd Phase, J.P. Nagar, Bengaluru – 560078, Karnataka, India</span>
-          </div>
-          <div class="footer-contact-item">
-            <span>📧</span>
-            <span>nunulal@giftingneeds.in / sales@giftingneeds.in / info@giftingneeds.in</span>
-          </div>
-          <div class="footer-contact-item">
-            <span>📞</span>
-            <span>+91 63610 54099 / +91 86189 67417</span>
-          </div>
+          <div class="footer-contact-item"><span>📍</span><span>No. 124 (Old No. 123/1), 8th Cross, 19th Main Road, Marenahalli Palya, 2nd Phase, J.P. Nagar, Bengaluru – 560078, Karnataka, India</span></div>
+          <div class="footer-contact-item"><span>📧</span><span>nunulal@giftingneeds.in / sales@giftingneeds.in</span></div>
+          <div class="footer-contact-item"><span>📞</span><span>+91 63610 54099 / +91 86189 67417</span></div>
         </div>
       </div>
-
       <div class="footer-bottom">
         <p>&copy; 2026 NUNULAL PODDAR | Gifting Needs. All rights reserved. GSTIN: 29AAWFG9249H1ZH</p>
         <div class="footer-bottom-links">
@@ -128,23 +921,13 @@
     </div>
   </footer>
 
-  <!-- ============================================================
-       FLOATING QUICK CONTACT
-       ============================================================ -->
   <div class="floating-contact-pannel" id="float-contact-buttons">
-    <a href="https://wa.me/916361054099?text=Hi%20Gifting%20Needs,%20we%20want%20to%20inquire%20about%20corporate%20products." target="_blank" class="float-btn float-btn-whatsapp" id="whatsapp-float-btn" aria-label="Chat on WhatsApp">
-      <svg viewBox="0 0 24 24">
-        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.57 1.978 14.1 1.953 12.006 1.953c-5.437 0-9.863 4.374-9.868 9.803-.001 1.77.476 3.5 1.378 5.027L2.5 21.007l4.147-1.853zm12.39-7.147c-.285-.143-1.687-.832-1.947-.927-.26-.096-.45-.143-.637.143-.188.285-.724.927-.887 1.116-.164.188-.327.21-.612.068-.285-.143-1.206-.444-2.296-1.416-.849-.757-1.423-1.693-1.59-1.977-.167-.285-.018-.439.124-.58.128-.127.285-.332.427-.497.143-.166.19-.285.285-.475.095-.19.047-.356-.024-.497-.07-.143-.637-1.537-.872-2.106-.23-.553-.46-.477-.63-.486-.164-.008-.352-.01-.54-.01-.188 0-.495.07-.754.356-.26.285-.99.967-.99 2.361 0 1.394 1.014 2.741 1.155 2.93.14.19 1.997 3.05 4.838 4.278.675.293 1.202.468 1.612.598.678.215 1.295.185 1.783.111.544-.08 1.687-.69 1.925-1.356.238-.665.238-1.233.167-1.357-.07-.123-.26-.19-.545-.333z"/>
-      </svg>
+    <a href="https://wa.me/916361054099?text=Hi%20Gifting%20Needs,%20we%20want%20to%20inquire%20about%20corporate%20products." target="_blank" class="float-btn float-btn-whatsapp" aria-label="WhatsApp">
+      <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.57 1.978 14.1 1.953 12.006 1.953c-5.437 0-9.863 4.374-9.868 9.803-.001 1.77.476 3.5 1.378 5.027L2.5 21.007l4.147-1.853zm12.39-7.147c-.285-.143-1.687-.832-1.947-.927-.26-.096-.45-.143-.637.143-.188.285-.724.927-.887 1.116-.164.188-.327.21-.612.068-.285-.143-1.206-.444-2.296-1.416-.849-.757-1.423-1.693-1.59-1.977-.167-.285-.018-.439.124-.58.128-.127.285-.332.427-.497.143-.166.19-.285.285-.475.095-.19.047-.356-.024-.497-.07-.143-.637-1.537-.872-2.106-.23-.553-.46-.477-.63-.486-.164-.008-.352-.01-.54-.01-.188 0-.495.07-.754.356-.26.285-.99.967-.99 2.361 0 1.394 1.014 2.741 1.155 2.93.14.19 1.997 3.05 4.838 4.278.675.293 1.202.468 1.612.598.678.215 1.295.185 1.783.111.544-.08 1.687-.69 1.925-1.356.238-.665.238-1.233.167-1.357-.07-.123-.26-.19-.545-.333z"/></svg>
     </a>
-    <a href="contact.html" class="float-btn float-btn-inquiry" id="inquiry-float-btn" aria-label="Request Quote Form">
-      <svg viewBox="0 0 24 24">
-        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/>
-      </svg>
+    <a href="contact.html" class="float-btn float-btn-inquiry" aria-label="Request Quote">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
     </a>
   </div>
-
-  <script src="js/api.js?v=1.1"></script>
-  <script src="js/main.js?v=1.1"></script>
 </body>
 </html>
