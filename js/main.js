@@ -1380,27 +1380,46 @@ function initInquiryForm() {
       message
     };
 
-    try {
-      const res = await GiftingAPI.createInquiry(inquiryPayload);
-      if (res.success) {
-        // Success response
-        const formContainer = form.parentElement;
-        formContainer.innerHTML = `
-          <div style="text-align: center; padding: 3rem 1.5rem; color: var(--primary);">
-            <span style="font-size: 4rem; display: block; margin-bottom: 1.5rem;">🎉</span>
-            <h3 class="serif-font" style="font-size: 2rem; margin-bottom: 1rem;">Inquiry Submitted Successfully!</h3>
-            <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 2rem auto; font-size: 1.05rem;">
-              Thank you, <strong>${name}</strong>. Our corporate gifting design coordinator will contact you at <strong>${email}</strong> or <strong>${phone}</strong> within the next 4 working hours with a bespoke proposal.
-            </p>
-            <button class="btn btn-gold" onclick="window.location.reload()">Send Another Inquiry</button>
-          </div>
-        `;
-      } else {
-        alert("Failed to submit inquiry: " + res.message);
-      }
-    } catch (err) {
-      alert("Inquiry submission error: " + err.message);
+    const submitBtn = form.querySelector('[type="submit"]');
+    const btnLabel = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending\u2026';
     }
+
+    const { delivered, whatsapp } = await LeadDelivery.send(inquiryPayload);
+    const formContainer = form.parentElement;
+
+    if (delivered) {
+      formContainer.innerHTML = `
+        <div style="text-align: center; padding: 3rem 1.5rem; color: var(--primary);">
+          <span style="font-size: 4rem; display: block; margin-bottom: 1.5rem;">\ud83c\udf89</span>
+          <h3 class="serif-font" style="font-size: 2rem; margin-bottom: 1rem;">Enquiry received</h3>
+          <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 2rem auto; font-size: 1.05rem;">
+            Thank you, <strong>${name}</strong>. Our corporate gifting coordinator will contact you at <strong>${email}</strong> or <strong>${phone}</strong> within 4 working hours with a bespoke Diwali proposal.
+          </p>
+          <a class="btn btn-gold" href="${whatsapp}" target="_blank" rel="noopener">Reach us on WhatsApp instead</a>
+        </div>
+      `;
+      return;
+    }
+
+    // Inbox delivery unavailable — hand the enquiry to WhatsApp rather than
+    // dropping it. Every detail the visitor typed is already in the message.
+    formContainer.innerHTML = `
+      <div style="text-align: center; padding: 3rem 1.5rem;">
+        <span style="font-size: 4rem; display: block; margin-bottom: 1.5rem;">\ud83d\udcac</span>
+        <h3 class="serif-font" style="font-size: 2rem; margin-bottom: 1rem; color: var(--primary);">One tap to send</h3>
+        <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto 2rem auto; font-size: 1.05rem;">
+          Thank you, <strong>${name}</strong>. Your enquiry is ready to send \u2014 every detail is already filled in. Tap below and our team will reply within 4 working hours.
+        </p>
+        <a class="btn btn-gold" href="${whatsapp}" target="_blank" rel="noopener"
+           style="font-size: 1.05rem; padding: 0.9rem 2rem;">Send on WhatsApp</a>
+        <p style="color: var(--text-subtle); margin-top: 1.75rem; font-size: 0.92rem;">
+          Prefer to call? <a href="tel:+916361054099" style="color: var(--primary); font-weight: 700;">+91 63610 54099</a>
+        </p>
+      </div>
+    `;
   });
 }
 
