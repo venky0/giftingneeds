@@ -72,7 +72,7 @@ const GiftingAPI = (() => {
       { id: 's7', active: true, tag: "Executive Office Style", title: "Luxury Leather Accessories, Personalised", desc: "Handcrafted vegan leather laptop sleeves, cardholders, and passport wallets with precision laser-etched corporate logos. Executive gifting elevated.", image: "" },
       { id: 's8', active: true, tag: "Corporate Identity", title: "Branded Apparel That Builds Team Pride", desc: "220 GSM organic cotton polo t-shirts, caps, and winter hoodies with high-density custom embroidery. Wear your brand with pride, every day.", image: "images/products/polo_shirt.jpg" },
       { id: 's9', active: true, tag: "Corporate Recognition", title: "Awards That Inspire Peak Performance", desc: "Reward milestones with high-clarity K9 crystal 3D laser-etched trophies on mahogany wood bases. Recognition that motivates the entire team.", image: "" },
-      { id: 's10', active: true, tag: "Household Gifts", title: "Practical Gifts That Last a Lifetime", desc: "Copper kitchenware, premium customized umbrellas, and personalized wall clocks — utility gifts that your clients will display at home with pride.", image: "images/products/copper_set.jpg" }
+      { id: 's10', active: true, tag: "Household Gifts", title: "Practical Gifts That Last a Lifetime", desc: "Copper kitchenware, brass diya and puja sets, and personalized wall clocks — utility gifts that your clients will display at home with pride.", image: "images/products/copper_set.jpg" }
     ]
   };
 

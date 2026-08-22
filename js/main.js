@@ -975,7 +975,6 @@ function initProductCatalog() {
         let badgeClass = 'badge-new';
         if (product.badge === 'popular') badgeClass = 'badge-popular';
         if (product.badge === 'festive') badgeClass = 'badge-festive';
-        if (product.badge === 'monsoon') badgeClass = 'badge-monsoon';
         if (product.badge === 'cooling') badgeClass = 'badge-cooling';
         if (product.badge === 'dealer') badgeClass = 'badge-dealer';
         badgeHTML = `<span class="product-card-badge ${badgeClass}">${product.badgeText}</span>`;

@@ -2564,11 +2564,6 @@ button, input, select, textarea {
 }
 
 /* Custom B2B Badges */
-.badge-monsoon {
-  background: linear-gradient(135deg, #1d0f28 0%, #4b2c60 100%);
-  color: #FFFFFF;
-  border: 1px solid #4b2c60;
-}
 
 .badge-cooling {
   background: linear-gradient(135deg, #0f1c24 0%, #20415a 100%);
