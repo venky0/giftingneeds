@@ -2314,15 +2314,15 @@ document.addEventListener('DOMContentLoaded', function() {
       card.innerHTML = `
         <div style="position: relative; width: 100%; aspect-ratio: 3/4; background: #f5f5f5; overflow: hidden;">
           <img src="${item.coverImage}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
-          <span style="position: absolute; top: 12px; left: 12px; background: rgba(5,26,20,0.85); color: #D4AF37; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(4px);">${item.category}</span>
-          <span style="position: absolute; bottom: 12px; right: 12px; background: rgba(212,175,55,0.95); color: #051a14; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px;">📖 ${item.totalPages} Pages</span>
+          <span style="position: absolute; top: 12px; left: 12px; background: rgba(5,26,20,0.85); color: #C97B14; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(4px);">${item.category}</span>
+          <span style="position: absolute; bottom: 12px; right: 12px; background: rgba(212,175,55,0.95); color: #0D0920; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px;">📖 ${item.totalPages} Pages</span>
         </div>
         <div style="padding: 1.25rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <h3 style="font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: #1a0800; margin-bottom: 6px; line-height: 1.3;">${item.title}</h3>
             <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">${item.subtitle || 'Official Brand Catalog'}</p>
           </div>
-          <button class="btn-read-catalog" data-id="${item.id}" style="width: 100%; background: #051a14; color: #D4AF37; border: 1px solid #D4AF37; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: background 0.3s ease, color 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em;">
+          <button class="btn-read-catalog" data-id="${item.id}" style="width: 100%; background: #0D0920; color: #C97B14; border: 1px solid #C97B14; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: background 0.3s ease, color 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em;">
             Read Catalog
           </button>
         </div>
@@ -2419,9 +2419,9 @@ document.addEventListener('DOMContentLoaded', function() {
           b.style.color = '#555';
           b.style.borderColor = 'rgba(0,0,0,0.15)';
         });
-        btn.style.background = '#051a14';
-        btn.style.color = '#D4AF37';
-        btn.style.borderColor = '#D4AF37';
+        btn.style.background = '#0D0920';
+        btn.style.color = '#C97B14';
+        btn.style.borderColor = '#C97B14';
         activeCategory = btn.getAttribute('data-cat');
         renderGrid(searchInput ? searchInput.value : '', activeCategory);
       });

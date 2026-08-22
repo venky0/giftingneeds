@@ -7,7 +7,19 @@
 
 const GiftingAPI = (() => {
   // Detect if running via Web Server or Local Static File
-  const isWebServer = window.location.protocol.startsWith('http');
+  /* ------------------------------------------------------------------
+     BACKEND_ENABLED
+
+     The Cloud Run service this file was written against returns 503 on
+     every route, so each page load fired several requests that could
+     only fail — slowing the site down and filling the console with
+     errors. With this false, every read falls back to the bundled
+     catalogue data below, which is what the pages were rendering from
+     anyway. Set it back to true once the backend is healthy again.
+     ------------------------------------------------------------------ */
+  const BACKEND_ENABLED = false;
+
+  const isWebServer = BACKEND_ENABLED && window.location.protocol.startsWith('http');
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const BASE_URL = isWebServer 
     ? (isLocalhost ? `${window.location.origin}` : 'https://giftingneeds-backend-748096979929.europe-north1.run.app') 
@@ -42,21 +54,21 @@ const GiftingAPI = (() => {
   const DEFAULT_DESIGN = {
     theme: "light",
     colors: {
-      primary: "#0F4C3A",
-      primaryLight: "#15634C",
+      primary: "#3B2F63",
+      primaryLight: "#55458A",
       primaryGlow: "rgba(15, 76, 58, 0.15)",
       bgSecondary: "#F4F6F4",
       bgCard: "#FFFFFF",
-      textPrimary: "#1B2B26",
+      textPrimary: "#241C46",
       textMuted: "#6B7A75",
       border: "rgba(15, 76, 58, 0.12)",
-      gold: "#D4AF37",
-      goldBright: "#F3C63F",
+      gold: "#C97B14",
+      goldBright: "#E8A33D",
       goldGlow: "rgba(212, 175, 55, 0.15)",
-      crimson: "#9E2A2B",
+      crimson: "#A8203A",
       crimsonLight: "#BE3E40",
-      btnGrad: "linear-gradient(135deg, #0F4C3A 0%, #0A3427 100%)",
-      goldGrad: "linear-gradient(135deg, #D4AF37 0%, #AA821C 100%)"
+      btnGrad: "linear-gradient(135deg, #3B2F63 0%, #171230 100%)",
+      goldGrad: "linear-gradient(135deg, #C97B14 0%, #AA821C 100%)"
     },
     fonts: {
       headings: "'Playfair Display', serif",
@@ -587,7 +599,7 @@ const GiftingAPI = (() => {
 You can try these actions:
 *   *"Increase prices of all products by 12%"*
 *   *"Discount products by 30 rupees"*
-*   *"Set primary color to #D4AF37"*
+*   *"Set primary color to #C97B14"*
 *   *"Show statistics"*`;
         }
         return { success: true, reply, actionTaken };

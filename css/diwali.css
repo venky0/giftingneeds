@@ -1,0 +1,540 @@
+/* ============================================================
+   GIFTING NEEDS — DIWALI 2026 CAMPAIGN LAYER
+   ------------------------------------------------------------
+   Loaded after style.css. Everything here draws on the theme
+   tokens defined there, so both light and dark follow along.
+
+   Contents
+     1.  Festive ornament (rangoli, mandala, diya)
+     2.  Countdown strip
+     3.  Responsive header  (fixes the homepage nav on mobile)
+     4.  Hamper matcher — headcount x budget
+     5.  Budget-band collection cards
+     6.  Buyer-path cards
+     7.  Sticky quote bar
+     8.  Catalogue capture
+   ============================================================ */
+
+:root {
+  --diwali-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ------------------------------------------------------------
+   1. FESTIVE ORNAMENT
+   Restraint is the rule: one flourish per section, never two.
+   ------------------------------------------------------------ */
+
+/* Rangoli divider — a drawn motif, not a background image, so it
+   inherits the accent colour in both themes. */
+.rangoli-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2.5rem 0;
+  color: var(--gold);
+}
+.rangoli-divider::before,
+.rangoli-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  max-width: 180px;
+  background: linear-gradient(90deg, transparent, currentColor);
+  opacity: 0.45;
+}
+.rangoli-divider::after { transform: scaleX(-1); }
+.rangoli-divider svg { width: 46px; height: 46px; flex: none; opacity: 0.9; }
+
+/* Mandala watermark — sits behind a section at low opacity. */
+.mandala-bg { position: relative; overflow: hidden; isolation: isolate; }
+.mandala-bg > .mandala-mark {
+  position: absolute;
+  z-index: -1;
+  width: 520px;
+  height: 520px;
+  top: -160px;
+  right: -160px;
+  color: var(--gold);
+  opacity: 0.07;
+  pointer-events: none;
+}
+[data-theme="dark"] .mandala-bg > .mandala-mark { opacity: 0.1; }
+
+/* Diya list marker */
+ul.diya-list { list-style: none; padding: 0; margin: 1.25rem 0 0; }
+ul.diya-list li {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+ul.diya-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 12px;
+  height: 12px;
+  border-radius: 50% 50% 45% 45%;
+  background: var(--gradient-gold-btn);
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+
+/* ------------------------------------------------------------
+   2. COUNTDOWN STRIP
+   Honest urgency: this counts to the production cut-off, the
+   date after which branded stock cannot land before Diwali.
+   ------------------------------------------------------------ */
+.countdown-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.countdown-strip .cd-label {
+  color: inherit;
+  opacity: 0.85;
+  font-weight: 600;
+}
+.countdown-unit {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  background: rgba(232, 163, 61, 0.16);
+  border: 1px solid rgba(232, 163, 61, 0.4);
+  border-radius: 4px;
+  padding: 0.1rem 0.42rem;
+  color: var(--gold-bright);
+  font-variant-numeric: tabular-nums;
+}
+.countdown-unit b { font-size: 1em; font-weight: 800; }
+.countdown-unit i { font-style: normal; font-size: 0.72em; opacity: 0.8; }
+.countdown-strip.is-urgent .countdown-unit {
+  background: rgba(198, 52, 80, 0.2);
+  border-color: rgba(198, 52, 80, 0.55);
+  color: #FF8FA3;
+}
+
+/* ------------------------------------------------------------
+   3. RESPONSIVE HEADER
+   The homepage header used bespoke "-mockup" classes that had no
+   breakpoint at all, so its nav stayed a cramped desktop row on
+   phones. These rules give it the same off-canvas drawer the
+   rest of the site already had.
+   ------------------------------------------------------------ */
+.menu-btn-mockup {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.menu-btn-mockup span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--text-on-header);
+  transition: transform 0.35s var(--diwali-ease), opacity 0.2s linear;
+}
+.menu-btn-mockup.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-btn-mockup.open span:nth-child(2) { opacity: 0; }
+.menu-btn-mockup.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 9, 32, 0.6);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s var(--diwali-ease), visibility 0.35s;
+  z-index: 100;
+}
+.nav-scrim.open { opacity: 1; visibility: visible; }
+
+@media (max-width: 992px) {
+  .menu-btn-mockup { display: flex; }
+
+  .nav-links-mockup {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: min(320px, 86vw);
+    height: 100dvh;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border);
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.28);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 5.5rem 1.75rem 2rem;
+    overflow-y: auto;
+    transition: right 0.4s var(--diwali-ease);
+    z-index: 101;
+  }
+  .nav-links-mockup.open { right: 0; }
+
+  .nav-links-mockup .nav-link-mockup {
+    color: var(--text-primary) !important;
+    font-size: 1.08rem;
+    font-weight: 600;
+    width: 100%;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Keep the phone number reachable; it is the highest-intent tap
+     on the page for this audience. */
+  .nav-actions-mockup { gap: 0.5rem; }
+  .nav-actions-mockup .btn-quote-mockup { display: none; }
+  .phone-widget-mockup { font-size: 0.82rem; }
+}
+
+@media (max-width: 620px) {
+  .phone-widget-mockup span:not(:first-child) { display: none; }
+  .announcement-flex { flex-direction: column; gap: 0.35rem; text-align: center; }
+  .announcement-right { display: none; }
+}
+
+/* ------------------------------------------------------------
+   4. HAMPER MATCHER
+   The commercial spine of the campaign. Two numbers the visitor
+   already knows — how many people, how much per head — turn into
+   a shortlist and a pre-qualified enquiry.
+   ------------------------------------------------------------ */
+.matcher {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem 2rem 1.75rem;
+  box-shadow: var(--shadow-card);
+}
+.matcher-head { margin-bottom: 1.5rem; }
+.matcher-head h3 {
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  margin: 0 0 0.4rem;
+  color: var(--text-primary);
+}
+.matcher-head p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+.matcher-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  align-items: end;
+}
+.matcher-field label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  margin-bottom: 0.55rem;
+}
+.matcher-field input,
+.matcher-field select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.matcher-field input:focus,
+.matcher-field select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+.matcher-submit { width: 100%; justify-content: center; }
+
+/* Result panel */
+.matcher-result { margin-top: 1.75rem; }
+.matcher-result[hidden] { display: none; }
+.matcher-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.25rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  background: var(--bg-section-alt);
+  border-left: 3px solid var(--gold);
+  border-radius: 6px;
+}
+.matcher-summary .big {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.matcher-summary .cap { color: var(--text-muted); font-size: 0.9rem; }
+
+.matcher-picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.pick-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.25s var(--diwali-ease), box-shadow 0.25s;
+}
+.pick-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+.pick-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+.pick-card .pick-body { padding: 0.9rem 1rem 1.1rem; display: flex; flex-direction: column; flex: 1; }
+.pick-card h4 { margin: 0 0 0.3rem; font-size: 1rem; color: var(--text-primary); }
+.pick-card .pick-price {
+  font-weight: 800;
+  color: var(--text-gold);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.75rem;
+}
+.pick-card .btn { margin-top: auto; justify-content: center; font-size: 0.85rem; }
+
+/* ------------------------------------------------------------
+   5. BUDGET-BAND COLLECTION
+   ------------------------------------------------------------ */
+.band-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+.band-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s var(--diwali-ease), box-shadow 0.25s, border-color 0.25s;
+}
+.band-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-hover);
+}
+.band-card .band-range {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.band-card .band-per { font-size: 0.8rem; color: var(--text-subtle); margin-bottom: 1rem; }
+.band-card h3 { font-size: 1.1rem; margin: 0 0 0.5rem; color: var(--text-gold); }
+.band-card p { font-size: 0.92rem; color: var(--text-muted); margin: 0 0 1.25rem; line-height: 1.55; }
+.band-card .btn { margin-top: auto; justify-content: center; }
+.band-card.featured { border-color: var(--gold); }
+.band-card.featured::after {
+  content: "Most requested";
+  position: absolute;
+  top: -11px;
+  left: 1.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.7rem;
+  border-radius: 3px;
+  background: var(--gradient-gold-btn);
+  color: #171230;
+}
+
+/* ------------------------------------------------------------
+   6. BUYER PATHS
+   Diwali procurement splits three ways; each gets its own door.
+   ------------------------------------------------------------ */
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1.5rem;
+}
+.path-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s var(--diwali-ease), box-shadow 0.25s;
+}
+.path-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+.path-card .path-img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
+.path-card .path-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s var(--diwali-ease); }
+.path-card:hover .path-img img { transform: scale(1.05); }
+.path-card .path-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(23, 18, 48, 0.85), transparent 62%);
+}
+.path-card .path-tag {
+  position: absolute;
+  left: 1rem;
+  bottom: 0.9rem;
+  z-index: 2;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+.path-card .path-body { padding: 1.35rem 1.5rem 1.5rem; display: flex; flex-direction: column; flex: 1; }
+.path-card h3 { margin: 0 0 0.5rem; font-size: 1.2rem; color: var(--text-primary); }
+.path-card p { margin: 0 0 1.25rem; font-size: 0.94rem; color: var(--text-muted); line-height: 1.6; }
+.path-card .btn { margin-top: auto; justify-content: center; }
+
+/* ------------------------------------------------------------
+   7. STICKY QUOTE BAR
+   Follows the scroll once the hero is past. Hidden while any
+   modal or the mobile drawer is open.
+   ------------------------------------------------------------ */
+.quote-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.25rem;
+  background: var(--bg-header);
+  border-top: 1px solid rgba(232, 163, 61, 0.28);
+  box-shadow: 0 -6px 24px rgba(13, 9, 32, 0.3);
+  transform: translateY(110%);
+  transition: transform 0.4s var(--diwali-ease);
+}
+.quote-bar.visible { transform: translateY(0); }
+.quote-bar.hidden-by-modal { transform: translateY(110%); }
+.quote-bar p { margin: 0; color: var(--text-on-header); font-size: 0.95rem; }
+.quote-bar p strong { color: var(--gold-bright); }
+.quote-bar .qb-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+.quote-bar .btn { padding: 0.6rem 1.3rem; font-size: 0.88rem; }
+
+@media (max-width: 768px) {
+  .quote-bar { gap: 0.6rem; padding: 0.7rem 1rem 0.8rem; }
+  .quote-bar p { font-size: 0.85rem; text-align: center; width: 100%; }
+  .quote-bar .qb-actions { width: 100%; justify-content: center; }
+  .quote-bar .btn { flex: 1; justify-content: center; min-width: 0; }
+}
+/* Keep the floating WhatsApp widget clear of the bar. */
+body.quote-bar-on .floating-contact-widget,
+body.quote-bar-on .floating-whatsapp { bottom: 92px; }
+
+/* ------------------------------------------------------------
+   8. CATALOGUE CAPTURE
+   ------------------------------------------------------------ */
+.capture {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  align-items: center;
+  padding: 2.25rem;
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+.capture h3 { margin: 0 0 0.6rem; font-size: clamp(1.35rem, 2.6vw, 1.75rem); color: var(--text-primary); }
+.capture p { margin: 0; color: var(--text-muted); line-height: 1.6; }
+.capture-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.capture-form input {
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+}
+.capture-form input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+.capture-form .btn { justify-content: center; }
+.capture-note { font-size: 0.78rem; color: var(--text-subtle); }
+
+/* ------------------------------------------------------------
+   Shared section furniture
+   ------------------------------------------------------------ */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-gold);
+  margin-bottom: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote-bar,
+  .nav-links-mockup,
+  .pick-card,
+  .band-card,
+  .path-card,
+  .path-card .path-img img,
+  .menu-btn-mockup span { transition: none !important; }
+}
+
+/* ------------------------------------------------------------
+   9. MOBILE SAFETY
+   The homepage's bespoke "-mockup" components were authored for
+   desktop only: fixed four-column grids and side-by-side hero
+   buttons that could not shrink, so they spilled past the
+   viewport and were clipped by the body's overflow-x: hidden.
+   ------------------------------------------------------------ */
+@media (max-width: 640px) {
+  /* 1fr floors at min-content; minmax(0,1fr) is what actually shrinks. */
+  .metrics-grid-mockup {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .trust-logos-card { padding: 18px; }
+
+  .hero-buttons-mockup {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+  }
+  .hero-buttons-mockup > a { width: 100%; text-align: center; justify-content: center; }
+
+  .hero-desc-mockup { max-width: 100%; }
+
+  /* Long unbroken product names should wrap, not push the layout. */
+  .product-card-title,
+  .category-card-title-mockup,
+  .metric-label-mockup { overflow-wrap: anywhere; }
+}
+
+/* Nothing should ever widen the page. */
+img, video, svg, canvas, iframe { max-width: 100%; }
