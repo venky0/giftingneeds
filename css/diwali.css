@@ -612,3 +612,196 @@ img, video, svg, canvas, iframe { max-width: 100%; }
   .header-mockup .nav-logo img,
   .navbar .nav-logo img { max-width: 200px; }
 }
+
+/* ------------------------------------------------------------
+   11. PRODUCT RANGE GALLERY
+   The unbranded catalogue extracted from supplier books. Tiles
+   carry a category and an internal reference only — no supplier
+   name, model code or price appears anywhere in this component.
+   ------------------------------------------------------------ */
+
+.range-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.range-search {
+  flex: 1 1 240px;
+  max-width: 340px;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+}
+.range-search:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+.range-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.range-chips { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 1.75rem; }
+.range-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color .2s, background .2s, border-color .2s;
+}
+.range-chip span {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+.range-chip:hover { border-color: var(--gold); color: var(--text-primary); }
+.range-chip.is-active {
+  background: var(--gradient-gold-btn);
+  border-color: transparent;
+  color: #171230;
+}
+.range-chip.is-active span { color: rgba(23,18,48,.72); }
+
+.range-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1.1rem;
+}
+.range-tile {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform .22s var(--diwali-ease), box-shadow .22s, border-color .22s;
+}
+.range-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-hover);
+}
+.range-tile-img {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: #fff;          /* tiles are keyed to white; keep it in dark mode */
+  cursor: zoom-in;
+  line-height: 0;
+}
+.range-tile-img img { width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+.range-tile-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  padding: 0.8rem 0.9rem 0.9rem;
+}
+.range-tile-cat {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1 1 auto;
+}
+.range-tile-ref {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+.range-tile-cta { width: 100%; justify-content: center; font-size: 0.8rem; padding: 0.45rem 0.8rem; }
+
+.range-empty { grid-column: 1 / -1; color: var(--text-muted); padding: 2.5rem 0; text-align: center; }
+.range-empty a { color: var(--text-gold); font-weight: 700; }
+
+#range-more {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 0.75rem 2rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  cursor: pointer;
+}
+#range-more:hover { border-color: var(--gold); }
+#range-more[hidden] { display: none; }
+
+/* ---- lightbox ---- */
+.range-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(13, 9, 32, 0.86);
+  backdrop-filter: blur(4px);
+}
+.range-lightbox-inner {
+  position: relative;
+  width: min(560px, 100%);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+.range-lightbox-inner img { width: 100%; height: auto; display: block; background: #fff; }
+.range-lightbox-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.range-lightbox-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 1.25rem;
+}
+.range-lightbox-meta strong { display: block; color: var(--text-primary); font-size: 1.05rem; }
+.range-lightbox-meta span { display: block; margin-top: 0.2rem; font-size: 0.82rem; color: var(--text-muted); }
+
+@media (max-width: 520px) {
+  .range-grid { grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 0.8rem; }
+  .range-tile-cta { font-size: 0.75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .range-tile, .range-chip { transition: none !important; }
+}

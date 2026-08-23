@@ -154,6 +154,20 @@
 
       <!-- Products Listing Area -->
       <section id="catalog-products-container">
+        <!-- Two grids share this page and they answer different questions:
+             this one is the curated shortlist with indicative pricing, the
+             "full range" section below is the browsable unbranded catalogue. -->
+        <div style="margin-bottom:1.5rem;">
+          <span class="section-eyebrow">Curated shortlist</span>
+          <h2 class="serif-font" style="font-size:clamp(1.5rem,3vw,2rem); margin:0 0 .4rem;">
+            Popular corporate gifts, with indicative pricing
+          </h2>
+          <p style="color:var(--text-muted); margin:0; font-size:.98rem; max-width:60ch;">
+            Our most-requested pieces, costed per unit at the 50-piece minimum.
+            For the wider catalogue, see <a href="#full-range" style="color:var(--text-gold); font-weight:700;">the full range</a> below.
+          </p>
+        </div>
+
         <!-- Control Panel -->
         <div class="catalog-control-panel">
           <div class="catalog-search">
@@ -189,6 +203,57 @@
       </div>
     </div>
   </div>
+
+
+  <!-- ============================================================
+       THE FULL RANGE
+       Unbranded product imagery lifted from the supplier catalogues.
+       Deliberately carries no supplier name, model code or price —
+       every tile routes to a quote instead.
+       ============================================================ -->
+  <section class="container section-py" id="full-range">
+    <div class="rangoli-divider" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="24" cy="24" r="4.5"/>
+        <ellipse cx="24" cy="12" rx="3.4" ry="7"/><ellipse cx="24" cy="36" rx="3.4" ry="7"/>
+        <ellipse cx="12" cy="24" rx="7" ry="3.4"/><ellipse cx="36" cy="24" rx="7" ry="3.4"/>
+        <ellipse cx="15.5" cy="15.5" rx="3.4" ry="7" transform="rotate(-45 15.5 15.5)"/>
+        <ellipse cx="32.5" cy="32.5" rx="3.4" ry="7" transform="rotate(-45 32.5 32.5)"/>
+        <ellipse cx="32.5" cy="15.5" rx="3.4" ry="7" transform="rotate(45 32.5 15.5)"/>
+        <ellipse cx="15.5" cy="32.5" rx="3.4" ry="7" transform="rotate(45 15.5 32.5)"/>
+      </svg>
+    </div>
+
+    <div style="text-align:center; margin-bottom:2rem;">
+      <span class="section-eyebrow">Browse the range</span>
+      <h2 class="serif-font" style="font-size:clamp(1.9rem,4vw,2.7rem); margin:0 0 .75rem;">
+        Everything we can brand for you
+      </h2>
+      <p style="color:var(--text-muted); max-width:62ch; margin:0 auto; font-size:1.03rem;">
+        A working selection from our supplier range — drinkware, kitchen, appliances,
+        tech, bags, writing and festive hampers. Every piece can be produced with your
+        logo from a 50-unit minimum. Filter by category, then ask for pricing on
+        anything that fits.
+      </p>
+    </div>
+
+    <div class="range-chips" id="range-chips"></div>
+
+    <div class="range-toolbar">
+      <input type="search" class="range-search" id="range-search"
+             placeholder="Search the range…" aria-label="Search the product range">
+      <span class="range-count" id="range-count"></span>
+    </div>
+
+    <div class="range-grid" id="range-grid"></div>
+    <button id="range-more" hidden>Show more</button>
+
+    <p style="text-align:center; color:var(--text-subtle); font-size:.88rem; margin-top:2rem;">
+      Shown unbranded so you can picture your own logo on them.
+      Not seeing it? <a href="contact.html" style="color:var(--text-gold); font-weight:700;">Ask us</a> —
+      the full supplier range runs to several thousand items.
+    </p>
+  </section>
 
   <!-- ============================================================
        FOOTER
@@ -278,6 +343,8 @@
   <script src="js/leads.js?v=1.1"></script>
   <script src="js/main.js?v=1.1"></script>
   <script src="js/diwali.js?v=1.1"></script>
+  <script src="js/range-data.js?v=1.0"></script>
+  <script src="js/range.js?v=1.0"></script>
 
   <!-- Sticky Diwali quote bar -->
   <div class="quote-bar" role="complementary" aria-label="Get a Diwali quote">
