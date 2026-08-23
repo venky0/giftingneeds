@@ -163,7 +163,7 @@ ul.diya-list li::before {
 }
 .nav-scrim.open { opacity: 1; visibility: visible; }
 
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .menu-btn-mockup { display: flex; }
 
   .nav-links-mockup {
@@ -538,3 +538,77 @@ body.quote-bar-on .floating-whatsapp { bottom: 92px; }
 
 /* Nothing should ever widen the page. */
 img, video, svg, canvas, iframe { max-width: 100%; }
+
+
+/* ------------------------------------------------------------
+   10. HEADER: ONE COMPONENT, ONE BREAKPOINT
+   ------------------------------------------------------------
+   The homepage carries a duplicate header built from bespoke
+   "-mockup" classes; every other page uses the shared .navbar.
+   Both were laid out for a wide desktop and both wrapped their
+   labels between roughly 993px and 1150px, because the drawer
+   only took over at 992px. Measured minimum widths: 1142px for
+   the homepage header, 1092px for the shared one.
+
+   Fixes: hand over to the drawer at 1200px (clear of both),
+   never break a label mid-word, and stop the logo from eating
+   the row it has to share.
+   ------------------------------------------------------------ */
+
+.nav-link-mockup,
+.navbar .nav-link { white-space: nowrap; }
+
+.nav-links-mockup,
+.navbar .nav-links { flex-wrap: nowrap; }
+
+/* 294px of wordmark was the single largest claim on the row. */
+.header-mockup .nav-logo img,
+.navbar .nav-logo img { max-width: 230px; height: auto; }
+
+.header-mockup .nav-logo,
+.navbar .nav-logo { flex: 0 0 auto; }
+
+.nav-actions-mockup,
+.navbar .nav-actions { flex: 0 0 auto; }
+
+.header-container-mockup { gap: 1.25rem; }
+
+/* Shared header gets the same drawer boundary as the homepage. */
+@media (max-width: 1200px) {
+  .navbar .menu-btn { display: block; }
+  .navbar .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: min(320px, 86vw);
+    height: 100dvh;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border);
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.28);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 5.5rem 1.75rem 2rem;
+    overflow-y: auto;
+    transition: right 0.4s var(--diwali-ease);
+    z-index: 101;
+  }
+  .navbar .nav-links.open { right: 0; }
+  .navbar .nav-links .nav-link {
+    color: var(--text-primary) !important;
+    font-size: 1.08rem;
+    font-weight: 600;
+    width: 100%;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+/* Between the drawer boundary and a roomy desktop, tighten rather
+   than wrap. */
+@media (min-width: 1201px) and (max-width: 1400px) {
+  .nav-links-mockup { gap: 18px; }
+  .navbar .nav-links { gap: 22px; }
+  .header-mockup .nav-logo img,
+  .navbar .nav-logo img { max-width: 200px; }
+}
