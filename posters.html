@@ -7,6 +7,7 @@
   <meta name="description" content="Browse all 46 corporate gifting poster categories — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="stylesheet" href="css/style.css?v=1.1">
+  <link rel="stylesheet" href="css/diwali.css?v=1.1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -14,7 +15,7 @@
        POSTERS PAGE — Gallery Styles
        ============================================================ */
     :root {
-      --pg-gold: #d4af37;
+      --pg-gold: #C97B14;
       --pg-gold-glow: rgba(212,175,55,0.2);
       --pg-bg: #0a0e17;
       --pg-bg2: #121824;
@@ -76,7 +77,7 @@
       font-weight: 800; color: var(--pg-text); line-height: 1.1; margin: 0;
     }
     .pg-title .gold {
-      background: linear-gradient(135deg,#f6d365 0%,#d4af37 45%,#b8860b 100%);
+      background: linear-gradient(135deg,#f6d365 0%,#C97B14 45%,#b8860b 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .pg-subtitle {
@@ -428,19 +429,51 @@
       .pg-stat-div { display:none; }
     }
   </style>
+
+  <link rel="canonical" href="https://giftingneeds.in/posters.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Gifting Needs">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:url" content="https://giftingneeds.in/posters.html">
+  <meta property="og:title" content="Posters | Corporate Gifting Categories — Gifting Needs">
+  <meta property="og:description" content="Browse all 46 corporate gifting poster categories — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
+  <meta property="og:image" content="https://giftingneeds.in/images/diwali_poster.jpg">
+  <meta property="og:image:alt" content="Gifting Needs Diwali corporate gift hampers">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Posters | Corporate Gifting Categories — Gifting Needs">
+  <meta name="twitter:description" content="Browse all 46 corporate gifting poster categories — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
+  <meta name="twitter:image" content="https://giftingneeds.in/images/diwali_poster.jpg">
+  <meta name="theme-color" content="#171230">
 </head>
 <body>
 
   <!-- Loader -->
-  <div id="site-loader" style="position:fixed;inset:0;background:#051a14;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease;">
+  <div id="site-loader" style="position:fixed;inset:0;background:#0D0920;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease;">
     <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
-      <div style="width:50px;height:50px;border:3px solid rgba(212,175,55,.15);border-top-color:#D4AF37;border-radius:50%;animation:spin 1s linear infinite;"></div>
-      <div style="font-family:'Playfair Display',serif;color:#D4AF37;letter-spacing:.15em;font-size:1.3rem;font-weight:700;">GIFTING NEEDS</div>
+      <div style="width:50px;height:50px;border:3px solid rgba(212,175,55,.15);border-top-color:#C97B14;border-radius:50%;animation:spin 1s linear infinite;"></div>
+      <div style="font-family:'Playfair Display',serif;color:#C97B14;letter-spacing:.15em;font-size:1.3rem;font-weight:700;">GIFTING NEEDS</div>
     </div>
   </div>
   <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
   <!-- NAVBAR -->
+  <!-- Diwali order cut-off countdown -->
+  <div class="announcement-bar-mockup">
+    <div class="container announcement-flex">
+      <div class="announcement-left">
+        <span style="color:#C97B14; font-size:12px;">🪔</span>
+        <span class="countdown-strip" data-countdown></span>
+      </div>
+      <div class="announcement-right">
+        <a href="contact.html">Bulk Orders</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="about.html">Pan India Delivery</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="solutions.html">Custom Branding</a>
+      </div>
+    </div>
+  </div>
+
   <header class="navbar scrolled" id="main-header">
     <div class="container navbar-container">
       <a href="index.html" class="nav-logo" id="header-logo-link">
@@ -448,11 +481,12 @@
       </a>
       <nav class="nav-links" id="main-navigation">
         <a href="index.html" class="nav-link" id="nav-home">Home</a>
+        <a href="diwali.html" class="nav-link" id="nav-diwali" style="color:var(--gold);font-weight:700">Diwali 2026</a>
         <a href="products.html" class="nav-link" id="nav-products">Products</a>
         <a href="posters.html" class="nav-link active" id="nav-posters">Posters</a>
         <a href="solutions.html" class="nav-link" id="nav-solutions">Custom Kits</a>
         <a href="portfolio.html" class="nav-link" id="nav-portfolio">Portfolio</a>
-        <a href="about.html" class="nav-link" id="nav-about">About Us</a>
+        <a href="about.html" class="nav-link" id="nav-about">About</a>
         <a href="contact.html" class="nav-link" id="nav-contact">Contact</a>
       </nav>
       <div class="nav-actions">
@@ -559,13 +593,15 @@
 
   <!-- SCRIPTS -->
   <script src="js/api.js?v=1.1"></script>
+  <script src="js/leads.js?v=1.1"></script>
   <script src="js/main.js?v=1.1"></script>
+  <script src="js/diwali.js?v=1.1"></script>
   <script>
   // ============================================================
   // POSTER GALLERY DATA & ENGINE
   // ============================================================
   const GROUPS = [
-    {id:'gift-hampers',   label:'Gift Hampers',            icon:'🎁', color:'#d4af37'},
+    {id:'gift-hampers',   label:'Gift Hampers',            icon:'🎁', color:'#C97B14'},
     {id:'drinkware',      label:'Drinkware & Lifestyle',   icon:'☕', color:'#06b6d4'},
     {id:'apparel-bags',   label:'Apparel & Bags',          icon:'👕', color:'#10b981'},
     {id:'tech-gadgets',   label:'Tech & Gadgets',          icon:'🔋', color:'#6366f1'},
@@ -677,7 +713,7 @@
   // ---- Build Card ----
   function buildCard(cat) {
     const g = GROUPS.find(x => x.id === cat.group);
-    const color = g ? g.color : '#d4af37';
+    const color = g ? g.color : '#C97B14';
     const mainImg = imgPath(cat.images[0]);
     const tags = cat.tags.slice(0, 3).map(t => `<span class="pg-card-tag">${t}</span>`).join('');
     const countBadge = cat.images.length > 1 ? `<span class="pg-img-count">${cat.images.length} images</span>` : '';
@@ -896,7 +932,8 @@
         <div>
           <h4 class="footer-title">Quick Links</h4>
           <ul class="footer-links-list">
-            <li><a href="index.html" class="footer-link">Home Overview</a></li>
+            <li><a href="index.html" class="footer-link">Home Overview</a>
+            <a href="diwali.html" class="footer-link">Diwali 2026 Hampers</a></li>
             <li><a href="products.html" class="footer-link">Product Catalog</a></li>
             <li><a href="posters.html" class="footer-link">Posters</a></li>
             <li><a href="solutions.html" class="footer-link">Box Customizer</a></li>
@@ -929,5 +966,16 @@
       <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
     </a>
   </div>
+
+  <!-- Sticky Diwali quote bar -->
+  <div class="quote-bar" role="complementary" aria-label="Get a Diwali quote">
+    <p><strong>Diwali orders close 10 October.</strong> Get pricing for your headcount today.</p>
+    <div class="qb-actions">
+      <a class="btn btn-gold" href="diwali.html">See Diwali hampers</a>
+      <a class="btn btn-outline" href="https://wa.me/916361054099?text=Hi%20Gifting%20Needs%2C%20we%20need%20a%20Diwali%20bulk%20quote."
+         target="_blank" rel="noopener">WhatsApp us</a>
+    </div>
+  </div>
+
 </body>
 </html>
