@@ -836,7 +836,7 @@ async function loadDesignPanel() {
   if (design.header) {
     document.getElementById('header-logo-text').value = design.header.logoText || 'GIFTING NEEDS';
     document.getElementById('header-logo-sub').value = design.header.logoSub || 'Corporate Solutions';
-    document.getElementById('header-logo-text-color').value = design.header.logoTextColor || '#0b4c3a';
+    document.getElementById('header-logo-text-color').value = design.header.logoTextColor || '#3B2F63';
     document.getElementById('header-logo-text-size').value = design.header.logoTextSize || '1.5rem';
     document.getElementById('header-logo-sub-color').value = design.header.logoSubColor || '#bf8f30';
     document.getElementById('header-logo-sub-size').value = design.header.logoSubSize || '0.65rem';

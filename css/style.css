@@ -8,85 +8,85 @@
    ====================================================== */
 
 :root, [data-theme="light"] {
-  --bg-primary:      #FAF8F5;   /* Luxury Alabaster */
-  --bg-secondary:    #F2ECE1;   /* Champagne Linen */
-  --bg-card:         #FFFFFF;
-  --bg-card-hover:   #FDFCF9;
-  --bg-glass:        rgba(250, 248, 245, 0.92);
-  --bg-header:       #0A3427;   /* Deep Royal Emerald */
-  --bg-dark:         #061711;
-  --bg-section-alt:  #EFEAE2;
+  --bg-primary:      #FBF7EE;   /* Diya Parchment */
+  --bg-secondary:    #F4EBD9;   /* Warm Sand */
+  --bg-card:         #FFFDF8;
+  --bg-card-hover:   #FFF9EF;
+  --bg-glass:        rgba(251, 247, 238, 0.93);
+  --bg-header:       #171230;   /* Kartik Night */
+  --bg-dark:         #0D0920;
+  --bg-section-alt:  #F2E9D6;
 
-  --primary:         #0F4C3A;   /* Royal Emerald Green */
-  --primary-light:   #186B52;
-  --primary-glow:    rgba(15, 76, 58, 0.12);
-  --gold:            #D4AF37;   /* Mysore Champagne Gold */
-  --gold-bright:     #F3C63F;
-  --gold-glow:       rgba(212, 175, 55, 0.2);
-  --crimson:         #9E2A2B;   /* Festive Corporate Red */
-  --crimson-glow:    rgba(158, 42, 43, 0.12);
-  --charcoal:        #2C302E;
+  --primary:         #3B2F63;   /* Indigo Twilight */
+  --primary-light:   #55458A;
+  --primary-glow:    rgba(59, 47, 99, 0.13);
+  --gold:            #C97B14;   /* Brass Flame */
+  --gold-bright:     #E8A33D;   /* Marigold */
+  --gold-glow:       rgba(232, 163, 61, 0.22);
+  --crimson:         #A8203A;   /* Kumkum */
+  --crimson-glow:    rgba(168, 42, 58, 0.12);
+  --charcoal:        #2A2338;
 
-  --text-primary:    #1F2421;   /* Rich Deep Charcoal */
-  --text-muted:      #4D5852;
-  --text-subtle:     #7C8D85;
-  --text-on-header:  #FCFAF5;
-  --text-gold:       #D4AF37;
+  --text-primary:    #221B2E;
+  --text-muted:      #56496B;
+  --text-subtle:     #857A9A;
+  --text-on-header:  #FBF3E4;
+  --text-gold:       #A8630C;
 
-  --border:          rgba(212, 175, 55, 0.25);
-  --border-strong:   rgba(15, 76, 58, 0.25);
+  --border:          rgba(201, 123, 20, 0.25);
+  --border-strong:   rgba(59, 47, 99, 0.25);
 
-  --gradient-hero:   linear-gradient(135deg, rgba(10,52,39,0.92) 0%, rgba(10,52,39,0.4) 60%, transparent 100%);
-  --gradient-gold:   linear-gradient(135deg, #D4AF37 0%, #F3C63F 50%, #D4AF37 100%);
-  --gradient-btn:    linear-gradient(135deg, #0F4C3A 0%, #1A7A5F 100%);
-  --gradient-gold-btn: linear-gradient(135deg, #D4AF37 0%, #EABF40 100%);
-  --gradient-crimson-btn: linear-gradient(135deg, #9E2A2B 0%, #BD3A3C 100%);
+  --gradient-hero:   linear-gradient(135deg, rgba(23,18,48,0.94) 0%, rgba(23,18,48,0.55) 55%, rgba(23,18,48,0.05) 100%);
+  --gradient-gold:   linear-gradient(135deg, #C97B14 0%, #F0B856 50%, #C97B14 100%);
+  --gradient-btn:    linear-gradient(135deg, #3B2F63 0%, #55458A 100%);
+  --gradient-gold-btn: linear-gradient(135deg, #E8A33D 0%, #C97B14 100%);
+  --gradient-crimson-btn: linear-gradient(135deg, #A8203A 0%, #C63450 100%);
 
-  --shadow-card:     0 4px 20px rgba(15,76,58,0.05), 0 1px 3px rgba(0,0,0,0.02);
-  --shadow-hover:    0 16px 40px rgba(15,76,58,0.15), 0 4px 12px rgba(212,175,55,0.1);
-  --shadow-header:   0 4px 30px rgba(10,52,39,0.2);
-  --shadow-gold:     0 4px 20px rgba(212,175,55,0.25);
+  --shadow-card:     0 4px 20px rgba(34,27,46,0.06), 0 1px 3px rgba(0,0,0,0.03);
+  --shadow-hover:    0 16px 40px rgba(59,47,99,0.16), 0 4px 12px rgba(232,163,61,0.14);
+  --shadow-header:   0 4px 30px rgba(23,18,48,0.22);
+  --shadow-gold:     0 4px 20px rgba(232,163,61,0.28);
 }
 
 [data-theme="dark"] {
-  --bg-primary:      #070E0B;   /* Obsidian Forest Night */
-  --bg-secondary:    #0F1914;   /* Deep Moss */
-  --bg-card:         #13201B;   /* Dark Jade */
-  --bg-card-hover:   #1A2C25;
-  --bg-glass:        rgba(15, 25, 20, 0.95);
-  --bg-header:       #051510;
-  --bg-dark:         #020806;
-  --bg-section-alt:  #0A1310;
+  --bg-primary:      #0F0B1E;   /* Moonless Kartik */
+  --bg-secondary:    #171230;
+  --bg-card:         #1C1638;
+  --bg-card-hover:   #241C46;
+  --bg-glass:        rgba(15, 11, 30, 0.95);
+  --bg-header:       #0B0818;
+  --bg-dark:         #070511;
+  --bg-section-alt:  #130F28;
 
-  --primary:         #1A7A5F;   /* Brighter Emerald */
-  --primary-light:   #25A280;
-  --primary-glow:    rgba(26, 122, 95, 0.2);
-  --gold:            #E5C158;
-  --gold-bright:     #FAD877;
-  --gold-glow:       rgba(229, 193, 88, 0.22);
-  --crimson:         #BD3A3C;
-  --crimson-glow:    rgba(189, 58, 60, 0.2);
-  --charcoal:        #E2E8E5;
+  --primary:         #8B77D4;   /* Lit Indigo */
+  --primary-light:   #A996E8;
+  --primary-glow:    rgba(139, 119, 212, 0.22);
+  --gold:            #E8A33D;   /* Marigold */
+  --gold-bright:     #F7C368;
+  --gold-glow:       rgba(232, 163, 61, 0.25);
+  --crimson:         #E4607A;
+  --crimson-glow:    rgba(228, 96, 122, 0.2);
+  --charcoal:        #E8E3F0;
 
-  --text-primary:    #FAFDFB;
-  --text-muted:      #A5B7AF;
-  --text-subtle:     #7B9087;
-  --text-on-header:  #FAFDFB;
-  --text-gold:       #E5C158;
+  --text-primary:    #F7F2E8;
+  --text-muted:      #B9AECC;
+  --text-subtle:     #8B7FA5;
+  --text-on-header:  #F7F2E8;
+  --text-gold:       #E8A33D;
 
-  --border:          rgba(229, 193, 88, 0.2);
-  --border-strong:   rgba(26, 122, 95, 0.3);
+  --border:          rgba(232, 163, 61, 0.22);
+  --border-strong:   rgba(139, 119, 212, 0.3);
 
-  --gradient-hero:   linear-gradient(135deg, rgba(5,21,16,0.95) 0%, rgba(5,21,16,0.5) 60%, transparent 100%);
-  --gradient-gold:   linear-gradient(135deg, #C5A059 0%, #E5C158 50%, #C5A059 100%);
-  --gradient-btn:    linear-gradient(135deg, #1A7A5F 0%, #25A280 100%);
-  --gradient-gold-btn: linear-gradient(135deg, #E5C158 0%, #D4A737 100%);
-  --gradient-crimson-btn: linear-gradient(135deg, #BD3A3C 0%, #9E2A2B 100%);
+  --gradient-hero:   linear-gradient(135deg, rgba(11,8,24,0.96) 0%, rgba(11,8,24,0.6) 55%, rgba(11,8,24,0.08) 100%);
+  --gradient-gold:   linear-gradient(135deg, #C98A22 0%, #E8A33D 50%, #C98A22 100%);
+  --gradient-btn:    linear-gradient(135deg, #5B4A9E 0%, #8B77D4 100%);
+  --gradient-gold-btn: linear-gradient(135deg, #E8A33D 0%, #C97B14 100%);
+  --gradient-crimson-btn: linear-gradient(135deg, #C63450 0%, #A8203A 100%);
 
-  --shadow-card:     0 4px 20px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4);
-  --shadow-hover:    0 16px 48px rgba(26,122,95,0.22), 0 4px 16px rgba(0,0,0,0.5);
-  --shadow-header:   0 4px 30px rgba(0,0,0,0.7);
-  --shadow-gold:     0 4px 20px rgba(229,193,88,0.2);
+  --shadow-card:     0 4px 20px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.45);
+  --shadow-hover:    0 16px 48px rgba(139,119,212,0.24), 0 4px 16px rgba(0,0,0,0.55);
+  --shadow-header:   0 4px 30px rgba(0,0,0,0.72);
+  --shadow-gold:     0 4px 20px rgba(232,163,61,0.24);
 }
 
 /* ── BASE RESET ────────────────────────────────────── */
@@ -247,7 +247,7 @@ button, input, select, textarea {
 .nav-logo-icon svg {
   width: 24px;
   height: 24px;
-  fill: #0A3427;
+  fill: #171230;
 }
 
 .nav-logo-text {
@@ -505,7 +505,7 @@ button, input, select, textarea {
 
 .btn-gold {
   background: var(--gradient-gold-btn);
-  color: #0A3427;
+  color: #171230;
   border-color: var(--gold);
   box-shadow: var(--shadow-gold);
 }
@@ -803,7 +803,7 @@ button, input, select, textarea {
 
 .slider-arrow:hover {
   background: var(--gradient-gold-btn);
-  color: #0A3427;
+  color: #171230;
   border-color: var(--gold);
   box-shadow: var(--shadow-gold);
 }
@@ -995,7 +995,7 @@ button, input, select, textarea {
 .service-pill-icon svg {
   width: 20px;
   height: 20px;
-  stroke: #D4AF37; /* Mysuru Gold */
+  stroke: #C97B14; /* Mysuru Gold */
   fill: none;
   stroke-width: 2.25px;
 }
@@ -1170,7 +1170,7 @@ button, input, select, textarea {
 
 .category-card:hover .category-card-icon {
   background: var(--gold);
-  color: #0A3427;
+  color: #171230;
   border-color: var(--gold);
   transform: rotate(6deg) scale(1.1);
   box-shadow: var(--shadow-gold);
@@ -1434,7 +1434,7 @@ button, input, select, textarea {
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.badge-new { background: var(--gradient-gold-btn); color: #0A3427; border: 1px solid var(--gold); }
+.badge-new { background: var(--gradient-gold-btn); color: #171230; border: 1px solid var(--gold); }
 .badge-popular { background: var(--gradient-btn); color: #FFFFFF; border: 1px solid var(--primary-light); }
 .badge-festive { background: var(--gradient-crimson-btn); color: #FFFFFF; border: 1px solid var(--crimson); }
 
@@ -1556,7 +1556,7 @@ button, input, select, textarea {
   height: 36px;
   border-radius: 50%;
   background: var(--gradient-gold);
-  color: #0A3427;
+  color: #171230;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -1604,7 +1604,7 @@ button, input, select, textarea {
   width: 24px;
   height: 24px;
   background: var(--gradient-gold);
-  color: #0A3427;
+  color: #171230;
   font-weight: 800;
   border-radius: 50%;
   display: flex;
@@ -2112,7 +2112,7 @@ button, input, select, textarea {
 
 .social-icon-btn:hover {
   background: var(--gradient-gold-btn);
-  color: #0A3427;
+  color: #171230;
   border-color: var(--gold);
   transform: translateY(-3px);
   box-shadow: var(--shadow-gold);
@@ -2232,14 +2232,14 @@ button, input, select, textarea {
 
 .float-btn-inquiry {
   background: var(--gradient-gold-btn);
-  color: #0A3427;
+  color: #171230;
   border: 1.5px solid var(--gold);
 }
 
 .float-btn-inquiry svg {
   width: 26px;
   height: 26px;
-  fill: #0A3427;
+  fill: #171230;
 }
 
 @media (max-width: 768px) {
@@ -2319,7 +2319,7 @@ button, input, select, textarea {
   height: 26px;
   border-radius: 50%;
   background: var(--goldGrad);
-  color: #0A3427;
+  color: #171230;
   font-weight: 800;
   font-size: 0.8rem;
   display: flex;
@@ -2573,7 +2573,7 @@ button, input, select, textarea {
 
 .badge-dealer {
   background: var(--goldGrad);
-  color: #0A3427;
+  color: #171230;
   border: 1px solid var(--gold);
 }
 
@@ -2609,7 +2609,7 @@ button, input, select, textarea {
   transition: color 0.2s;
 }
 .announcement-right a:hover {
-  color: #D4AF37;
+  color: #C97B14;
 }
 
 .header-mockup {
@@ -2647,7 +2647,7 @@ button, input, select, textarea {
   font-family: 'Outfit', sans-serif;
   font-size: 9px;
   font-weight: 600;
-  color: #D4AF37;
+  color: #C97B14;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -2664,7 +2664,7 @@ button, input, select, textarea {
   padding: 4px 0;
 }
 .nav-link-mockup:hover, .nav-link-mockup.active {
-  color: #D4AF37;
+  color: #C97B14;
 }
 .nav-link-mockup.active::after {
   content: '';
@@ -2673,7 +2673,7 @@ button, input, select, textarea {
   left: 0;
   width: 100%;
   height: 2px;
-  background: #D4AF37;
+  background: #C97B14;
 }
 .nav-actions-mockup {
   display: flex;
@@ -2697,7 +2697,7 @@ button, input, select, textarea {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: #F3C63F;
+  background: #E8A33D;
   color: #0c020a;
   border-radius: 50%;
   width: 15px;
@@ -2709,7 +2709,7 @@ button, input, select, textarea {
   justify-content: center;
 }
 .btn-quote-mockup {
-  background: #FAD877;
+  background: #F7C368;
   color: #1a0800;
   padding: 9px 18px;
   border-radius: 6px;
@@ -2722,7 +2722,7 @@ button, input, select, textarea {
   transition: all 0.3s;
 }
 .btn-quote-mockup:hover {
-  background: #f3c63f;
+  background: #E8A33D;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(250, 216, 119, 0.35);
 }
@@ -2743,7 +2743,7 @@ button, input, select, textarea {
 }
 .hero-tag-mockup {
   font-family: 'Outfit', sans-serif;
-  color: #D4AF37;
+  color: #C97B14;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -2775,7 +2775,7 @@ button, input, select, textarea {
   flex-wrap: wrap;
 }
 .btn-hero-gold {
-  background: #FAD877;
+  background: #F7C368;
   color: #1a0800;
   padding: 12px 24px;
   border-radius: 6px;
@@ -2787,7 +2787,7 @@ button, input, select, textarea {
   transition: all 0.3s;
 }
 .btn-hero-gold:hover {
-  background: #f3c63f;
+  background: #E8A33D;
   transform: translateY(-2px);
 }
 .btn-hero-outline {
@@ -2819,7 +2819,7 @@ button, input, select, textarea {
   margin-left: 10px;
 }
 .link-hero-download:hover {
-  color: #D4AF37;
+  color: #C97B14;
 }
 
 /* Diwali Shield Badge */
@@ -2840,7 +2840,7 @@ button, input, select, textarea {
 }
 .diwali-badge-inner-mockup {
   background: radial-gradient(circle, #851322 0%, #44050e 100%);
-  border: 2px solid #D4AF37;
+  border: 2px solid #C97B14;
   border-radius: 50%;
   width: 100%;
   height: 100%;
@@ -2856,7 +2856,7 @@ button, input, select, textarea {
   font-size: 8px;
   letter-spacing: 0.15em;
   font-weight: 700;
-  color: #D4AF37;
+  color: #C97B14;
   text-transform: uppercase;
 }
 .diwali-badge-text-year {
@@ -2879,7 +2879,7 @@ button, input, select, textarea {
   background: #3c0326;
   color: #ffffff;
   padding: 16px 0;
-  border-bottom: 2px solid #D4AF37;
+  border-bottom: 2px solid #C97B14;
 }
 .features-ribbon-container {
   display: flex;
@@ -2906,7 +2906,7 @@ button, input, select, textarea {
 }
 .features-ribbon-icon {
   font-size: 20px;
-  color: #D4AF37;
+  color: #C97B14;
 }
 .features-ribbon-text {
   display: flex;
@@ -2938,7 +2938,7 @@ button, input, select, textarea {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  color: #0F4C3A;
+  color: #3B2F63;
   font-weight: 700;
   margin-bottom: 4px;
   display: block;
@@ -2950,8 +2950,8 @@ button, input, select, textarea {
   font-weight: 700;
 }
 .btn-view-categories-mockup {
-  border: 1px solid #0F4C3A;
-  color: #0F4C3A;
+  border: 1px solid #3B2F63;
+  color: #3B2F63;
   padding: 8px 16px;
   border-radius: 4px;
   font-size: 11px;
@@ -2961,7 +2961,7 @@ button, input, select, textarea {
   transition: all 0.3s;
 }
 .btn-view-categories-mockup:hover {
-  background: #0F4C3A;
+  background: #3B2F63;
   color: #ffffff;
 }
 .categories-slider-container {
@@ -3035,9 +3035,9 @@ button, input, select, textarea {
   transition: all 0.3s;
 }
 .category-card-mockup:hover .category-card-btn-mockup {
-  background: #D4AF37;
+  background: #C97B14;
   color: #1a0800;
-  border-color: #D4AF37;
+  border-color: #C97B14;
 }
 
 /* Bottom Features Ribbon */
@@ -3064,7 +3064,7 @@ button, input, select, textarea {
 }
 .bottom-features-icon {
   font-size: 24px;
-  color: #0F4C3A;
+  color: #3B2F63;
 }
 .bottom-features-text {
   display: flex;
@@ -3165,7 +3165,7 @@ button, input, select, textarea {
   transition: background 0.2s;
 }
 .btn-card-details:hover {
-  background: #D4AF37;
+  background: #C97B14;
   color: #1a0800;
 }
 
@@ -3175,8 +3175,8 @@ button, input, select, textarea {
   color: #ffffff;
   position: relative;
   overflow: hidden;
-  border-top: 2px solid #D4AF37;
-  border-bottom: 2px solid #D4AF37;
+  border-top: 2px solid #C97B14;
+  border-bottom: 2px solid #C97B14;
 }
 .custom-hamper-grid {
   display: grid;
@@ -3217,7 +3217,7 @@ button, input, select, textarea {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #D4AF37;
+  color: #C97B14;
   font-weight: 700;
   margin-bottom: 6px;
 }
@@ -3235,7 +3235,7 @@ button, input, select, textarea {
   margin-bottom: 20px;
 }
 .btn-hamper-now {
-  background: #FAD877;
+  background: #F7C368;
   color: #1a0800;
   padding: 10px 20px;
   border-radius: 4px;
@@ -3247,7 +3247,7 @@ button, input, select, textarea {
   transition: all 0.3s;
 }
 .btn-hamper-now:hover {
-  background: #f3c63f;
+  background: #E8A33D;
   transform: translateY(-2px);
 }
 
@@ -3276,7 +3276,7 @@ button, input, select, textarea {
   justify-content: center;
   background: rgba(255,255,255,0.05);
   font-size: 18px;
-  color: #D4AF37;
+  color: #C97B14;
   margin-bottom: 8px;
 }
 .custom-hamper-step-title {
@@ -3383,7 +3383,7 @@ button, input, select, textarea {
   background: linear-gradient(180deg, #1b0216 0%, #0d010b 100%);
   color: #ffffff;
   border-top: 1px solid rgba(212,175,55,0.15);
-  border-bottom: 2px solid #D4AF37;
+  border-bottom: 2px solid #C97B14;
   padding: 4rem 0;
   position: relative;
 }
@@ -3395,7 +3395,7 @@ button, input, select, textarea {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  color: #D4AF37;
+  color: #C97B14;
   font-weight: 700;
   margin-bottom: 6px;
   display: block;
@@ -3428,9 +3428,9 @@ button, input, select, textarea {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid #D4AF37;
+  border: 1px solid #C97B14;
   background: rgba(133,19,34,0.1);
-  color: #D4AF37;
+  color: #C97B14;
   display: flex;
   align-items: center;
   justify-content: center;

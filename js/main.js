@@ -78,7 +78,7 @@ function applyDynamicSlides(design) {
   const activeSlides = design.slides.filter(s => s.active);
   
   const gradients = [
-    "linear-gradient(135deg, #051a14 0%, #154536 100%)", // Emerald
+    "linear-gradient(135deg, #0D0920 0%, #3B2F63 100%)", // Emerald
     "linear-gradient(135deg, #0f1c24 0%, #20415a 100%)", // Dark Slate Blue
     "linear-gradient(135deg, #24140a 0%, #5a341b 100%)", // Coffee Brown
     "linear-gradient(135deg, #1b2611 0%, #445c2a 100%)", // Olive/Forest
@@ -86,7 +86,7 @@ function applyDynamicSlides(design) {
     "linear-gradient(135deg, #2f0709 0%, #76141a 100%)", // Crimson Gold
     "linear-gradient(135deg, #1d0f28 0%, #4b2c60 100%)", // Plum Royal Purple
     "linear-gradient(135deg, #1a2238 0%, #2b3a67 100%)", // Deep Indigo Blue
-    "linear-gradient(135deg, #08201a 0%, #1c4b40 100%)", // Teal Glow
+    "linear-gradient(135deg, #171230 0%, #55458A 100%)", // Teal Glow
     "linear-gradient(135deg, #302008 0%, #684818 100%)"  // Sandalwood Gold
   ];
 
@@ -301,7 +301,7 @@ function injectPageSpecificDesign(design) {
     const categoryGrid = document.getElementById('category-cards-grid');
     if (categoryGrid && design.home && design.home.categories) {
       const cardGradients = [
-        "radial-gradient(circle, #1c3e34 0%, #0c201a 100%)",
+        "radial-gradient(circle, #3B2F63 0%, #171230 100%)",
         "radial-gradient(circle, #1a2f3a 0%, #0d171d 100%)",
         "radial-gradient(circle, #3e2617 0%, #1e110a 100%)",
         "radial-gradient(circle, #213c23 0%, #0d1e10 100%)",
