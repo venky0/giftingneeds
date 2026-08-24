@@ -30,17 +30,19 @@ const Range = (() => {
 
   function tile(p) {
     const label = p.noun.replace(/&amp;/g, '&');
+    const pieces = p.n > 1 ? `${p.n}-piece set` : 'Single piece';
     return `
       <article class="range-tile" data-id="${p.id}">
-        <button class="range-tile-img" data-open="${p.id}" aria-label="View ${label} ${p.ref}">
-          <img src="images/range/${p.id}_t.jpg" alt="${label} — reference ${p.ref}"
-               loading="lazy" decoding="async" width="420" height="420">
+        <button class="range-tile-img" data-open="${p.id}" aria-label="View ${label} set ${p.ref}">
+          <img src="images/range/${p.id}_t.jpg" alt="${label} set — reference ${p.ref}"
+               loading="lazy" decoding="async" width="460" height="460">
         </button>
         <div class="range-tile-body">
           <span class="range-tile-cat">${label}</span>
           <span class="range-tile-ref">${p.ref}</span>
+          <span class="range-tile-pieces">${pieces}</span>
           <a class="btn btn-outline range-tile-cta"
-             href="contact.html?product=${encodeURIComponent(label + ' ' + p.ref)}">Enquire</a>
+             href="contact.html?product=${encodeURIComponent(label + ' set ' + p.ref)}">Enquire</a>
         </div>
       </article>`;
   }
@@ -55,7 +57,7 @@ const Range = (() => {
         full range runs well beyond what is shown here.</p>`;
 
     $('range-count').textContent =
-      list.length === 1 ? '1 item' : `${list.length} items`;
+      list.length === 1 ? '1 set' : `${list.length} sets`;
 
     const more = $('range-more');
     if (more) {
@@ -72,20 +74,29 @@ const Range = (() => {
     (window.GN_RANGE || []).forEach(p => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
     const cats = (window.GN_CATEGORIES || []).filter(c => counts[c.id]);
 
-    wrap.innerHTML =
-      `<button class="range-chip is-active" data-cat="all">All
-         <span>${(window.GN_RANGE || []).length}</span></button>` +
-      cats.map(c => `<button class="range-chip" data-cat="${c.id}"
-          title="${c.desc}">${c.label} <span>${counts[c.id]}</span></button>`).join('');
+    // Picture cards rather than text chips: the buyer recognises the
+    // category from the goods far faster than from its name.
+    wrap.innerHTML = cats.map(c => `
+      <button class="cat-card" data-cat="${c.id}" title="${c.desc}">
+        <img src="${c.thumb}" alt="${c.label}" loading="lazy" decoding="async"
+             width="700" height="700">
+        <span class="cat-card-name">${c.label}</span>
+        <span class="cat-card-count">${counts[c.id]} ${counts[c.id] === 1 ? 'set' : 'sets'}</span>
+      </button>`).join('') +
+      `<button class="cat-card cat-card-all is-active" data-cat="all">
+        <span class="cat-card-name">All categories</span>
+        <span class="cat-card-count">${(window.GN_RANGE || []).length} sets</span>
+      </button>`;
 
     wrap.addEventListener('click', e => {
-      const b = e.target.closest('.range-chip');
+      const b = e.target.closest('.cat-card');
       if (!b) return;
-      wrap.querySelectorAll('.range-chip').forEach(x => x.classList.remove('is-active'));
+      wrap.querySelectorAll('.cat-card').forEach(x => x.classList.remove('is-active'));
       b.classList.add('is-active');
       state.cat = b.dataset.cat;
       state.shown = PAGE_SIZE;
       render();
+      $('range-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
@@ -103,9 +114,9 @@ const Range = (() => {
         <div class="range-lightbox-meta">
           <div>
             <strong>${label}</strong>
-            <span>Ref ${p.ref} · minimum order 50 units · your logo applied</span>
+            <span>Ref ${p.ref} · ${p.n > 1 ? p.n + ' pieces shown' : 'single piece'} · minimum order 50 units · your logo applied</span>
           </div>
-          <a class="btn btn-gold" href="contact.html?product=${encodeURIComponent(label + ' ' + p.ref)}">Get a quote</a>
+          <a class="btn btn-gold" href="contact.html?product=${encodeURIComponent(label + ' set ' + p.ref)}">Get a quote</a>
         </div>
       </div>`;
     document.body.appendChild(box);
