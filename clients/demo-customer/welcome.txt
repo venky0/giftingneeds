@@ -1,0 +1,7 @@
+This folder is a template.
+
+Copy it, rename it to the customer's slug, drop their files in, add the
+customer to clients/manifest.json, and create a Cloudflare Access policy
+for /clients/<slug>/* limited to their email addresses.
+
+Until that Access policy exists, this folder is public.
