@@ -1,19 +1,41 @@
 {
   // Explicit config so the deploy is reproducible. Without this, wrangler
-  // auto-detects settings at build time and writes its own file, which is
-  // how the first build ended up sweeping in the repo's .git pack and
-  // failing on Workers' 25 MiB per-asset limit.
+  // auto-detects at build time and writes its own file, which is how the
+  // first build swept in the repo's .git pack and failed on the Workers
+  // 25 MiB per-asset limit.
   //
-  // The Cloudflare build runs with root directory "portal", so "." here
-  // is portal/ — the 10-file portal, not the 299 MB site.
+  // The Cloudflare build runs with root directory "portal", so the paths
+  // below are relative to portal/.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "giftingneeds",
+  "main": "src/index.js",
   "compatibility_date": "2026-08-31",
+
+  // Static portal pages. The Worker falls through to these for anything
+  // that is not an /api/ route.
   "assets": {
     "directory": ".",
+    "binding": "ASSETS",
     "not_found_handling": "404-page"
   },
+
+  "vars": {
+    // Which signed-in address may read which Drive folder. Set the real
+    // value in the dashboard (Settings -> Variables) so customer emails
+    // are not committed to a public repository.
+    //
+    //   {"priya@acme.com": {"id": "FOLDER_ID", "label": "Diwali 2026"}}
+    //
+    // The key "*" means "every address the Access policy admits", which
+    // suits one shared library.
+    "CUSTOMER_FOLDERS": "{}"
+  },
+
   "observability": {
     "enabled": true
   }
+
+  // GOOGLE_SERVICE_ACCOUNT is a SECRET, never a var, and never in this
+  // file. Add it in the dashboard under Settings -> Variables and
+  // Secrets, or with: wrangler secret put GOOGLE_SERVICE_ACCOUNT
 }

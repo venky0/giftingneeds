@@ -1,1 +1,6 @@
 .claude/
+
+# Google service account keys — credentials, never committed
+*service-account*.json
+*-key.json
+portal/**/credentials*.json
