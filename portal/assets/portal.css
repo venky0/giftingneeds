@@ -131,3 +131,17 @@
 @media (max-width: 560px) {
   .portal-drive-cta { width: 100%; justify-content: center; }
 }
+
+/* ---- document groups (one per Drive folder the caller may read) ---- */
+.portal-group { margin-bottom: 2rem; }
+.portal-group-title {
+  display: flex; align-items: baseline; gap: .75rem;
+  font-size: 1.05rem; font-weight: 700; color: var(--text-primary);
+  margin: 0 0 .85rem; padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+.portal-group-title span {
+  font-size: .72rem; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}

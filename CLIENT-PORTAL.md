@@ -93,86 +93,125 @@ public.
 
 ## Where the files live
 
-**In Google Drive, not in this repository.** Two reasons, both hard:
+**In Google Drive, served through this site.** The Worker holds one
+Google service account, fetches on the customer's behalf and streams the
+bytes back through giftingneeds.org.
 
-- Cloudflare Workers refuses any asset over 25 MiB. Eight of the current
-  catalogues are between 30 MB and 136 MB, so they simply cannot be
-  served from here.
-- This repository is **public**. Access gates the served pages, not the
-  git history — anything committed to `portal/` is downloadable from
-  GitHub by anyone, permanently. Several catalogues are cost sheets and
-  price lists.
+That arrangement exists for one reason: **access is granted in exactly
+one place — the Cloudflare Access policy.** Nobody edits Drive sharing
+per customer, and customers need no Google account at all.
 
-So the portal holds only a link. The files stay in Drive.
+Two things follow, and both matter:
 
-### Two allowlists, and they must agree
+- The Drive folders must be shared with the **service account only**.
+  Not "anyone with the link" — a link-shared folder is readable by
+  anyone who ever receives the URL, which defeats the whole design.
+- The 25 MiB Workers asset limit does not apply. Files are streamed from
+  Drive, not stored in the deployment, so a 136 MB catalogue is fine.
 
-| Layer | Controls | Managed in |
-|---|---|---|
-| Cloudflare Access | who can open the portal page | Zero Trust → Access |
-| Google Drive sharing | who can open the folder | Drive, per folder |
+### How a request is authorised
 
-**Share the Drive folder with the same address the customer signs into
-the portal with.** If they differ, the customer reaches the page and is
-then refused by Google, which looks like a broken link. The portal card
-prints the signed-in address so a mismatch reads as an instruction
-rather than a dead end.
+1. Cloudflare Access stops anyone not on the policy. Unauthenticated
+   requests never reach the Worker.
+2. Access stamps `Cf-Access-Authenticated-User-Email` on what it admits.
+3. The Worker maps that address to a Drive folder via `CUSTOMER_FOLDERS`
+   and returns only that folder's files.
+4. A download re-checks that the requested file id actually sits in a
+   folder the caller may read — so one approved customer cannot pull
+   another's document by guessing an id.
+
+Step 4 is covered by `portal/test/authorisation.test.mjs`. Run it after
+touching the Worker:
+
+```bash
+node portal/test/authorisation.test.mjs
+```
+
+---
+
+## One-time Google setup
+
+Done once, by you. I cannot do these — they need your Google account.
+
+### 1. Create a service account
+Google Cloud console → create (or pick) a project → **APIs & Services →
+Library** → enable **Google Drive API**.
+
+Then **IAM & Admin → Service Accounts → Create service account**. Name it
+something like `giftingneeds-portal`. No roles are needed — it gets
+access purely by being shared on folders.
+
+Open it → **Keys → Add key → Create new key → JSON**. A `.json` file
+downloads. That file is a credential: treat it like a password, and do
+not paste it into chat or commit it.
+
+### 2. Share the folders with it
+Copy the service account's address — it looks like
+`giftingneeds-portal@your-project.iam.gserviceaccount.com`.
+
+In Drive, for each customer folder: **Share** → set *General access* to
+**Restricted** → add that address as **Viewer**.
+
+Restricted is the important half. A folder left on "anyone with the
+link" stays readable to anyone holding the URL no matter what this
+Worker does.
+
+### 3. Give the Worker the key
+Cloudflare dashboard → Workers & Pages → `giftingneeds` → **Settings →
+Variables and Secrets** → add a **Secret**:
+
+- Name: `GOOGLE_SERVICE_ACCOUNT`
+- Value: the entire contents of the JSON file
+
+A secret, not a variable — secrets are write-only and never shown again.
+
+### 4. Map addresses to folders
+Same page, add a **Variable** (plain text is fine, but see the note):
+
+- Name: `CUSTOMER_FOLDERS`
+- Value, one entry per customer:
+
+```json
+{"priya@acme.com": {"id": "1l4a0tud...", "label": "Diwali 2026"}}
+```
+
+Use `"*"` as the address to give one folder to everyone the Access
+policy admits:
+
+```json
+{"*": {"id": "1l4a0tud...", "label": "Diwali 2026 catalogues"}}
+```
+
+Set this in the dashboard rather than in `wrangler.jsonc`, so customer
+addresses stay out of the public repository.
 
 ---
 
 ## Adding a customer
 
-1. **In Google Drive:** create a folder, put their PDFs in it, share it
-   with their email address (Viewer). Copy the folder link.
-2. **Copy the template:** `portal/clients/demo-customer/` →
-   `portal/clients/<slug>/` — lowercase, hyphens, no spaces.
-3. In that folder's `index.html`, change `data-customer="demo-customer"`
-   to the new slug.
-4. Add them to `portal/clients/manifest.json`:
+1. **Drive:** create their folder, add the PDFs, share it with the
+   service account as Viewer, set general access to **Restricted**.
+   Copy the folder id from the URL —
+   `drive.google.com/drive/folders/<THIS PART>`.
+2. **Cloudflare → Worker → Variables:** add them to `CUSTOMER_FOLDERS`.
+3. **Cloudflare → Zero Trust → Access → giftingneeds.org → "Approved
+   customers":** add their email.
 
-```json
-{
-  "slug": "acme-industries",
-  "name": "Acme Industries Pvt Ltd",
-  "emails": ["priya@acme.example"],
-  "drive": {
-    "url": "https://drive.google.com/drive/folders/XXXXXXXX",
-    "label": "Diwali 2026 catalogues",
-    "note": "33 PDFs"
-  },
-  "files": []
-}
-```
+That is all. No code change, no deploy, no new page — one portal page
+serves everyone and shows each caller only their own folder.
 
-5. Commit and push to `client-portal`. Cloudflare redeploys itself.
-6. **Add their email to the Cloudflare Access policy.** Zero Trust →
-   Access → Applications → giftingneeds.org → "Approved customers".
-
-Steps 1 and 6 are the two that actually grant anything. Steps 2–5 only
-draw the page.
-
-### Keeping customers apart
-One Access application on `giftingneeds.org` lets **every** approved
-person open **every** customer's page — and therefore see every Drive
-link. Drive still refuses the folder itself, but the link and the
-customer's name are visible. For real separation, create one application
-per path, each with its own email list:
-
-| Application | Path | Allowed |
-|---|---|---|
-| Acme | `clients/acme-industries` | priya@acme.example |
-| Bharat Motors | `clients/bharat-motors` | admin@bharatmotors.example |
+Steps 2 and 3 must use the **same address**, or the customer signs in
+and sees an empty portal.
 
 ## Limits worth knowing
 
-- **`manifest.json` lists every customer** and is readable by anyone
-  Access lets in, so one customer can see the others' names and Drive
-  links. Drive still refuses the folders. Split it per folder if that
-  matters.
-- **Customers need a Google account** to open a Drive folder. That is the
-  cost of this approach; the alternative is hosting the files yourself.
-- **The repository is public.** Never commit a customer's documents to
-  `portal/`. Links only.
+- **The service account key is a credential.** Anyone holding it can read
+  every folder shared with it. It lives only as a Cloudflare secret.
+- **A folder on "anyone with the link" is public** regardless of this
+  setup. Set every customer folder to Restricted.
+- **Never commit customer documents or addresses** to this repository —
+  it is public. Files stay in Drive; addresses stay in the Worker
+  variable.
 - **`catalogs/` on giftingneeds.in is public** — 357 supplier pages
   including price lists, reachable without any login. Separate domain,
   not covered by this setup.
