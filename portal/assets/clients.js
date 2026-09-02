@@ -13,7 +13,15 @@
 
 const ClientPortal = (() => {
 
-  const LOGOUT_URL = '/cdn-cgi/access/logout';
+  // Cloudflare's bare logout endpoint finishes on a black page reading
+  // "No Access cookie found. Please login first." — it describes a
+  // successful sign-out as a failure, and offers no way back. returnTo
+  // lands the customer on our own login screen instead.
+  //
+  // It must be same-origin: a cross-domain target (giftingneeds.in) is
+  // rejected outright with "Invalid redirect URL".
+  const LOGOUT_URL = '/cdn-cgi/access/logout?returnTo=' +
+    encodeURIComponent(location.origin + '/');
   const $ = id => document.getElementById(id);
 
   const esc = s => String(s).replace(/[&<>"']/g, c => (
