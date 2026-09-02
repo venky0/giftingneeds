@@ -63,8 +63,11 @@ the certificate, usually within a minute or two.
 Add `www.giftingneeds.org` the same way if you want it to work.
 
 ### 3. Create the Access application
-Zero Trust → **Access** → **Applications** → **Add an application** →
-*Self-hosted*.
+Zero Trust → **Access controls → Applications** → **Create new
+application** → *Self-hosted*.
+
+(The old "Access → Applications" path 404s — Cloudflare moved these under
+**Access controls** in 2026.)
 
 - **Application name:** Gifting Needs client portal
 - **Session duration:** 24 hours
@@ -77,9 +80,19 @@ Add a policy:
 - **Action:** Allow
 - **Include → Emails:** the specific addresses to admit
 
-Under Settings → Authentication, enable **One-time PIN**. Customers then
-receive a six-digit code by email; there is no account or password for
-anyone to manage.
+### 3a. Enable One-time PIN — do not skip this
+Zero Trust → **Integrations → Identity providers** → **Add an identity
+provider** → **One-time PIN**. No configuration; it applies at once.
+
+**The trap:** Cloudflare says a one-time PIN is the default *only if no
+identity provider exists*. Add any provider — including the "Cloudflare"
+one that may already be there — and the PIN option silently disappears.
+The login page then offers just that provider, so a customer without a
+Cloudflare account has no way in and no email box to type into. Nothing
+errors; the door is simply shut.
+
+With it added, customers receive a six-digit code by email. No account,
+no password, nothing for anyone to manage.
 
 ### 4. Check it
 Open `https://giftingneeds.org` in a private window. You should be asked
@@ -194,8 +207,9 @@ addresses stay out of the public repository.
    Copy the folder id from the URL —
    `drive.google.com/drive/folders/<THIS PART>`.
 2. **Cloudflare → Worker → Variables:** add them to `CUSTOMER_FOLDERS`.
-3. **Cloudflare → Zero Trust → Access → giftingneeds.org → "Approved
-   customers":** add their email.
+3. **Zero Trust → Access controls → Applications → `giftingneeds.org`
+   → "Approved customers":** click the empty `email@example.com` box,
+   type the address, press Enter, then **Save policy**.
 
 That is all. No code change, no deploy, no new page — one portal page
 serves everyone and shows each caller only their own folder.
