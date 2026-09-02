@@ -1,19 +1,24 @@
 {
-  "_comment": "One entry per customer. 'slug' is the folder under /clients/ and must match the path in that customer's Cloudflare Access policy. 'emails' is documentation only — the real allowlist lives in Cloudflare.",
+  "_comment": [
+    "One entry per customer.",
+    "'slug' is the folder under /clients/ and must match the path a Cloudflare Access policy covers.",
+    "'drive' is a Google Drive folder shared directly with that customer.",
+    "'emails' is documentation only \u2014 Cloudflare holds the real portal allowlist, and Google holds the real file allowlist.",
+    "IMPORTANT: share the Drive folder with the SAME address the customer signs into the portal with, or they will reach the page and then be refused by Drive."
+  ],
   "customers": [
     {
       "slug": "demo-customer",
       "name": "Demo Customer Ltd",
-      "emails": ["someone@example.com"],
-      "note": "Example entry. Copy the folder, change the slug, add a Cloudflare Access policy for the new path.",
-      "files": [
-        {
-          "file": "welcome.txt",
-          "label": "Read me first",
-          "kind": "Text",
-          "note": "Replace this folder's contents with the customer's own files."
-        }
-      ]
+      "emails": [
+        "someone@example.com"
+      ],
+      "drive": {
+        "url": "",
+        "label": "Your catalogues",
+        "note": "Paste the Google Drive folder link here, then share that folder with the address above."
+      },
+      "files": []
     }
   ]
 }

@@ -82,3 +82,52 @@
   .portal-file-dl { width: 100%; justify-content: center; }
   .portal-signout { margin-left: 0; }
 }
+
+/* ------------------------------------------------------------
+   Google Drive folder card
+   Files live in Drive, not in this repository — no size ceiling
+   and nothing private committed to a public repo. Two allowlists
+   are in play: Cloudflare admits the visitor to this page, Google
+   admits them to the folder. The card names the expected address
+   so a mismatch reads as instructions rather than a dead end.
+   ------------------------------------------------------------ */
+.portal-drive {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  transition: transform .2s var(--diwali-ease), box-shadow .2s, border-color .2s;
+}
+.portal-drive:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-hover);
+}
+.portal-drive-icon {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  color: var(--text-gold);
+  background: var(--bg-section-alt);
+  border-radius: 8px;
+}
+.portal-drive-main { flex: 1 1 260px; min-width: 0; }
+.portal-drive-main strong { display: block; color: var(--text-primary); font-size: 1.05rem; }
+.portal-drive-note { display: block; margin-top: .2rem; font-size: .9rem; color: var(--text-muted); }
+.portal-drive-who { display: block; margin-top: .45rem; font-size: .82rem; color: var(--text-subtle); }
+.portal-drive-cta { flex: 0 0 auto; }
+
+@media (max-width: 560px) {
+  .portal-drive-cta { width: 100%; justify-content: center; }
+}

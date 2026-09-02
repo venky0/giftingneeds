@@ -62,6 +62,30 @@ const ClientPortal = (() => {
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
+  function driveCard(d, identity) {
+    if (!d || !d.url) {
+      return `<p class="portal-empty">Your folder has not been linked yet.
+        Your account manager will share it shortly.</p>`;
+    }
+    // The portal login and the Drive share are two separate allowlists.
+    // Naming the expected address here turns a confusing Google refusal
+    // into something the customer can act on.
+    const who = identity && identity.email
+      ? `<span class="portal-drive-who">Shared with <strong>${escapeHtml(identity.email)}</strong>.
+         If Google refuses, you are signed into a different account there.</span>`
+      : '';
+    return `
+      <a class="portal-drive" href="${escapeHtml(d.url)}" target="_blank" rel="noopener">
+        <span class="portal-drive-icon" aria-hidden="true">△</span>
+        <span class="portal-drive-main">
+          <strong>${escapeHtml(d.label || 'Your documents')}</strong>
+          ${d.note ? `<span class="portal-drive-note">${escapeHtml(d.note)}</span>` : ''}
+          ${who}
+        </span>
+        <span class="btn btn-gold portal-drive-cta">Open folder</span>
+      </a>`;
+  }
+
   function fileRow(f, base) {
     const href = `${base}${encodeURIComponent(f.file)}`;
     return `
@@ -108,9 +132,11 @@ const ClientPortal = (() => {
     if (nameEl) nameEl.textContent = customer.name;
 
     const files = customer.files || [];
-    root.innerHTML = files.length
-      ? `<ul class="portal-files">${files.map(f => fileRow(f, './')).join('')}</ul>`
-      : `<p class="portal-empty">No files have been shared with you yet.</p>`;
+    root.innerHTML =
+      driveCard(customer.drive, identity) +
+      (files.length
+        ? `<ul class="portal-files">${files.map(f => fileRow(f, './')).join('')}</ul>`
+        : '');
   }
 
   if (document.readyState === 'loading') {
