@@ -1,0 +1,84 @@
+/* Portal-only rules, lifted from the main site stylesheet so this
+   deployment carries nothing it does not use. */
+
+/* ------------------------------------------------------------
+   13. CLIENT PORTAL
+   Pages under /clients/ are gated by Cloudflare Access, not by
+   anything here. The status strip exists to make the difference
+   visible: green once Access reports a signed-in identity, and a
+   loud warning while the folder is still reachable by anyone.
+   ------------------------------------------------------------ */
+
+.portal-head { margin-bottom: 1.5rem; }
+
+.portal-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 0.9rem 1.15rem;
+  margin-bottom: 1.75rem;
+  border-radius: 8px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+.portal-status:empty { display: none; }
+.portal-status > span { flex: 1 1 auto; min-width: 0; }
+
+.portal-status-secure {
+  background: rgba(47, 107, 79, 0.12);
+  border: 1px solid rgba(47, 107, 79, 0.4);
+  color: var(--text-primary);
+}
+/* Deliberately alarming: an unprotected folder holding a customer's
+   files is the failure this whole page exists to prevent. */
+.portal-status-open {
+  background: var(--crimson-glow);
+  border: 1px solid var(--crimson);
+  border-left: 4px solid var(--crimson);
+  color: var(--text-primary);
+}
+.portal-status-open strong { color: var(--crimson); }
+.portal-status code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88em;
+  background: var(--bg-section-alt);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+.portal-signout {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--text-gold);
+  white-space: nowrap;
+}
+
+.portal-files { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.portal-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+}
+.portal-file-main { flex: 1 1 240px; min-width: 0; }
+.portal-file-label { display: block; font-weight: 700; color: var(--text-primary); }
+.portal-file-note { display: block; margin-top: 0.2rem; font-size: 0.86rem; color: var(--text-muted); }
+.portal-file-kind {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.portal-file-dl { flex: 0 0 auto; padding: 0.5rem 1.15rem; font-size: 0.85rem; }
+.portal-empty { color: var(--text-muted); padding: 2rem 0; }
+
+@media (max-width: 560px) {
+  .portal-file-dl { width: 100%; justify-content: center; }
+  .portal-signout { margin-left: 0; }
+}
