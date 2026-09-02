@@ -86,7 +86,7 @@ export default {
         }
         return json({ email, groups });
       } catch (err) {
-        return json({ error: 'drive_error', message: String(err.message || err) }, 502);
+        return json({ email, error: 'drive_error', message: String(err.message || err) }, 502);
       }
     }
 
