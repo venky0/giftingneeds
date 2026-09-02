@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal | Gifting Needs</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/portal.css">
+  <style>
+    /* This deployment is only the portal, so it sets its own frame
+       rather than carrying the marketing site's header and footer. */
+    body { background: var(--bg-primary); }
+    .portal-shell { max-width: 860px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .portal-brand { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+    .portal-brand img { height: 52px; width: auto; }
+    .portal-brand span {
+      font-size: .72rem; font-weight: 800; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--text-subtle);
+      padding-left: 1rem; border-left: 1px solid var(--border);
+    }
+    .portal-foot {
+      margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+      font-size: .88rem; color: var(--text-subtle);
+    }
+    .portal-foot a { color: var(--text-gold); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="portal-shell">
+    <div class="portal-brand">
+      <img src="assets/logo.png" alt="Gifting Needs">
+      <span>Client portal</span>
+    </div>
+
+    <h1 class="serif-font" style="font-size:clamp(1.7rem,4vw,2.4rem); margin:0 0 .6rem;">
+      Your documents
+    </h1>
+    <p style="color:var(--text-muted); max-width:60ch; margin:0 0 1.75rem;">
+      This area is private. You are seeing it because your email address was
+      added to the approved list. If you reached it by accident, please close
+      the page.
+    </p>
+
+    <div class="portal-status" id="portal-status" role="status"></div>
+
+    <div id="portal-index"></div>
+
+    <p class="portal-foot">
+      Gifting Needs · Bengaluru · <a href="tel:+916361054099">+91 63610 54099</a><br>
+      Public site: <a href="https://giftingneeds.in">giftingneeds.in</a>
+    </p>
+  </div>
+
+  <script src="assets/clients.js"></script>
+  <script>
+    /* The landing page lists the folders this signed-in address can open.
+       Cloudflare decides who gets here; this only draws the menu. */
+    (async () => {
+      const el = document.getElementById('portal-index');
+      let manifest;
+      try {
+        manifest = await (await fetch('clients/manifest.json', { cache: 'no-store' })).json();
+      } catch {
+        el.innerHTML = '<p class="portal-empty">Could not load your account list.</p>';
+        return;
+      }
+      const customers = manifest.customers || [];
+      el.innerHTML = customers.length
+        ? '<ul class="portal-files">' + customers.map(c => `
+            <li class="portal-file">
+              <div class="portal-file-main">
+                <span class="portal-file-label">${c.name}</span>
+                <span class="portal-file-note">${(c.files || []).length} file(s)</span>
+              </div>
+              <a class="btn btn-outline portal-file-dl"
+                 href="clients/${encodeURIComponent(c.slug)}/">Open</a>
+            </li>`).join('') + '</ul>'
+        : '<p class="portal-empty">No accounts are set up yet.</p>';
+    })();
+  </script>
+</body>
+</html>
