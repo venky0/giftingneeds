@@ -1,0 +1,19 @@
+{
+  // Explicit config so the deploy is reproducible. Without this, wrangler
+  // auto-detects settings at build time and writes its own file, which is
+  // how the first build ended up sweeping in the repo's .git pack and
+  // failing on Workers' 25 MiB per-asset limit.
+  //
+  // The Cloudflare build runs with root directory "portal", so "." here
+  // is portal/ — the 10-file portal, not the 299 MB site.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "giftingneeds",
+  "compatibility_date": "2026-08-31",
+  "assets": {
+    "directory": ".",
+    "not_found_handling": "404-page"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
