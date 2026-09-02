@@ -104,6 +104,35 @@ public.
 
 ---
 
+## The login page
+
+Zero Trust → **Reusable components → Custom pages → Access login page**.
+None of this lives in git, so it is recorded here.
+
+| Field | Value |
+|---|---|
+| Organization's name | `documents` |
+| Logo URL | `https://giftingneeds.in/uploads/gifting_needs_logo_dark.png` |
+| Header text | Explains the six-digit code, no password, no account |
+| Message | Falls back to the account manager's number |
+| Background colour | `#FBF7EE` — same `--bg-primary` as the portal |
+
+Two things worth knowing:
+
+- **"Your organization's name" is the line that used to read
+  `small-flower-f43f.cloudflareaccess.com`.** It is pre-filled with the
+  team domain, which looks unchangeable but is just a default.
+- **The logo must be on a public URL.** The login page is served before
+  authentication, so anything behind Access cannot load. It is pulled
+  from giftingneeds.in, which is public — do not repoint it at
+  giftingneeds.org.
+
+The team was also renamed from `small-flower-f43f` to `giftingneeds`
+(Settings → Team name), so the login URL is now
+`giftingneeds.cloudflareaccess.com`.
+
+---
+
 ## Where the files live
 
 **In Google Drive, served through this site.** The Worker holds one
