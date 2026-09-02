@@ -19,17 +19,22 @@
     "not_found_handling": "404-page"
   },
 
-  "vars": {
-    // Which signed-in address may read which Drive folder. Set the real
-    // value in the dashboard (Settings -> Variables) so customer emails
-    // are not committed to a public repository.
-    //
-    //   {"priya@acme.com": {"id": "FOLDER_ID", "label": "Diwali 2026"}}
-    //
-    // The key "*" means "every address the Access policy admits", which
-    // suits one shared library.
-    "CUSTOMER_FOLDERS": "{}"
-  },
+  // Keep variables set in the dashboard when deploying from git.
+  //
+  // This file must NOT declare CUSTOMER_FOLDERS. It once carried a
+  // placeholder "{}" next to a comment saying to set the real value in
+  // the dashboard — so every git deploy silently reset the mapping and
+  // emptied every customer's portal, while the page still said "signed
+  // in" and simply showed no documents. A wrong answer that looks like
+  // a working one.
+  //
+  // The real mapping lives only in the dashboard, which also keeps
+  // customer email addresses out of this public repository:
+  //
+  //   {"priya@acme.com": {"id": "FOLDER_ID", "label": "Diwali 2026"}}
+  //
+  // The key "*" means "every address the Access policy admits".
+  "keep_vars": true,
 
   "observability": {
     "enabled": true
