@@ -43,13 +43,17 @@ Build settings:
 
 | Field | Value |
 |---|---|
-| Production branch | `main` |
+| Production branch | `client-portal` |
 | Framework preset | None |
 | Build command | *(leave empty)* |
 | Build output directory | `portal` |
 
 The output directory is what keeps this deployment small: it publishes
-only `portal/`, not the 299 MB of catalogues and product imagery.
+only `portal/`, not the 299 MB of catalogues and product imagery. The
+branch matters too — `main` has no `portal/` folder, so pointing at it
+deploys nothing.
+
+This is already configured. It is recorded here so it can be rebuilt.
 
 ### 2. Attach the domain
 In the new Pages project → **Custom domains** → **Set up a custom domain**
@@ -87,59 +91,88 @@ public.
 
 ---
 
+## Where the files live
+
+**In Google Drive, not in this repository.** Two reasons, both hard:
+
+- Cloudflare Workers refuses any asset over 25 MiB. Eight of the current
+  catalogues are between 30 MB and 136 MB, so they simply cannot be
+  served from here.
+- This repository is **public**. Access gates the served pages, not the
+  git history — anything committed to `portal/` is downloadable from
+  GitHub by anyone, permanently. Several catalogues are cost sheets and
+  price lists.
+
+So the portal holds only a link. The files stay in Drive.
+
+### Two allowlists, and they must agree
+
+| Layer | Controls | Managed in |
+|---|---|---|
+| Cloudflare Access | who can open the portal page | Zero Trust → Access |
+| Google Drive sharing | who can open the folder | Drive, per folder |
+
+**Share the Drive folder with the same address the customer signs into
+the portal with.** If they differ, the customer reaches the page and is
+then refused by Google, which looks like a broken link. The portal card
+prints the signed-in address so a mismatch reads as an instruction
+rather than a dead end.
+
+---
+
 ## Adding a customer
 
-1. Copy `portal/clients/demo-customer/` to `portal/clients/<slug>/` —
-   lowercase, hyphens, no spaces.
-2. Put their files in that folder.
+1. **In Google Drive:** create a folder, put their PDFs in it, share it
+   with their email address (Viewer). Copy the folder link.
+2. **Copy the template:** `portal/clients/demo-customer/` →
+   `portal/clients/<slug>/` — lowercase, hyphens, no spaces.
 3. In that folder's `index.html`, change `data-customer="demo-customer"`
    to the new slug.
-4. Add the customer to `portal/clients/manifest.json`:
+4. Add them to `portal/clients/manifest.json`:
 
 ```json
 {
   "slug": "acme-industries",
   "name": "Acme Industries Pvt Ltd",
   "emails": ["priya@acme.example"],
-  "files": [
-    { "file": "diwali-proposal.pdf", "label": "Diwali 2026 proposal", "kind": "PDF" }
-  ]
+  "drive": {
+    "url": "https://drive.google.com/drive/folders/XXXXXXXX",
+    "label": "Diwali 2026 catalogues",
+    "note": "33 PDFs"
+  },
+  "files": []
 }
 ```
 
-5. Commit and push. Cloudflare Pages redeploys on its own.
-6. **Add the email to the Cloudflare Access policy.** This is the step
-   that actually grants access; nothing in the repository does.
+5. Commit and push to `client-portal`. Cloudflare redeploys itself.
+6. **Add their email to the Cloudflare Access policy.** Zero Trust →
+   Access → Applications → giftingneeds.org → "Approved customers".
+
+Steps 1 and 6 are the two that actually grant anything. Steps 2–5 only
+draw the page.
 
 ### Keeping customers apart
-A single application covering `giftingneeds.org` lets **every** approved
-person open **every** customer folder. For real separation, create one
-application per path, each with its own email list:
+One Access application on `giftingneeds.org` lets **every** approved
+person open **every** customer's page — and therefore see every Drive
+link. Drive still refuses the folder itself, but the link and the
+customer's name are visible. For real separation, create one application
+per path, each with its own email list:
 
 | Application | Path | Allowed |
 |---|---|---|
 | Acme | `clients/acme-industries` | priya@acme.example |
 | Bharat Motors | `clients/bharat-motors` | admin@bharatmotors.example |
 
-Then keep the site-wide application as a broader gate, or remove it and
-let the per-path ones do the work.
-
-The `emails` field in `manifest.json` is a note to yourself. It grants
-nothing — Cloudflare holds the real list.
-
----
-
 ## Limits worth knowing
 
 - **`manifest.json` lists every customer** and is readable by anyone
-  Access lets in, so one customer can see the others' names. If that
-  matters, split it into one manifest per folder.
-- **Git history keeps files forever.** Removing a file from the working
-  tree does not remove it from earlier commits in a public repository.
-  Treat anything committed here as permanently recorded.
-- **The repository is public.** Filenames under `portal/` are visible on
-  GitHub even though the served pages are gated. Do not rely on a filename
-  being secret.
+  Access lets in, so one customer can see the others' names and Drive
+  links. Drive still refuses the folders. Split it per folder if that
+  matters.
+- **Customers need a Google account** to open a Drive folder. That is the
+  cost of this approach; the alternative is hosting the files yourself.
+- **The repository is public.** Never commit a customer's documents to
+  `portal/`. Links only.
 - **`catalogs/` on giftingneeds.in is public** — 357 supplier pages
-  including price lists, reachable without any login. It is a separate
-  domain and deployment, and this setup does not cover it.
+  including price lists, reachable without any login. Separate domain,
+  not covered by this setup.
