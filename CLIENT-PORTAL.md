@@ -104,6 +104,72 @@ public.
 
 ---
 
+## Requesting access, and approving it
+
+A visitor on giftingneeds.in presses **Request access**, fills in four
+fields, and the client gets an email. One button in that email adds the
+address to the Access policy. Nothing else happens anywhere.
+
+    giftingneeds.in                giftingneeds.org              client's inbox
+    [Request access] --POST--> /api/request-access --mail--> "Approve <name>?"
+                                                                     |
+    customer signs in <---- added to Access policy <---- [button] ---+
+
+### Why the approve link is safe to email
+
+- **It is a POST, not a GET.** The link opens a page with a button.
+  Mail clients, security scanners and link previewers fetch every URL in
+  a message; if a GET granted access, requests would approve themselves
+  on arrival, silently, looking exactly as though the client had done it.
+- **The address is inside the signed token.** The approve endpoint takes
+  nothing from the incoming request, so the link cannot be edited to
+  admit somebody else, and a token signed with any other secret is
+  refused.
+- **Tokens expire after 7 days.**
+
+`portal/test/authorisation.test.mjs` covers all three, plus that
+approving twice is harmless and that existing customers survive the
+write. Run it after touching either file.
+
+### The two public routes
+
+`/api/request-access` and `/api/approve` **must stay outside Access**, or
+the form cannot reach them and the client is asked to log in to approve.
+They are excluded by a second Access application:
+
+| | |
+|---|---|
+| Application | **Public API - request and approve** |
+| Destinations | `giftingneeds.org/api/request-access`, `giftingneeds.org/api/approve` |
+| Policy | **Public - request and approve endpoints** — action **Bypass**, include **Everyone** |
+
+Access evaluates Bypass first, so this wins over the domain-wide app.
+Verify with an anonymous request — no cookie, no browser:
+
+```bash
+curl -s -X POST https://giftingneeds.org/api/request-access \
+  -H 'Content-Type: application/json' -d '{}'
+```
+
+A `400` with *"Please tell us your name."* means the bypass is working:
+the Worker answered. A `302` means it is not, and the form is dead.
+
+### Settings this needs
+
+| Name | Type | Value |
+|---|---|---|
+| `CF_ACCOUNT_ID` | Text | `f2a1e0fc24819405f08c8946376a75fe` |
+| `CF_POLICY_ID` | Text | `603781a3-6032-4098-93b4-c6f84f82a6b8` — the "Approved customers" policy |
+| `APPROVAL_SECRET` | **Secret** | Long random string. Changing it invalidates every approval link already sent. |
+| `WEB3FORMS_KEY` | **Secret** | Free key issued to promo@giftingneeds.in at web3forms.com |
+| `CF_API_TOKEN` | **Secret** | Scoped to **Access: Apps and Policies — Edit** on this account, nothing else |
+
+The API token can rewrite who may reach the portal. Scope it to that one
+permission: a broader token in a Worker is a much larger loss if it ever
+leaks.
+
+---
+
 ## The login page
 
 Zero Trust → **Reusable components → Custom pages → Access login page**.
