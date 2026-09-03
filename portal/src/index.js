@@ -23,7 +23,7 @@
  * Everything else stays behind Access.
  */
 
-import { listFolder, streamFile } from './drive.js';
+import { listFolderTree, streamFile } from './drive.js';
 import { readRequest, signRequest, verifyToken, grantAccess, emailRequest } from './approval.js';
 
 const PORTAL_PATH = '/customer-login';
@@ -243,16 +243,21 @@ export default {
       try {
         const groups = [];
         for (const f of folders) {
-          const files = await listFolder(env, f.id || f);
-          groups.push({
-            label: f.label || 'Documents',
-            files: files.map(x => ({
-              id: x.id,
-              name: x.name,
-              size: x.size ? Number(x.size) : null,
-              modified: x.modifiedTime || null,
-            })),
-          });
+          // A library may be a flat pile of PDFs or split into category
+          // subfolders. Either way this returns groups, so the portal
+          // renders the client's own structure instead of flattening it.
+          const tree = await listFolderTree(env, f.id || f, f.label || 'Documents');
+          for (const g of tree) {
+            groups.push({
+              label: g.label,
+              files: g.files.map(x => ({
+                id: x.id,
+                name: x.name,
+                size: x.size ? Number(x.size) : null,
+                modified: x.modifiedTime || null,
+              })),
+            });
+          }
         }
         return json({ email, groups });
       } catch (err) {
@@ -271,10 +276,16 @@ export default {
       // this caller is allowed to read, or anyone approved for one
       // customer could pull another customer's document by guessing.
       try {
+        // Must walk the same tree the listing does. Checking only the top
+        // level would refuse every file sitting in a category subfolder —
+        // the customer would see it listed and get a 404 on download.
         let match = null;
         for (const f of folders) {
-          const files = await listFolder(env, f.id || f);
-          match = files.find(x => x.id === fileId);
+          const tree = await listFolderTree(env, f.id || f, f.label || 'Documents');
+          for (const g of tree) {
+            const hit = g.files.find(x => x.id === fileId);
+            if (hit) { match = hit; break; }
+          }
           if (match) break;
         }
         if (!match) return new Response('Not found', { status: 404 });

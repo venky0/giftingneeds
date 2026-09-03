@@ -15,15 +15,31 @@ import { readFileSync } from 'fs';
 
 const approvalSrc = readFileSync('portal/src/approval.js', 'utf8')
   .replace(/^export /gm, '');
+const driveSrc = readFileSync('portal/src/drive.js', 'utf8');
+const treeSrc = driveSrc.slice(
+  driveSrc.indexOf("const FOLDER_MIME"),
+  driveSrc.indexOf("/** Files directly inside one folder")
+).replace(/^export /gm, '');
+
 const indexSrc = readFileSync('portal/src/index.js', 'utf8')
-  .replace("import { listFolder, streamFile } from './drive.js';", '')
+  .replace("import { listFolderTree, streamFile } from './drive.js';", '')
   .replace(/import \{[^}]*\} from '\.\/approval\.js';/, '');
 
 const stub = `
+const FOLDERS = {
+  FOLDER_A:   [{id:'fileA', name:'A.pdf'}],
+  FOLDER_B:   [{id:'fileB', name:'B.pdf'}],
+  // A library split into categories, like the client's "category wise".
+  FOLDER_CAT: [{id:'SUB1', name:'Drinkware', mimeType:'application/vnd.google-apps.folder'},
+               {id:'SUB2', name:'Bags',      mimeType:'application/vnd.google-apps.folder'},
+               {id:'loose', name:'Index.pdf'}],
+  SUB1:       [{id:'cup', name:'Mugs.pdf'}],
+  SUB2:       [{id:'bag', name:'Totes.pdf'}],
+};
 let LIST_CALLS = [];
-async function listFolder(env, id){ LIST_CALLS.push(id);
-  return id==='FOLDER_A' ? [{id:'fileA',name:'A.pdf'}] : [{id:'fileB',name:'B.pdf'}]; }
+async function listFolder(env, id){ LIST_CALLS.push(id); return FOLDERS[id] || []; }
 async function streamFile(env,id,name){ return new Response('bytes', {status:200}); }
+${treeSrc}
 ${approvalSrc}
 ${indexSrc}
 export { LIST_CALLS, signRequest, verifyToken };
@@ -33,7 +49,7 @@ const w = mod.default;
 
 const env = {
   CUSTOMER_FOLDERS: JSON.stringify({
-    'priya@acme.com': { id:'FOLDER_A', label:'Acme' },
+    'priya@acme.com': [{ id:'FOLDER_A', label:'Acme' }, { id:'FOLDER_CAT', label:'Catalogues' }],
     'raj@bharat.com': { id:'FOLDER_B', label:'Bharat' }
   }),
   ASSETS: { fetch: async () => new Response('static', { status:200 }) },
@@ -77,8 +93,10 @@ check('no Access header -> 401', r.status === 401);
 
 r = await w.fetch(req('/api/files','priya@acme.com'), env);
 let d = await r.json();
-check('approved caller gets their group', d.groups?.length===1 && d.groups[0].label==='Acme');
-check('and only their own file', d.groups[0].files[0].name==='A.pdf');
+const acme = (d.groups || []).find(g => g.label === 'Acme');
+check('approved caller gets their group', !!acme && acme.files[0].name === 'A.pdf');
+check('and nothing belonging to anyone else',
+  !d.groups.some(g => g.files.some(f => f.name === 'B.pdf')));
 
 r = await w.fetch(req('/api/file/fileB','priya@acme.com'), env);
 check('cross-customer file id -> 404', r.status === 404);
@@ -89,6 +107,28 @@ check('own file downloads', r.status === 200);
 r = await w.fetch(req('/api/files','stranger@nowhere.com'), env);
 d = await r.json();
 check('unmapped address -> no folders', d.groups?.length===0);
+
+/* ========================= folders inside folders ==================== */
+
+r = await w.fetch(req('/api/files','priya@acme.com'), env);
+d = await r.json();
+const labels = d.groups.map(g => g.label);
+check('subfolders become their own groups',
+  labels.includes('Drinkware') && labels.includes('Bags'));
+check('loose files in the parent keep the library label',
+  labels.includes('Catalogues'));
+check('a folder is never listed as a downloadable file',
+  !d.groups.some(g => g.files.some(f => /Drinkware|Bags$/.test(f.name))));
+
+r = await w.fetch(req('/api/file/cup','priya@acme.com'), env);
+check('a file inside a subfolder downloads', r.status === 200);
+
+r = await w.fetch(req('/api/file/bag','priya@acme.com'), env);
+check('and so does one in a sibling subfolder', r.status === 200);
+
+// THE IMPORTANT ONE: deep listing must not widen who can reach what.
+r = await w.fetch(req('/api/file/cup','raj@bharat.com'), env);
+check('another customer still cannot reach a subfolder file', r.status === 404);
 
 /* ============================== routing ============================== */
 
