@@ -21,7 +21,10 @@
   var SEEN_KEY   = 'gn_catalogue_prompt_seen';
   var SEEN_DAYS  = 30;
 
-  var root = null, previouslyFocused = null;
+  var root = null;          // modal backdrop, null when inline
+  var card = null;          // the .gn-ra element itself, either way
+  var inline = false;
+  var previouslyFocused = null;
 
   /* ----------------------------------------------------------- styles */
 
@@ -135,6 +138,8 @@
                      'aria-labelledby="gn-ra-title" style="position:relative">' +
                      formHtml() + '</div>';
     document.body.appendChild(root);
+    card = root.querySelector('.gn-ra');
+    inline = false;
     document.body.style.overflow = 'hidden';
     requestAnimationFrame(function () { root.classList.add('is-open'); });
 
@@ -147,7 +152,7 @@
   }
 
   function close() {
-    if (!root) return;
+    if (inline || !root) return;
     var node = root;
     root = null;
     node.classList.remove('is-open');
@@ -171,10 +176,11 @@
   /* ---------------------------------------------------------- submitting */
 
   function wire() {
-    var box  = root.querySelector('.gn-ra');
-    var form = box.querySelector('form');
-    box.querySelector('.gn-ra-x').addEventListener('click', close);
-    var cancel = box.querySelector('.gn-ra-cancel');
+    if (!card) return;
+    var form   = card.querySelector('form');
+    var x      = card.querySelector('.gn-ra-x');
+    var cancel = card.querySelector('.gn-ra-cancel');
+    if (x) x.addEventListener('click', close);
     if (cancel) cancel.addEventListener('click', close);
     if (form) form.addEventListener('submit', submit);
   }
@@ -193,7 +199,8 @@
 
   async function submit(e) {
     e.preventDefault();
-    var box  = root.querySelector('.gn-ra');
+    var box  = card;
+    if (!box) return;
     var form = box.querySelector('form');
     var send = box.querySelector('.gn-ra-send');
 
@@ -224,13 +231,26 @@
 
       remember();
       box.innerHTML = doneHtml(data.email);
-      wire();
-      var btn = box.querySelector('.gn-ra-cancel');
-      if (btn) btn.focus();
+      if (inline) {
+        // No dialog to dismiss — drop the controls that would try.
+        var x = box.querySelector('.gn-ra-x');
+        if (x) x.remove();
+        var c = box.querySelector('.gn-ra-actions');
+        if (c) c.remove();
+      } else {
+        wire();
+        var btn = box.querySelector('.gn-ra-cancel');
+        if (btn) btn.focus();
+      }
     } catch (err) {
       send.disabled = false;
       send.textContent = 'Request access';
-      showError(box, err.message || 'We could not send that just now.', true);
+      // A failed fetch surfaces as TypeError("Failed to fetch") — true, and
+      // meaningless to a customer. Only messages we wrote are worth showing.
+      var msg = (err && err.name === 'TypeError')
+        ? 'We could not reach us just now — please check your connection and try again.'
+        : (err && err.message) || 'We could not send that just now.';
+      showError(box, msg, true);
     }
   }
 
@@ -320,9 +340,10 @@
     if (x) x.remove();                       // nothing to close on a page
     var cancel = container.querySelector('.gn-ra-cancel');
     if (cancel) cancel.remove();             // nor to cancel back to
-    root = { querySelector: function (q) { return container.querySelector(q); } };
-    var form = container.querySelector('form');
-    if (form) form.addEventListener('submit', submit);
+    card = container;
+    inline = true;
+    root = null;
+    wire();
   }
 
   window.GNRequestAccess = { open: open, close: close, mount: mount };
