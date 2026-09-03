@@ -61,6 +61,8 @@
   '.gn-ra-ok .gn-ra-tick{font-size:2.6rem;line-height:1;color:#1F6F43}' +
   '.gn-ra-x{position:absolute;top:.85rem;right:1rem;background:none;border:0;cursor:pointer;' +
     'font-size:1.5rem;line-height:1;color:var(--text-secondary,#5A5068);padding:.25rem}' +
+  '.gn-ra-inline{box-shadow:none;max-width:none;padding:0;max-height:none;overflow:visible}' +
+  '.gn-ra-inline h2{display:none}.gn-ra-inline p.gn-ra-lead{display:none}' +
   '@media (max-width:520px){.gn-ra-row{display:block}.gn-ra{padding:1.5rem}}' +
   '@media (prefers-reduced-motion:reduce){.gn-ra-back,.gn-ra{transition:none}}';
 
@@ -265,6 +267,11 @@
   }
 
   function init() {
+    // A page that mounts the form inline handles itself.
+    if (document.getElementById('gn-request-inline')) {
+      mount(document.getElementById('gn-request-inline'));
+      return;
+    }
     openIfHashAsks();
     window.addEventListener('hashchange', openIfHashAsks);
 
@@ -297,5 +304,26 @@
     init();
   }
 
-  window.GNRequestAccess = { open: open, close: close };
+  /**
+   * Render the same form inside a page, with no modal.
+   *
+   * The shareable landing page needs the form visible on arrival: someone
+   * who followed a link because they were unsure whether to trust it is
+   * not reassured by a dialog appearing over a page they have not read.
+   */
+  function mount(container) {
+    if (!container) return;
+    injectCss();
+    container.classList.add('gn-ra', 'gn-ra-inline');
+    container.innerHTML = formHtml();
+    var x = container.querySelector('.gn-ra-x');
+    if (x) x.remove();                       // nothing to close on a page
+    var cancel = container.querySelector('.gn-ra-cancel');
+    if (cancel) cancel.remove();             // nor to cancel back to
+    root = { querySelector: function (q) { return container.querySelector(q); } };
+    var form = container.querySelector('form');
+    if (form) form.addEventListener('submit', submit);
+  }
+
+  window.GNRequestAccess = { open: open, close: close, mount: mount };
 })();
