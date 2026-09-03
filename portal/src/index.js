@@ -297,12 +297,23 @@ export default {
 
     /* -------------------------- the portal itself ----------------------- */
 
-    // The portal lives at /customer-login. The root redirects there so an
-    // old bookmark still lands somewhere useful.
-    if (url.pathname === '/' || url.pathname === '/index.html') {
+    // The portal lives at /customer-login, but customers type this URL by
+    // hand off an email or a WhatsApp message, and the near misses are
+    // predictable: an underscore for the hyphen, or just "login".
+    //
+    // Getting it slightly wrong currently means a bare browser 404 with
+    // no way back — on the one page a customer needs to reach. Cheaper to
+    // accept the obvious variants than to lose them there.
+    const alias = url.pathname.toLowerCase().replace(/\/+$/, '');
+    const ALIASES = [
+      '', '/index.html',
+      '/customer_login', '/customerlogin', '/customer-login/',
+      '/login', '/signin', '/sign-in', '/portal', '/customer',
+    ];
+    if (alias !== PORTAL_PATH && ALIASES.includes(alias)) {
       return Response.redirect(`${url.origin}${PORTAL_PATH}`, 302);
     }
-    if (url.pathname === PORTAL_PATH || url.pathname === `${PORTAL_PATH}/`) {
+    if (alias === PORTAL_PATH) {
       return env.ASSETS.fetch(new Request(`${url.origin}/index.html`, request));
     }
 

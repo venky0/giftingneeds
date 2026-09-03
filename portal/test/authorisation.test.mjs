@@ -139,6 +139,16 @@ check('root redirects to /customer-login',
 r = await w.fetch(req('/customer-login','priya@acme.com'), env);
 check('/customer-login serves the portal', (await r.text())==='static');
 
+// Typed by hand off an email; the near misses must not dead-end.
+for (const near of ['/customer_login','/customerlogin','/login','/portal','/customer']) {
+  r = await w.fetch(req(near,'priya@acme.com'), env);
+  check('near miss ' + near + ' redirects',
+    r.status===302 && r.headers.get('location')==='https://giftingneeds.org/customer-login');
+}
+// Differently-cased is the real path, so serve it rather than bounce.
+r = await w.fetch(req('/Customer-Login','priya@acme.com'), env);
+check('/Customer-Login is served, not redirected', (await r.text())==='static');
+
 /* ========================== access requests ========================== */
 
 const post = (path, body, origin='https://giftingneeds.in') =>
