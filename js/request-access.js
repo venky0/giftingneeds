@@ -65,7 +65,12 @@
   '.gn-ra-x{position:absolute;top:.85rem;right:1rem;background:none;border:0;cursor:pointer;' +
     'font-size:1.5rem;line-height:1;color:var(--text-secondary,#5A5068);padding:.25rem}' +
   '.gn-ra-inline{box-shadow:none;max-width:none;padding:0;max-height:none;overflow:visible}' +
-  '.gn-ra-inline h2{display:none}.gn-ra-inline p.gn-ra-lead{display:none}' +
+  // Hide only the FORM's own heading and lead - the page supplies those.
+  // Child combinator matters: the success message puts its heading inside
+  // .gn-ra-ok, and hiding that left customers staring at a bare tick with
+  // no confirmation that anything had happened.
+  '.gn-ra-inline>h2,.gn-ra-inline>p.gn-ra-lead{display:none}' +
+  '.gn-ra-inline .gn-ra-ok h2{display:block;margin-top:.5rem}' +
   '@media (max-width:520px){.gn-ra-row{display:block}.gn-ra{padding:1.5rem}}' +
   '@media (prefers-reduced-motion:reduce){.gn-ra-back,.gn-ra{transition:none}}';
 
