@@ -247,7 +247,27 @@
     } catch (e) { return false; }
   }
 
+  /**
+   * Opening straight from a link.
+   *
+   * The client sends customers a button in an email, so there has to be
+   * a URL that lands on the form itself — telling someone to open a page
+   * and hunt for a button loses most of them. #request works on every
+   * page carrying this script, which keeps the emailed link short.
+   */
+  function openIfHashAsks() {
+    if (/^#request(-access)?$/.test(location.hash)) {
+      // Let the page paint first, so it is not a modal over a blank screen.
+      setTimeout(open, 250);
+      return true;
+    }
+    return false;
+  }
+
   function init() {
+    openIfHashAsks();
+    window.addEventListener('hashchange', openIfHashAsks);
+
     document.addEventListener('click', function (e) {
       var t = e.target.closest('[data-request-access]');
       if (!t) return;
@@ -257,6 +277,8 @@
 
     // One unprompted appearance, and only where someone is clearly
     // browsing the range rather than passing through the home page.
+    // The unprompted appearance is separate: an emailed link is an
+    // explicit request and must always open, dismissal or not.
     if (!/products\.html$/.test(location.pathname) || seenRecently()) return;
     var fired = false;
     window.addEventListener('scroll', function onScroll() {
