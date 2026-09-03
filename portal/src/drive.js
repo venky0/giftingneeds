@@ -100,6 +100,50 @@ async function getAccessToken(env) {
 
 /* -------------------------------------------------------------- Drive */
 
+const FOLDER_MIME = 'application/vnd.google-apps.folder';
+
+/**
+ * Everything under a folder, as groups the portal can render.
+ *
+ * The client organises some libraries into category subfolders and some
+ * as a flat pile of PDFs. Listing only the top level turns the first kind
+ * into ten undownloadable rows named after folders, so this walks in.
+ *
+ * Subfolders become their own group, which keeps the client's categories
+ * intact rather than flattening the lot into one long list. Depth and
+ * total folders visited are capped: a mis-shared drive should degrade to
+ * fewer results, never to a Worker that runs until it is killed.
+ */
+export async function listFolderTree(env, folderId, label, opts = {}) {
+  const maxDepth = opts.maxDepth ?? 2;
+  const maxFolders = opts.maxFolders ?? 40;
+
+  const groups = [];
+  let visited = 0;
+
+  async function walk(id, name, depth) {
+    if (visited >= maxFolders) return;
+    visited++;
+
+    const entries = await listFolder(env, id);
+    const files = entries.filter(e => e.mimeType !== FOLDER_MIME);
+    const subs  = entries.filter(e => e.mimeType === FOLDER_MIME);
+
+    if (files.length) groups.push({ label: name, files });
+
+    if (depth >= maxDepth) return;
+    for (const sub of subs) {
+      // "Parent — Child" only past the first level, or every group on a
+      // one-level library would be needlessly prefixed.
+      const childName = depth === 0 ? sub.name : `${name} — ${sub.name}`;
+      await walk(sub.id, childName, depth + 1);
+    }
+  }
+
+  await walk(folderId, label || 'Documents', 0);
+  return groups;
+}
+
 /** Files directly inside one folder, newest first. */
 export async function listFolder(env, folderId) {
   const token = await getAccessToken(env);
