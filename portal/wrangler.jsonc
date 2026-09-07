@@ -36,6 +36,13 @@
   // The key "*" means "every address the Access policy admits".
   "keep_vars": true,
 
+  // Outbound mail. destination_address pins the binding to one recipient:
+  // even if the Worker were compromised, it cannot be used to send mail
+  // anywhere else.
+  "send_email": [
+    { "name": "SEND_EMAIL", "destination_address": "promo@giftingneeds.in" }
+  ],
+
   "observability": {
     "enabled": true
   }

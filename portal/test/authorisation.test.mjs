@@ -14,7 +14,8 @@
 import { readFileSync } from 'fs';
 
 const approvalSrc = readFileSync('portal/src/approval.js', 'utf8')
-  .replace(/^export /gm, '');
+  .replace(/^export /gm, '')
+  .replace("await import('cloudflare:email')", '{ EmailMessage: FakeEmailMessage }');
 const driveSrc = readFileSync('portal/src/drive.js', 'utf8');
 const treeSrc = driveSrc.slice(
   driveSrc.indexOf("const FOLDER_MIME"),
@@ -25,7 +26,13 @@ const indexSrc = readFileSync('portal/src/index.js', 'utf8')
   .replace("import { listFolderTree, streamFile } from './drive.js';", '')
   .replace(/import \{[^}]*\} from '\.\/approval\.js';/, '');
 
+class FakeEmailMessage {
+  constructor(from, to, raw) { this.from = from; this.to = to; this.raw = raw; }
+}
 const stub = `
+class FakeEmailMessage {
+  constructor(from, to, raw) { this.from = from; this.to = to; this.raw = raw; }
+}
 const FOLDERS = {
   FOLDER_A:   [{id:'fileA', name:'A.pdf'}],
   FOLDER_B:   [{id:'fileB', name:'B.pdf'}],
@@ -54,7 +61,8 @@ const env = {
   }),
   ASSETS: { fetch: async () => new Response('static', { status:200 }) },
   APPROVAL_SECRET: 'test-secret-not-the-real-one',
-  WEB3FORMS_KEY: 'test-key',
+  NOTIFY_EMAIL: 'promo@giftingneeds.in',
+  SEND_EMAIL: { send: async (m) => { mailsSent.push(m); } },
   CF_ACCOUNT_ID: 'acct', CF_POLICY_ID: 'pol', CF_API_TOKEN: 'tok',
 };
 
@@ -63,10 +71,6 @@ let policyInclude = [{ email: { email: 'existing@customer.com' } }];
 let mailsSent = [], policyWrites = [];
 globalThis.fetch = async (url, init = {}) => {
   const u = String(url);
-  if (u.startsWith('https://api.web3forms.com')) {
-    mailsSent.push(JSON.parse(init.body));
-    return new Response(JSON.stringify({ success:true }), { status:200 });
-  }
   if (u.includes('/access/policies/')) {
     if ((init.method || 'GET') === 'GET') {
       return new Response(JSON.stringify({ success:true,
@@ -167,10 +171,13 @@ r = await w.fetch(post('/api/request-access',
   { name:'Asha Rao', company:'Acme', email:'Asha@Acme.com', phone:'900' }), env);
 check('valid request accepted', r.status===200);
 check('exactly one mail sent', mailsSent.length===1);
-check('mail carries an approve link', /\/api\/approve\?t=/.test(mailsSent[0].message));
+check('mail carries an approve link', /\/api\/approve\?t=/.test(mailsSent[0].raw));
+check('mail is addressed to the client', mailsSent[0].to === 'promo@giftingneeds.in');
+check('subject header is ASCII only', /^[\x20-\x7E\r\n:<>@. -]*$/.test(
+  (mailsSent[0].raw.match(/^Subject: .*$/m) || [''])[0]));
 check('request alone grants nothing', policyWrites.length===0);
 
-const link = mailsSent[0].message.match(/https:\/\/\S*\/api\/approve\?t=(\S+)/)[1];
+const link = mailsSent[0].raw.match(/https:\/\/\S*\/api\/approve\?t=(\S+)/)[1];
 
 /* ============================== approval ============================= */
 

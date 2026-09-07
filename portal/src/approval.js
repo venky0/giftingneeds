@@ -1,6 +1,13 @@
 /**
  * Catalogue access requests, and the approval that grants them.
  *
+ * Mail goes out through Cloudflare's send_email binding rather than a
+ * form-to-email service. The service this replaced accepted every
+ * submission, recorded it, returned success — and delivered nothing. A
+ * transport that reports success without delivering is worse than one
+ * that fails loudly: the portal looked healthy while every request was
+ * quietly lost.
+ *
  * A visitor to giftingneeds.in asks for the catalogues. That request is
  * emailed to the client, who clicks one link to approve. The approval
  * adds the address to the Cloudflare Access policy, which is the single
@@ -22,7 +29,6 @@
  */
 
 const CF_API = 'https://api.cloudflare.com/client/v4';
-const WEB3FORMS = 'https://api.web3forms.com/submit';
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;   // a working week
 
 /* ------------------------------------------------------------ helpers */
@@ -152,9 +158,12 @@ export async function grantAccess(env, email) {
 /* --------------------------------------------------------------- email */
 
 export async function emailRequest(env, req, approveUrl) {
-  if (!env.WEB3FORMS_KEY) throw new Error('WEB3FORMS_KEY is not set');
+  if (!env.SEND_EMAIL) throw new Error('SEND_EMAIL binding is not configured');
 
-  const lines = [
+  const to = env.NOTIFY_EMAIL || 'promo@giftingneeds.in';
+  const from = env.MAIL_FROM || 'portal@giftingneeds.org';
+
+  const body = [
     `${req.name} has asked for access to the Gifting Needs catalogues.`,
     '',
     `Name:     ${req.name}`,
@@ -171,22 +180,31 @@ export async function emailRequest(env, req, approveUrl) {
     'recognise. The link stops working after 7 days.',
     '',
     'To refuse, ignore this email. Nothing happens without the button.',
-  ].join('\n');
+  ].join('\r\n');
 
-  const res = await fetch(WEB3FORMS, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({
-      access_key: env.WEB3FORMS_KEY,
-      subject: `Catalogue access request — ${req.name}${req.company ? ` (${req.company})` : ''}`,
-      from_name: 'Gifting Needs portal',
-      replyto: req.email,
-      message: lines,
-    }),
-  });
-  if (!res.ok) throw new Error(`Email service refused the request (${res.status})`);
-  const out = await res.json().catch(() => ({}));
-  if (out.success === false) throw new Error(out.message || 'Email service rejected the request');
+  // Subject headers are ASCII-only unless RFC 2047 encoded. A customer
+  // called "José" would otherwise produce a malformed header and the send
+  // fails — so the header is folded to ASCII and the real name, unaltered,
+  // travels in the body where UTF-8 is declared.
+  const asciiSubject = `Catalogue access request - ${req.name}`
+    .replace(/[^\x20-\x7E]/g, '?')
+    .slice(0, 160);
+
+  const raw = [
+    `From: Gifting Needs portal <${from}>`,
+    `To: <${to}>`,
+    `Reply-To: <${req.email}>`,
+    `Subject: ${asciiSubject}`,
+    `Message-ID: <${crypto.randomUUID()}@giftingneeds.org>`,
+    `Date: ${new Date().toUTCString()}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset="utf-8"',
+    '',
+    body,
+  ].join('\r\n');
+
+  const { EmailMessage } = await import('cloudflare:email');
+  await env.SEND_EMAIL.send(new EmailMessage(from, to, raw));
 }
 
 /* ------------------------------------------------------- request intake */
