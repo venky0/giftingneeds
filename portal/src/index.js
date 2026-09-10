@@ -347,9 +347,18 @@ export default {
       }
     }
 
-    if (path === PORTAL_PATH)  return env.ASSETS.fetch(new Request(`${url.origin}/index.html`, request));
-    if (path === '/storefront') return env.ASSETS.fetch(new Request(`${url.origin}/storefront/index.html`, request));
-    if (path === '/posters')    return env.ASSETS.fetch(new Request(`${url.origin}/posters.html`, request));
+    // Fetch the DIRECTORY, not the file inside it. Cloudflare's asset
+    // handler redirects /index.html to /, so asking for the file returned
+    // a 307 that sent /customer-login to the hub — the page unreachable at
+    // its own URL, and the redirect made it look deliberate.
+    const PAGES = {
+      [PORTAL_PATH]: '/catalogues/',
+      '/storefront': '/storefront/',
+      '/posters':    '/posters.html',
+    };
+    if (PAGES[path]) {
+      return env.ASSETS.fetch(new Request(`${url.origin}${PAGES[path]}`, request));
+    }
 
     if (path === '' || path === '/index.html') {
       return page('Gifting Needs', `
