@@ -296,7 +296,7 @@ export default {
             modified: x.modifiedTime || null,
           })),
         }));
-        const response = json({ groups }, 200, { 'Cache-Control': 'public, max-age=300' });
+        const response = json({ groups }, 200, { 'Cache-Control': 'public, max-age=300', 'Cloudflare-CDN-Cache-Control': 'max-age=300', 'CDN-Cache-Control': 'max-age=300' });
         if (cache) {
           const write = cache.put(cacheKey, response.clone()).catch(err =>
             console.error('Catalogue cache write failed:', err.message));
