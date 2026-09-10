@@ -116,7 +116,7 @@ function filtered(){
 function card(d){
   const off=d.m&&d.m>d.p?Math.round((1-d.p/d.m)*100):0;
   return '<div class="card"><div class="ph">'+
-    (d.i?'<img loading="lazy" src="images/'+d.i+'" alt="">':'<span class="no">No image</span>')+
+    (d.i?'<img loading="lazy" src="images/'+d.i+'?v=enhanced1" alt="">':'<span class="no">No image</span>')+
     '</div><div class="info"><div class="vd">'+esc(d.v)+'</div>'+
     '<div class="nm">'+esc(d.n)+'</div><div class="pr"><b>₹'+d.p.toLocaleString('en-IN')+'</b>'+
     (d.m?'<s>₹'+d.m.toLocaleString('en-IN')+'</s>':'')+
