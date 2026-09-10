@@ -3,46 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Portal | Gifting Needs</title>
+  <title>Diwali Gifting Catalogues | Gifting Needs</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="/assets/favicon.png">
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="stylesheet" href="/assets/portal.css?v=3.0">
-  <style>
-    body { background: var(--bg-primary); }
-    .portal-shell { max-width: 880px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
-    .portal-brand { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
-    .portal-brand img { height: 52px; width: auto; }
-    .portal-brand span {
-      font-size: .72rem; font-weight: 800; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--text-subtle);
-      padding-left: 1rem; border-left: 1px solid var(--border);
-    }
-    .portal-foot {
-      margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
-      font-size: .88rem; color: var(--text-subtle);
-    }
-    .portal-foot a { color: var(--text-gold); font-weight: 700; }
-  </style>
+  <link rel="stylesheet" href="/assets/catalogues-diwali.css?v=1">
 </head>
 <body>
   <div class="portal-shell">
     <div class="portal-brand">
       <img src="/assets/logo.png" alt="Gifting Needs">
-      <span>Client portal</span>
+      <span>The Diwali edit · 2026</span>
     </div>
 
-    <h1 class="serif-font" style="font-size:clamp(1.7rem,4vw,2.4rem); margin:0 0 .6rem;">
-      Your documents
-    </h1>
-    <p style="color:var(--text-muted); max-width:62ch; margin:0 0 1.75rem;">
-      Our full supplier catalogues, free to view and download. If something
-      is missing, call us on
-      <a href="tel:+916361054099" style="color:var(--text-gold); font-weight:700;">+91 63610 54099</a>.
-    </p>
+    <main>
+    <section class="diwali-hero" aria-labelledby="diwali-title">
+      <div class="hero-copy">
+        <p class="eyebrow">A season of light. A gesture of gratitude.</p>
+        <h1 id="diwali-title" class="serif-font">Little gestures.<br><em>Brighter celebrations.</em></h1>
+        <p>Make this Diwali memorable for the people who make your business shine. Explore our supplier catalogues and find a gift that feels just right.</p>
+        <a class="festive-cta" href="#catalogue-library">Explore the catalogues <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="diwali-art" aria-hidden="true">
+        <div class="halo halo-outer"></div><div class="halo halo-inner"></div>
+        <span class="spark spark-one">✦</span><span class="spark spark-two">✧</span><span class="spark spark-three">✦</span>
+        <div class="diya"><div class="flame"></div><div class="bowl"></div><div class="base"></div></div>
+        <p>Let thoughtful gifting<br>light up every connection.</p>
+      </div>
+    </section>
+    <section class="library-intro" id="catalogue-library" aria-labelledby="library-title">
+      <div><p class="eyebrow">Discover · Download · Delight</p><h2 id="library-title" class="serif-font">Find your festive inspiration</h2></div>
+      <p>Need help choosing?<br><a href="tel:+916361054099">Talk to our gifting team ↗</a></p>
+    </section>
 
     <div id="portal-root"></div>
 
+    </main>
     <p class="portal-foot">
       Gifting Needs · Bengaluru · <a href="tel:+916361054099">+91 63610 54099</a><br>
       Public site: <a href="https://giftingneeds.in">giftingneeds.in</a>
