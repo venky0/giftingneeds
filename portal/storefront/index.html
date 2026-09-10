@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gifting Needs — Product Catalogue</title>
+<title>Gifting Needs — The Diwali Gifting Edit</title>
 <style>
 :root{--navy:#0B2050;--red:#D42027;--gold:#C9962B;--ink:#1b2333;--mut:#6b7385;
 --line:#e6e9f0;--bg:#f6f7fa;--card:#fff;--r:12px}
@@ -52,23 +52,32 @@ display:block;overflow-wrap:anywhere}
 background:#fff;color:var(--navy);border-radius:999px;cursor:pointer;font-size:14px}
 .empty{padding:60px;text-align:center;color:var(--mut)}
 @media(max-width:820px){.wrap{flex-direction:column}aside{width:100%;position:static}}
-</style></head><body>
+</style><link rel="stylesheet" href="/assets/storefront-diwali.css?v=1"></head><body>
 <header>
-  <h1>Gifting Needs</h1><span class="tag">Corporate Gifting Catalogue</span>
-  <input id="q" placeholder="Search products, brands, codes…">
+  <h1>Gifting Needs</h1><span class="tag">The Diwali edit · 2026</span>
+  <input aria-label="Search products, brands or codes" id="q" placeholder="Search products, brands, codes…">
 </header>
-<div class="wrap">
+<section class="festive-hero" aria-labelledby="festive-title">
+  <div class="festive-copy"><p class="eyebrow">Thoughtful gifts. Lasting connections.</p>
+  <h2 id="festive-title">A little thought.<br><em>A whole lot of light.</em></h2>
+  <p>Celebrate the people behind your success. Discover Diwali gifts for your team, clients and every connection that matters.</p>
+  <a class="festive-button" href="#products">Find your festive gifts <span aria-hidden="true">↓</span></a>
+  <a class="catalogue-link" href="/catalogues/">Explore catalogues ↗</a></div>
+  <div class="festive-art" aria-hidden="true"><span class="spark s1">✦</span><span class="spark s2">✧</span><span class="spark s3">✦</span><div class="ring"></div><div class="gift gift-small"></div><div class="gift gift-large"></div><div class="lamp"><i></i></div><p>Light up their Diwali.</p></div>
+</section>
+<div class="festive-strip"><span>✦ Gifts for every connection</span><span>Browse by brand & budget</span><a href="tel:+916361054099">Need a hand? Talk to our gifting team ↗</a></div>
+<div class="wrap" id="products">
 <aside>
   <h3>Price range</h3>
   <div id="bands"></div>
   <div class="rng">
-    <input type="range" id="rmax" min="0" max="148499" value="148499">
+    <input type="range" aria-label="Maximum price" id="rmax" min="0" max="148499" value="148499">
     <div class="vals"><span>₹0</span><span id="rlab"></span></div>
   </div>
   <h3 style="margin-top:18px">Brand</h3>
-  <select id="vend"><option value="">All brands</option><option>Borosil</option><option>Coconut</option><option>GT</option><option>Hawkins</option><option>JBL</option><option>KENT</option><option>Lawman</option><option>Noise</option><option>Rosha</option><option>Safari</option><option>Texel</option><option>Vinod</option><option>XECH</option></select>
+  <select id="vend" aria-label="Brand"><option value="">All brands</option><option>Borosil</option><option>Coconut</option><option>GT</option><option>Hawkins</option><option>JBL</option><option>KENT</option><option>Lawman</option><option>Noise</option><option>Rosha</option><option>Safari</option><option>Texel</option><option>Vinod</option><option>XECH</option></select>
   <h3 style="margin-top:18px">Sort</h3>
-  <select id="sort">
+  <select id="sort" aria-label="Sort products">
     <option value="pa">Price: low to high</option>
     <option value="pd">Price: high to low</option>
     <option value="nz">Name A–Z</option>
