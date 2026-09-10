@@ -112,7 +112,7 @@ const esc = s => String(s == null ? '' : s)
   .replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     /* ================= public: request catalogue access ================= */
@@ -276,25 +276,34 @@ export default {
       const folders = openFolders(env);
       if (!folders.length) return json({ groups: [] });
       try {
-        const groups = [];
-        for (const f of folders) {
-          // A library may be a flat pile of PDFs or split into category
-          // subfolders. Either way this returns groups, so the portal
-          // renders the client's own structure instead of flattening it.
-          const tree = await listFolderTree(env, f.id || f, f.label || 'Documents');
-          for (const g of tree) {
-            groups.push({
-              label: g.label,
-              files: g.files.map(x => ({
-                id: x.id,
-                name: x.name,
-                size: x.size ? Number(x.size) : null,
-                modified: x.modifiedTime || null,
-              })),
-            });
-          }
+        // Key by configured libraries so configuration changes cannot reuse old lists.
+        const digest = await crypto.subtle.digest('SHA-256',
+          new TextEncoder().encode(JSON.stringify(folders)));
+        const version = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
+        const cacheKey = new Request(`${url.origin}/api/files?library=${version}`);
+        const cache = globalThis.caches?.default;
+        const cached = await cache?.match(cacheKey);
+        if (cached) return cached;
+
+        const trees = await Promise.all(folders.map(f =>
+          listFolderTree(env, f.id || f, f.label || 'Documents')));
+        const groups = trees.flat().map(g => ({
+          label: g.label,
+          files: g.files.map(x => ({
+            id: x.id,
+            name: x.name,
+            size: x.size ? Number(x.size) : null,
+            modified: x.modifiedTime || null,
+          })),
+        }));
+        const response = json({ groups }, 200, { 'Cache-Control': 'public, max-age=300' });
+        if (cache) {
+          const write = cache.put(cacheKey, response.clone()).catch(err =>
+            console.error('Catalogue cache write failed:', err.message));
+          if (ctx) ctx.waitUntil(write);
+          else await write;
         }
-        return json({ groups });
+        return response;
       } catch (err) {
         return json({ error: 'drive_error', message: String(err.message || err) }, 502);
       }

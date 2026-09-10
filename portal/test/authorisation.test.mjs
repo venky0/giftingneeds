@@ -103,6 +103,35 @@ check('loose files keep the library label', labels.includes('Catalogues'));
 check('a folder is never listed as a downloadable file',
   !d.groups.some(g => g.files.some(f => /^(Drinkware|Bags)$/.test(f.name))));
 
+// Exercise edge-cache reuse, expiry and configuration isolation.
+const entries = new Map();
+let clock = 0;
+globalThis.caches = { default: {
+  async match(key) {
+    const entry = entries.get(key.url);
+    return entry && entry.expires > clock ? entry.response.clone() : undefined;
+  },
+  async put(key, response) {
+    const ttl = Number(response.headers.get('Cache-Control').match(/max-age=(\d+)/)[1]);
+    entries.set(key.url, { response, expires: clock + ttl });
+  },
+} };
+r = await w.fetch(req('/api/files'), env);
+const expected = await r.text();
+const callsAfterFill = mod.LIST_CALLS.length;
+r = await w.fetch(req('/api/files'), env);
+check('cached list avoids all Drive calls', mod.LIST_CALLS.length === callsAfterFill);
+check('cached list preserves contents and ordering', await r.text() === expected);
+check('list cache lasts five minutes', r.headers.get('Cache-Control') === 'public, max-age=300');
+clock = 301;
+await w.fetch(req('/api/files'), env);
+check('expired list is fetched again', mod.LIST_CALLS.length > callsAfterFill);
+r = await w.fetch(req('/api/files'), { ...env, CUSTOMER_FOLDERS: JSON.stringify({ '*': ['FOLDER_B'] }) });
+d = await r.json();
+check('changed libraries cannot reuse previous cached contents',
+  d.groups.length === 1 && d.groups[0].files[0].id === 'fileB');
+delete globalThis.caches;
+
 r = await w.fetch(req('/api/file/cup'), env);
 check('a file inside a subfolder downloads', r.status === 200);
 

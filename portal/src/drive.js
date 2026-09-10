@@ -118,30 +118,30 @@ export async function listFolderTree(env, folderId, label, opts = {}) {
   const maxDepth = opts.maxDepth ?? 2;
   const maxFolders = opts.maxFolders ?? 40;
 
-  const groups = [];
   let visited = 0;
 
   async function walk(id, name, depth) {
-    if (visited >= maxFolders) return;
+    if (visited >= maxFolders) return [];
     visited++;
 
     const entries = await listFolder(env, id);
     const files = entries.filter(e => e.mimeType !== FOLDER_MIME);
     const subs  = entries.filter(e => e.mimeType === FOLDER_MIME);
 
-    if (files.length) groups.push({ label: name, files });
-
-    if (depth >= maxDepth) return;
-    for (const sub of subs) {
-      // "Parent — Child" only past the first level, or every group on a
-      // one-level library would be needlessly prefixed.
-      const childName = depth === 0 ? sub.name : `${name} — ${sub.name}`;
-      await walk(sub.id, childName, depth + 1);
+    const groups = files.length ? [{ label: name, files }] : [];
+    if (depth >= maxDepth) return groups;
+    // Fetch siblings together, preserving the original category order.
+    for (let i = 0; i < subs.length; i += 5) {
+      const children = await Promise.all(subs.slice(i, i + 5).map(sub => {
+        const childName = depth === 0 ? sub.name : `${name} — ${sub.name}`;
+        return walk(sub.id, childName, depth + 1);
+      }));
+      groups.push(...children.flat());
     }
+    return groups;
   }
 
-  await walk(folderId, label || 'Documents', 0);
-  return groups;
+  return walk(folderId, label || 'Documents', 0);
 }
 
 /** Files directly inside one folder, newest first. */
