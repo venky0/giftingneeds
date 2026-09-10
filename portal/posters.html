@@ -318,16 +318,61 @@
     }
     .pg-lb-close:hover { background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.4); color:#ef4444; }
     .pg-lb-img-area {
-      position:relative; flex:1; overflow:hidden;
+      /* A definite height, not just a cap: without one the percentage
+         heights below stay indefinite and the poster renders at full
+         width and gets clipped instead of fitting. */
+      position:relative; flex:0 0 58vh; height:58vh; min-height:320px; overflow:hidden;
       display:flex; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.45); min-height:320px; max-height:52vh;
+      background:rgba(0,0,0,.45);
+      /* the poster is the point of this page: the browser must not steal
+         the pinch or the drag for its own scrolling */
+      touch-action:none; cursor:zoom-in;
     }
-    .pg-lb-img-wrap { width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    .pg-lb-img-area.zoomed { cursor:grab; }
+    .pg-lb-img-area.panning { cursor:grabbing; }
+    .pg-lb-img-wrap { width:100%; height:100%; min-height:0; display:flex; align-items:center; justify-content:center; padding:1rem; }
     .pg-lb-img {
       max-width:100%; max-height:100%; object-fit:contain;
       border-radius:8px; pointer-events:none; user-select:none; -webkit-user-drag:none;
       animation: pgImgIn .2s ease-out;
+      transition: transform .18s ease-out; will-change: transform;
     }
+    .pg-lb-img.pg-nosnap { transition:none; }
+    .pg-zoom-bar {
+      position:absolute; right:1rem; bottom:1rem; z-index:3;
+      display:flex; align-items:center; gap:.25rem;
+      background:rgba(0,0,0,.62); border:1px solid rgba(255,255,255,.14);
+      border-radius:9999px; padding:.25rem .3rem; backdrop-filter:blur(6px);
+    }
+    .pg-zoom-btn {
+      min-width:32px; height:32px; padding:0 .5rem; border-radius:9999px;
+      background:transparent; border:0; color:#e2e8f0; cursor:pointer;
+      font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center;
+      transition:background var(--pg-trans), color var(--pg-trans);
+    }
+    .pg-zoom-btn:hover { background:var(--pg-gold); color:#0a0e17; }
+    .pg-zoom-btn[disabled] { opacity:.35; cursor:default; }
+    .pg-zoom-btn[disabled]:hover { background:transparent; color:#e2e8f0; }
+    .pg-zoom-level {
+      font-size:.72rem; font-weight:700; color:#cbd5e1; min-width:44px; text-align:center;
+      font-variant-numeric:tabular-nums; user-select:none;
+    }
+    .pg-zoom-hint {
+      position:absolute; left:1rem; bottom:1rem; z-index:3;
+      font-size:.7rem; color:#94a3b8; background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.1); border-radius:9999px; padding:.28rem .7rem;
+      pointer-events:none; transition:opacity .3s ease;
+    }
+    .pg-zoom-hint.hide { opacity:0; }
+    /* Full view: the poster gets the whole screen, everything else folds away. */
+    .pg-lb-box.fullview {
+      max-width:100%; width:100%; height:100vh; max-height:100vh; border-radius:0;
+    }
+    .pg-lb-box.fullview .pg-lb-img-area { flex:1 1 auto; height:auto; }
+    .pg-lb-box.fullview .pg-lb-desc,
+    .pg-lb-box.fullview .pg-lb-thumbs,
+    .pg-lb-box.fullview .pg-lb-foot { display:none !important; }
+    .pg-lb-box.fullview .pg-lb-head { padding:.7rem 1rem; }
     @keyframes pgImgIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
     .pg-lb-nav {
       position:absolute; top:50%; transform:translateY(-50%);
@@ -419,7 +464,8 @@
       .pg-lb-head { flex-direction:column; gap:.6rem; padding:1rem; }
       .pg-lb-right { align-self:flex-end; }
       .pg-lb-desc { display:none; }
-      .pg-lb-img-area { max-height:42vh; }
+      .pg-lb-img-area { flex-basis:56vh; height:56vh; min-height:260px; }
+      .pg-zoom-hint { display:none; }
       .pg-cta-btns { flex-direction:column; align-items:center; }
       .pg-group-line { display:none; }
     }
@@ -427,6 +473,9 @@
       .pg-grid { grid-template-columns:repeat(2,1fr); gap:.8rem; }
       .pg-card-desc { display:none; }
       .pg-stat-div { display:none; }
+      .pg-zoom-bar { right:.55rem; bottom:.55rem; gap:0; }
+      .pg-zoom-btn { min-width:28px; height:28px; padding:0 .3rem; font-size:.9rem; }
+      .pg-zoom-level { min-width:36px; font-size:.66rem; }
     }
   </style>
 
@@ -483,7 +532,7 @@
         <a href="https://giftingneeds.in/index.html" class="nav-link" id="nav-home">Home</a>
         <a href="https://giftingneeds.in/diwali.html" class="nav-link" id="nav-diwali" style="color:var(--gold);font-weight:700">Diwali 2026</a>
         <a href="https://giftingneeds.in/products.html" class="nav-link" id="nav-products">Products</a>
-        <a href="https://giftingneeds.in/posters.html" class="nav-link active" id="nav-posters">Posters</a>
+        <a href="/posters" class="nav-link active" id="nav-posters">Posters</a>
         <a href="https://giftingneeds.in/solutions.html" class="nav-link" id="nav-solutions">Custom Kits</a>
         <a href="https://giftingneeds.in/portfolio.html" class="nav-link" id="nav-portfolio">Portfolio</a>
         <a href="https://giftingneeds.in/about.html" class="nav-link" id="nav-about">About</a>
@@ -510,7 +559,7 @@
       <div class="pg-hero-inner">
         <div class="pg-badge">🎁 Premium Corporate Gifting Solutions</div>
         <h1 class="pg-title">Our <span class="gold">Posters</span> Categories</h1>
-        <p class="pg-subtitle">Explore 46+ curated gift categories — from luxury hampers to tech gadgets, all with custom branding &amp; pan-India delivery.</p>
+        <p class="pg-subtitle">48 Diwali 2026 campaign posters and 43 curated gift categories — open any one and zoom in to read every detail.</p>
         <div class="pg-stats">
           <div class="pg-stat"><span class="pg-stat-val">500+</span><span class="pg-stat-lbl">Products</span></div>
           <div class="pg-stat-div"></div>
@@ -577,6 +626,7 @@
           </div>
           <div class="pg-lb-right">
             <span class="pg-lb-counter" id="lb-counter"></span>
+            <button class="pg-lb-close" id="lb-full" aria-label="Toggle full view" title="Full view">⛶</button>
             <button class="pg-lb-close" id="lb-close" aria-label="Close">✕</button>
           </div>
         </div>
@@ -584,6 +634,15 @@
           <button class="pg-lb-nav pg-lb-prev" id="lb-prev" aria-label="Previous">‹</button>
           <div class="pg-lb-img-wrap"><img id="lb-img" class="pg-lb-img" src="https://giftingneeds.in/" alt="" draggable="false"></div>
           <button class="pg-lb-nav pg-lb-next" id="lb-next" aria-label="Next">›</button>
+          <span class="pg-zoom-hint" id="lb-hint">Scroll or double-click to zoom · drag to move</span>
+          <div class="pg-zoom-bar">
+            <button class="pg-zoom-btn" id="lb-zoom-out" aria-label="Zoom out">−</button>
+            <span class="pg-zoom-level" id="lb-zoom-level">100%</span>
+            <button class="pg-zoom-btn" id="lb-zoom-in" aria-label="Zoom in">+</button>
+            <button class="pg-zoom-btn" id="lb-zoom-reset" aria-label="Reset zoom" title="Fit to screen">⤢</button>
+            <a class="pg-zoom-btn" id="lb-open" target="_blank" rel="noopener"
+               aria-label="Open full size in a new tab" title="Open full size">↗</a>
+          </div>
         </div>
         <div class="pg-lb-thumbs" id="lb-thumbs"></div>
         <div class="pg-lb-foot" id="lb-foot"></div>
@@ -601,6 +660,7 @@
   // POSTER GALLERY DATA & ENGINE
   // ============================================================
   const GROUPS = [
+    {id:'diwali-posters',  label:'Diwali 2026 Posters',      icon:'🖼️', color:'#D4AF37'},
     {id:'gift-hampers',   label:'Gift Hampers',            icon:'🎁', color:'#C97B14'},
     {id:'drinkware',      label:'Drinkware & Lifestyle',   icon:'☕', color:'#06b6d4'},
     {id:'apparel-bags',   label:'Apparel & Bags',          icon:'👕', color:'#10b981'},
@@ -613,6 +673,18 @@
   ];
 
   const CATEGORIES = [
+    {id:'poster-diwali-corporate', name:'Diwali 2026 Corporate Gifting', icon:'🪔', group:'diwali-posters', description:'Campaign posters for the Diwali 2026 corporate gifting season — hampers, festive combos and the full institutional range.', tags:['Diwali 2026', 'Corporate', 'Hampers', 'Campaign'], images:['/posters-media/diwali-2026-corporate-gifting-solutions-hampers.webp', '/posters-media/diwali-2026-corporate-gifting-collection-overview.webp', '/posters-media/diwali-2026-premium-corporate-gift-collection-grid.webp', '/posters-media/diwali-2026-all-in-one-corporate-gifting-solutions.webp', '/posters-media/diwali-2026-curated-corporate-gift-collection.webp', '/posters-media/diwali-2026-thoughtful-gifts-corporate-hampers.webp', '/posters-media/diwali-2026-festive-collection-gift-boxes.webp', '/posters-media/diwali-2026-meaningful-gifts-collection-overview.webp', '/posters-media/gifting-needs-diwali-2026-company-introduction.webp']},
+    {id:'poster-gift-sets', name:'Premium Corporate Gift Sets', icon:'🎁', group:'diwali-posters', description:'Curated gift-set posters — ceramic and copper bottle sets, floral and peacock designs, and the newest catalogue additions.', tags:['Gift Sets', 'Premium', 'Copper', 'New Items'], images:['/posters-media/new-items-in-our-catalogue-gift-sets.webp', '/posters-media/diwali-2026-premium-corporate-gift-sets.webp', '/posters-media/diwali-2026-divine-copper-gift-sets.webp', '/posters-media/diwali-2026-premium-gift-sets-floral-range.webp']},
+    {id:'poster-combo-sets', name:'Combo & Lamp Gift Sets', icon:'🏮', group:'diwali-posters', description:'Combo gift set posters — Shreedhan and Prabhabali series, jute bag combos, game boxes and lamp gift sets.', tags:['Combo Sets', 'Lamps', 'Festive', 'Bulk'], images:['/posters-media/diwali-2026-premium-combo-gift-sets.webp', '/posters-media/diwali-2026-combo-sets-and-lamp-gift-sets.webp', '/posters-media/diwali-2026-exclusive-combo-sets-corporate.webp']},
+    {id:'poster-copper', name:'Premium Copper Collection', icon:'🥉', group:'diwali-posters', description:'Copper bottle and drinkware posters — classic, hammered, royal, floral and printed collections.', tags:['Copper', 'Bottles', 'Drinkware', 'Wellness'], images:['/posters-media/diwali-2026-premium-copper-gift-collection-royal.webp', '/posters-media/diwali-2026-premium-copper-collection-printed-bottles.webp', '/posters-media/diwali-2026-premium-copper-collection-classic-range.webp', '/posters-media/diwali-2026-exclusive-copper-bottles-range.webp', '/posters-media/diwali-2026-rosha-copper-bottle-collection.webp']},
+    {id:'poster-dry-fruit', name:'Dry Fruit Gift Boxes', icon:'🥜', group:'diwali-posters', description:'Dry fruit gift box posters — assorted nut boxes, luxury gourmet boxes and price-listed festive ranges.', tags:['Dry Fruits', 'Gift Boxes', 'Gourmet', 'Festive'], images:['/posters-media/premium-dry-fruit-gift-boxes-price-list.webp', '/posters-media/diwali-2026-dry-fruit-gift-boxes-collection.webp', '/posters-media/premium-dry-fruit-gift-boxes-luxury-range.webp']},
+    {id:'poster-rosha', name:'Ro:sha Lamps & Gift Boxes', icon:'🕯️', group:'diwali-posters', description:'Ro:sha campaign posters — cordless lamp range and premium dry fruit gift boxes crafted with care.', tags:['Ro:sha', 'Lamps', 'Premium', 'Diwali 2026'], images:['/posters-media/diwali-2026-rosha-gift-hampers.webp', '/posters-media/diwali-2026-rosha-premium-lamp-gift-box.webp', '/posters-media/rosha-premium-dry-fruit-boxes-and-cordless-lamps.webp']},
+    {id:'poster-choco-le', name:'Nibs Choco Le Festive Range', icon:'🍫', group:'diwali-posters', description:'Nibs Non Stop Choco Le posters — festive chocolate collections, Bangali boxes and combo assortments.', tags:['Chocolate', 'Choco Le', 'Festive', 'Sweets'], images:['/posters-media/diwali-2026-nibs-choco-le-festive-collection.webp', '/posters-media/diwali-2026-choco-le-festive-gift-range.webp']},
+    {id:'poster-bags', name:'Bags, Luggage & Travel', icon:'🧳', group:'diwali-posters', description:'Bag and luggage posters — Lavie, Rare Rabbit, corporate backpacks, travel and gym duffles, ladies handbags.', tags:['Bags', 'Luggage', 'Lavie', 'Travel'], images:['/posters-media/diwali-2026-backpacks-sling-duffle-trolley-bags.webp', '/posters-media/rare-rabbit-gallardo-strolley-luggage-diwali-2026.webp', '/posters-media/lavie-travel-luggage-and-backpacks-collection.webp', '/posters-media/lavie-sport-majestic-croco-trolley-bag.webp', '/posters-media/lavie-premium-ladies-handbag-collection.webp', '/posters-media/premium-travel-and-gym-bags-corporate.webp', '/posters-media/premium-travel-and-gym-bags-extended-range.webp', '/posters-media/lavie-premium-ladies-bags-price-list.webp']},
+    {id:'poster-kitchen', name:'Kitchen, Drinkware & Appliances', icon:'🍳', group:'diwali-posters', description:'Kitchen and drinkware posters — Cello, Sunflame and Coconut ranges, insulated bottles, hampers and appliances.', tags:['Kitchen', 'Cello', 'Appliances', 'Drinkware'], images:['/posters-media/diwali-2026-insulated-drinkware-and-serveware.webp', '/posters-media/coconut-premium-kitchenware-collection.webp', '/posters-media/sunflame-home-appliances-diwali-range.webp', '/posters-media/cello-good-living-corporate-gifting-range.webp', '/posters-media/cello-diwali-gifting-range-with-travel-brands.webp', '/posters-media/cello-premium-hampers-and-combos-diwali.webp']},
+    {id:'poster-tech', name:'Tech & Electronics Gifting', icon:'🔌', group:'diwali-posters', description:'Electronics gifting posters — RAPZ, Lenovo, Motorola and Titan gift sets plus a budget-wise electronics guide.', tags:['Tech', 'Electronics', 'Audio', 'Gadgets'], images:['/posters-media/diwali-2026-brand-tech-gift-sets-rapz-motorola-lenovo-titan.webp', '/posters-media/diwali-2026-premium-tech-gift-sets.webp', '/posters-media/diwali-2026-electronic-gifts-price-guide.webp']},
+    {id:'poster-apparel', name:'Corporate Jackets & Apparel', icon:'🧥', group:'diwali-posters', description:'Apparel posters — hoodie, rugby and bonded fleece jackets and sweatshirts for corporate teams.', tags:['Jackets', 'Apparel', 'Uniform', 'Winter'], images:['/posters-media/premium-corporate-jackets-and-sweatshirts.webp']},
+    {id:'poster-catalogue', name:'Gifting Catalogue 2026', icon:'📖', group:'diwali-posters', description:'The Gifting Needs 2026 catalogue cover — thoughtfully chosen, beautifully yours.', tags:['Catalogue', '2026', 'Overview', 'Brand'], images:['/posters-media/gifting-catalogue-2026-cover.webp']},
     {id:'chocolate-hampers', name:'Premium Chocolate Hampers', icon:'🍫', group:'gift-hampers', description:'Indulgent chocolate collections & gourmet gift boxes. Ferrero Rocher, luxury assortments and custom branded hampers.', tags:['Chocolate','Hampers','Gourmet','Festive'], images:['WhatsApp Image 2026-07-28 at 5.30.12 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM (1).jpeg']},
     {id:'dry-fruit-hampers', name:'Dry Fruit Hampers', icon:'🥜', group:'gift-hampers', description:'Premium dry fruits, nuts & assorted hampers in elegant custom-branded packaging.', tags:['Dry Fruits','Nuts','Hampers','Health'], images:['WhatsApp Image 2026-07-28 at 5.30.12 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.13 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg']},
     {id:'luxury-hampers', name:'Luxury Gift Hampers', icon:'🎁', group:'gift-hampers', description:'Curated luxury hampers combining premium products, custom branding and elegant packaging.', tags:['Luxury','Hampers','Premium','Corporate'], images:['WhatsApp Image 2026-07-28 at 5.30.13 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.12 PM (2).jpeg']},
@@ -666,7 +738,20 @@
   let lightboxIdx = 0;
 
   // ---- Encode image path ----
-  function imgPath(name) { return 'https://giftingneeds.in/products/' + encodeURIComponent(name); }
+  function imgPath(name) {
+    // Posters live on this host; the older product photos are still served
+    // from the main site. A leading slash marks the local ones.
+    return name.startsWith('/') ? name
+         : 'https://giftingneeds.in/products/' + encodeURIComponent(name);
+  }
+
+  /* A poster is a 400 KB page of small print. Grids and filmstrips get the
+     420px copy; only the image you actually opened gets the full file. */
+  function thumbPath(name) {
+    return name.startsWith('/posters-media/')
+      ? name.replace('/posters-media/', '/posters-media/thumb/')
+      : imgPath(name);
+  }
 
   // ---- Filter ----
   function getFiltered() {
@@ -714,7 +799,7 @@
   function buildCard(cat) {
     const g = GROUPS.find(x => x.id === cat.group);
     const color = g ? g.color : '#C97B14';
-    const mainImg = imgPath(cat.images[0]);
+    const mainImg = thumbPath(cat.images[0]);
     const tags = cat.tags.slice(0, 3).map(t => `<span class="pg-card-tag">${t}</span>`).join('');
     const countBadge = cat.images.length > 1 ? `<span class="pg-img-count">${cat.images.length} images</span>` : '';
 
@@ -820,10 +905,158 @@
     renderLightbox();
   }
   function closeLightbox() {
+    document.querySelector('.pg-lb-box').classList.remove('fullview');
+    zoomReset(true);
     document.getElementById('pg-lightbox').style.display = 'none';
     document.body.style.overflow = '';
     lightboxCat = null;
   }
+
+  // ============================================================
+  // POSTER ZOOM & PAN
+  // A poster is a document, not a photo: the whole point is being
+  // able to read the small print. Wheel / pinch / double-click to
+  // zoom, drag to move, and the pan is clamped so the image can
+  // never be dragged out of sight.
+  // ============================================================
+  const ZOOM_MIN = 1, ZOOM_MAX = 6, ZOOM_STEP = 1.35;
+  const zoom = { scale: 1, tx: 0, ty: 0 };
+  let zArea, zImg, zSwipe = null;
+
+  function zoomClamp() {
+    const aw = zArea.clientWidth, ah = zArea.clientHeight;
+    // The fitted size, before our transform — offsetWidth is unaffected
+    // by transforms, which is exactly what we need here.
+    const iw = zImg.offsetWidth * zoom.scale, ih = zImg.offsetHeight * zoom.scale;
+    const mx = Math.max(0, (iw - aw) / 2), my = Math.max(0, (ih - ah) / 2);
+    zoom.tx = Math.min(mx, Math.max(-mx, zoom.tx));
+    zoom.ty = Math.min(my, Math.max(-my, zoom.ty));
+  }
+
+  function zoomApply(snap) {
+    zoomClamp();
+    zImg.classList.toggle('pg-nosnap', !!snap);
+    zImg.style.transform = `translate(${zoom.tx}px, ${zoom.ty}px) scale(${zoom.scale})`;
+    zArea.classList.toggle('zoomed', zoom.scale > 1.01);
+    document.getElementById('lb-zoom-level').textContent = Math.round(zoom.scale * 100) + '%';
+    document.getElementById('lb-zoom-in').disabled = zoom.scale >= ZOOM_MAX - 0.01;
+    document.getElementById('lb-zoom-out').disabled = zoom.scale <= ZOOM_MIN + 0.01;
+  }
+
+  function zoomReset(snap) {
+    zoom.scale = 1; zoom.tx = 0; zoom.ty = 0;
+    zoomApply(snap);
+  }
+
+  /* Zoom to `next`, keeping the point under (dx, dy) — measured from the
+     centre of the viewport — pinned where it is. */
+  function zoomTo(next, dx = 0, dy = 0, snap) {
+    next = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, next));
+    const ratio = next / zoom.scale;
+    zoom.tx = dx - ratio * (dx - zoom.tx);
+    zoom.ty = dy - ratio * (dy - zoom.ty);
+    zoom.scale = next;
+    if (next === ZOOM_MIN) { zoom.tx = 0; zoom.ty = 0; }
+    zoomApply(snap);
+  }
+
+  function zoomPointer(e) {
+    const r = zArea.getBoundingClientRect();
+    return [e.clientX - r.left - r.width / 2, e.clientY - r.top - r.height / 2];
+  }
+
+  function initZoom() {
+    zArea = document.querySelector('.pg-lb-img-area');
+    zImg  = document.getElementById('lb-img');
+
+    document.getElementById('lb-zoom-in').addEventListener('click',
+      () => zoomTo(zoom.scale * ZOOM_STEP));
+    document.getElementById('lb-zoom-out').addEventListener('click',
+      () => zoomTo(zoom.scale / ZOOM_STEP));
+    document.getElementById('lb-zoom-reset').addEventListener('click', () => zoomReset());
+
+    document.getElementById('lb-full').addEventListener('click', () => {
+      document.querySelector('.pg-lb-box').classList.toggle('fullview');
+      // The viewport just changed size, so the old pan is no longer valid.
+      requestAnimationFrame(() => zoomApply());
+    });
+
+    zArea.addEventListener('wheel', e => {
+      e.preventDefault();
+      const [dx, dy] = zoomPointer(e);
+      // A trackpad pinch arrives as a wheel event with ctrlKey set.
+      const factor = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0022));
+      zoomTo(zoom.scale * factor, dx, dy, true);
+    }, { passive: false });
+
+    zArea.addEventListener('dblclick', e => {
+      const [dx, dy] = zoomPointer(e);
+      zoomTo(zoom.scale > 1.01 ? 1 : 2.6, dx, dy);
+    });
+
+    /* ---- drag to pan, pinch to zoom ---- */
+    const pts = new Map();
+    let last = null, pinch = null;
+
+    zArea.addEventListener('pointerdown', e => {
+      if (e.target.closest('.pg-zoom-bar, .pg-lb-nav')) return;
+      zArea.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 1) {
+        last = { x: e.clientX, y: e.clientY };
+        zSwipe = { x: e.clientX, y: e.clientY, t: Date.now() };
+        if (zoom.scale > 1.01) zArea.classList.add('panning');
+      } else if (pts.size === 2) {
+        const [a, b] = [...pts.values()];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: zoom.scale };
+        zSwipe = null;
+      }
+    });
+
+    zArea.addEventListener('pointermove', e => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      if (pts.size >= 2 && pinch) {
+        const [a, b] = [...pts.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        const r = zArea.getBoundingClientRect();
+        zoomTo(pinch.s * (d / pinch.d),
+               (a.x + b.x) / 2 - r.left - r.width / 2,
+               (a.y + b.y) / 2 - r.top - r.height / 2, true);
+        return;
+      }
+      if (pts.size === 1 && last && zoom.scale > 1.01) {
+        zoom.tx += e.clientX - last.x;
+        zoom.ty += e.clientY - last.y;
+        last = { x: e.clientX, y: e.clientY };
+        zoomApply(true);
+      }
+    });
+
+    const end = e => {
+      pts.delete(e.pointerId);
+      if (pts.size < 2) pinch = null;
+      if (pts.size === 0) {
+        last = null;
+        zArea.classList.remove('panning');
+        // Un-zoomed, a horizontal flick still means "next poster".
+        if (zSwipe && zoom.scale <= 1.01 && lightboxCat && lightboxCat.images.length > 1) {
+          const dx = e.clientX - zSwipe.x, dy = e.clientY - zSwipe.y;
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && Date.now() - zSwipe.t < 600) {
+            lightboxIdx = (lightboxIdx + (dx < 0 ? 1 : -1) + lightboxCat.images.length) % lightboxCat.images.length;
+            renderLightbox();
+          }
+        }
+        zSwipe = null;
+      }
+    };
+    zArea.addEventListener('pointerup', end);
+    zArea.addEventListener('pointercancel', end);
+
+    window.addEventListener('resize', () => { if (lightboxCat) zoomApply(); });
+  }
+
   function renderLightbox() {
     if (!lightboxCat) return;
     const cat = lightboxCat; const idx = lightboxIdx;
@@ -833,10 +1066,17 @@
     document.getElementById('lb-counter').textContent = `${idx+1} / ${cat.images.length}`;
 
     const lbImg = document.getElementById('lb-img');
+    const src = imgPath(cat.images[idx]);
     lbImg.style.opacity = '0';
-    lbImg.src = imgPath(cat.images[idx]);
+    lbImg.src = src;
     lbImg.alt = cat.name;
-    lbImg.onload = () => { lbImg.style.opacity = '1'; };
+    lbImg.onload = () => { lbImg.style.opacity = '1'; zoomReset(true); };
+    document.getElementById('lb-open').href = src;
+    zoomReset(true);
+    const hint = document.getElementById('lb-hint');
+    hint.classList.remove('hide');
+    clearTimeout(renderLightbox._hint);
+    renderLightbox._hint = setTimeout(() => hint.classList.add('hide'), 3200);
 
     // Nav visibility
     const hasMult = cat.images.length > 1;
@@ -848,7 +1088,7 @@
     thumbs.style.display = hasMult ? 'flex' : 'none';
     if (hasMult) {
       thumbs.innerHTML = cat.images.map((img, i) =>
-        `<button class="pg-lb-thumb${i===idx?' active':''}" data-i="${i}" aria-label="Image ${i+1}"><img src="${imgPath(img)}" alt="" draggable="false"></button>`
+        `<button class="pg-lb-thumb${i===idx?' active':''}" data-i="${i}" aria-label="Image ${i+1}"><img src="${thumbPath(img)}" alt="" loading="lazy" draggable="false"></button>`
       ).join('');
       thumbs.querySelectorAll('.pg-lb-thumb').forEach(btn => {
         btn.addEventListener('click', () => { lightboxIdx = +btn.dataset.i; renderLightbox(); });
@@ -891,6 +1131,7 @@
     });
 
     // Lightbox controls
+    initZoom();
     document.getElementById('lb-close').addEventListener('click', closeLightbox);
     document.getElementById('pg-lb-overlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeLightbox(); });
     document.getElementById('lb-prev').addEventListener('click', () => { lightboxIdx = (lightboxIdx - 1 + lightboxCat.images.length) % lightboxCat.images.length; renderLightbox(); });
@@ -900,6 +1141,10 @@
       if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowLeft') { lightboxIdx = (lightboxIdx - 1 + lightboxCat.images.length) % lightboxCat.images.length; renderLightbox(); }
       if (e.key === 'ArrowRight') { lightboxIdx = (lightboxIdx + 1) % lightboxCat.images.length; renderLightbox(); }
+      if (e.key === '+' || e.key === '=') zoomTo(zoom.scale * ZOOM_STEP);
+      if (e.key === '-' || e.key === '_') zoomTo(zoom.scale / ZOOM_STEP);
+      if (e.key === '0') zoomReset();
+      if (e.key === 'f' || e.key === 'F') document.getElementById('lb-full').click();
     });
   });
   </script>
