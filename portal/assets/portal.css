@@ -156,3 +156,5 @@
 .portal-group-toggle span { margin-left:auto; flex-shrink:0; }
 .portal-group-toggle:focus-visible { outline:3px solid var(--text-gold); outline-offset:3px; }
 .portal-files[hidden] { display:none; }
+
+.portal-files > :first-child { scroll-margin-top: 1rem; }

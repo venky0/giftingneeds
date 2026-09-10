@@ -85,6 +85,13 @@ const ClientPortal = (() => {
           other.setAttribute('aria-expanded', String(expanded));
           $(other.getAttribute('aria-controls')).hidden = !expanded;
         });
+        if (opening) {
+          const firstFile = $(button.getAttribute('aria-controls')).firstElementChild;
+          firstFile?.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+            block: 'start'
+          });
+        }
       });
     });
   }
