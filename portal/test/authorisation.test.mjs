@@ -125,7 +125,8 @@ r = await w.fetch(req('/'), env);
 check('root serves the hub', (await r.text()).includes('Three places to browse'));
 
 for (const [near, target] of [
-  ['/customer_login', '/customer-login'], ['/login', '/customer-login'],
+  ['/customer_login', '/catalogues'], ['/login', '/catalogues'],
+  ['/customer-login', '/catalogues'],
   ['/store', '/storefront'], ['/shop', '/storefront'], ['/poster', '/posters'],
 ]) {
   r = await w.fetch(req(near), env);
@@ -133,7 +134,7 @@ for (const [near, target] of [
     r.status === 302 && r.headers.get('location') === 'https://giftingneeds.org' + target);
 }
 
-for (const p of ['/customer-login', '/storefront', '/posters']) {
+for (const p of ['/catalogues', '/storefront', '/posters']) {
   r = await w.fetch(req(p), env);
   check(`${p} is served`, (await r.text()) === 'static');
 }

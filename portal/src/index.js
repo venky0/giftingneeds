@@ -1,7 +1,7 @@
 /**
  * Gifting Needs client portal — Worker entry point.
  *
- * Serves the portal at /customer-login, proxies Google Drive so customers
+ * Serves the portal at /catalogues, proxies Google Drive so customers
  * download through giftingneeds.org, and takes catalogue access requests
  * from the public site.
  *
@@ -26,7 +26,7 @@
 import { listFolderTree, streamFile } from './drive.js';
 import { readRequest, signRequest, verifyToken, grantAccess, emailRequest } from './approval.js';
 
-const PORTAL_PATH = '/customer-login';
+const PORTAL_PATH = '/catalogues';
 
 /** Origins allowed to post the request form. The public site only. */
 const ALLOWED_ORIGINS = new Set([
@@ -336,8 +336,9 @@ export default {
     const path = url.pathname.toLowerCase().replace(/\/+$/, '');
 
     const ALIASES = {
-      [PORTAL_PATH]: ['/customer_login', '/customerlogin', '/login', '/signin',
-                      '/sign-in', '/portal', '/customer', '/catalogues', '/catalogue'],
+      [PORTAL_PATH]: ['/customer-login', '/customer_login', '/customerlogin',
+                      '/login', '/signin', '/sign-in', '/portal', '/customer',
+                      '/catalogue'],
       '/storefront': ['/store', '/shop', '/products', '/range'],
       '/posters':    ['/poster', '/creatives'],
     };
@@ -349,7 +350,7 @@ export default {
 
     // Fetch the DIRECTORY, not the file inside it. Cloudflare's asset
     // handler redirects /index.html to /, so asking for the file returned
-    // a 307 that sent /customer-login to the hub — the page unreachable at
+    // a 307 that sent /catalogues to the hub — the page unreachable at
     // its own URL, and the redirect made it look deliberate.
     const PAGES = {
       [PORTAL_PATH]: '/catalogues/',
