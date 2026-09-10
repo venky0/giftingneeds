@@ -371,7 +371,7 @@ export default {
     }
 
     if (path === '' || path === '/index.html') {
-      return env.ASSETS.fetch(new Request(`${url.origin}/home.html`, request));
+      return env.ASSETS.fetch(new Request(`${url.origin}/home`, request));
     }
 
     return env.ASSETS.fetch(request);

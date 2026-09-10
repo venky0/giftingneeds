@@ -151,7 +151,7 @@ check('/api/me reports open', d.open === true && d.folderCount > 0);
 /* ============================== routing ============================== */
 
 r = await w.fetch(req('/'), env);
-check('root serves the hub', (await r.text()) === '/home.html');
+check('root serves the hub', (await r.text()) === '/home');
 
 for (const [near, target] of [
   ['/customer_login', '/catalogues'], ['/login', '/catalogues'],
