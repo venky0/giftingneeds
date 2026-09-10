@@ -66,12 +66,27 @@ const ClientPortal = (() => {
       return;
     }
 
-    root.innerHTML = groups.map(g => `
+    root.innerHTML = groups.map((g, i) => `
       <section class="portal-group">
-        <h2 class="portal-group-title">${esc(g.label)}
-          <span>${g.files.length} ${g.files.length === 1 ? 'file' : 'files'}</span></h2>
-        <ul class="portal-files">${g.files.map(fileRow).join('')}</ul>
+        <h2 class="portal-group-title">
+          <button class="portal-group-toggle" aria-expanded="false" aria-controls="catalogue-files-${i}">
+            ${esc(g.label)}
+            <span>${g.files.length} ${g.files.length === 1 ? 'file' : 'files'}</span>
+          </button>
+        </h2>
+        <ul class="portal-files" id="catalogue-files-${i}" hidden>${g.files.map(fileRow).join('')}</ul>
       </section>`).join('');
+
+    root.querySelectorAll('.portal-group-toggle').forEach(button => {
+      button.addEventListener('click', () => {
+        const opening = button.getAttribute('aria-expanded') !== 'true';
+        root.querySelectorAll('.portal-group-toggle').forEach(other => {
+          const expanded = other === button && opening;
+          other.setAttribute('aria-expanded', String(expanded));
+          $(other.getAttribute('aria-controls')).hidden = !expanded;
+        });
+      });
+    });
   }
 
   function renderError(msg, detail) {

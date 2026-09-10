@@ -145,3 +145,14 @@
   text-transform: uppercase; color: var(--text-subtle);
   font-variant-numeric: tabular-nums;
 }
+
+/* Accessible category accordion. */
+.portal-group-title:has(.portal-group-toggle) { display:block; padding:0; }
+.portal-group-title:has(.portal-group-toggle)::before { content:none; }
+.portal-group-toggle { display:flex; align-items:center; gap:.75rem; width:100%; padding:1rem; border:0; border-radius:inherit; background:transparent; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+.portal-group-toggle::before { content:'✦'; color:var(--text-gold); }
+.portal-group-toggle::after { content:'+'; flex-shrink:0; font-size:1.4rem; line-height:1; }
+.portal-group-toggle[aria-expanded="true"]::after { content:'−'; }
+.portal-group-toggle span { margin-left:auto; flex-shrink:0; }
+.portal-group-toggle:focus-visible { outline:3px solid var(--text-gold); outline-offset:3px; }
+.portal-files[hidden] { display:none; }
