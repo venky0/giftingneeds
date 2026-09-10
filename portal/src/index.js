@@ -206,13 +206,58 @@ export default {
 
       try {
         const { added } = await grantAccess(env, data.email);
+
+        // Approving grants access but tells nobody. Cloudflare's send_email
+        // only reaches verified destination addresses, so the customer
+        // cannot be emailed automatically — and without this they are left
+        // approved and uninformed, which is indistinguishable from ignored.
+        // So the message is written for them here, ready to paste.
+        const invite = [
+          `You're approved for the Gifting Needs catalogue library.`,
+          ``,
+          `Sign in here: ${url.origin}${PORTAL_PATH}`,
+          ``,
+          `Enter ${data.email} and we'll send a 6-digit code to that`,
+          `address. No password, and no account to create.`,
+          ``,
+          `Please sign in within the next month. Unused accounts are`,
+          `released after a month of inactivity — if that happens just`,
+          `ask again, it only takes a moment to restore.`,
+          ``,
+          `Gifting Needs · +91 63610 54099`,
+        ].join('\n');
+
         return page('Approved', `
           <h1>${added ? 'Access granted' : 'Already had access'}</h1>
           <p><strong>${esc(data.email)}</strong> ${added
-            ? 'can now sign in at giftingneeds.org/customer-login.'
+            ? 'is now on the approved list.'
             : 'was already on the approved list. Nothing changed.'}</p>
-          <p class="muted">They sign in with a six-digit code sent to that
-             address — no password, and no account to create.</p>`);
+
+          <p class="warn"><strong>They have not been told yet.</strong>
+             Send them the message below — until you do, they have access
+             but no way to know it.</p>
+
+          <textarea id="invite" readonly
+            style="width:100%;box-sizing:border-box;min-height:11rem;margin-top:1rem;
+                   font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+                   padding:.9rem;border:1px solid rgba(201,123,20,.3);
+                   border-radius:10px;background:#FBF7EE;color:#2B2440;"
+          >${esc(invite)}</textarea>
+
+          <button type="button" id="copy" style="margin-top:.75rem">Copy message</button>
+          <p class="muted" id="hint" style="margin-bottom:0">Paste it into WhatsApp or email.</p>
+
+          <script>
+            document.getElementById('copy').addEventListener('click', function () {
+              var t = document.getElementById('invite');
+              t.select(); t.setSelectionRange(0, 99999);
+              var ok = false;
+              try { ok = document.execCommand('copy'); } catch (e) {}
+              document.getElementById('hint').textContent = ok
+                ? 'Copied — paste it into WhatsApp or email.'
+                : 'Select the text above and copy it.';
+            });
+          </script>`);
       } catch (err) {
         console.error('approve failed:', err && err.message);
         return page('Could not approve', `

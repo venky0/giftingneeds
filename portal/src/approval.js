@@ -179,6 +179,10 @@ export async function emailRequest(env, req, approveUrl) {
     'including any cost and price lists. Only approve addresses you',
     'recognise. The link stops working after 7 days.',
     '',
+    'After approving you will get a short message to send them, with',
+    'their sign-in link. They are not told automatically, so nothing',
+    'reaches them until you send it.',
+    '',
     'To refuse, ignore this email. Nothing happens without the button.',
   ].join('\r\n');
 
