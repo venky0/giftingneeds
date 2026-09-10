@@ -58,7 +58,7 @@ const env = {
   CUSTOMER_FOLDERS: JSON.stringify({
     '*': [{ id:'FOLDER_A', label:'Acme' }, { id:'FOLDER_CAT', label:'Catalogues' }]
   }),
-  ASSETS: { fetch: async () => new Response('static', { status:200 }) },
+  ASSETS: { fetch: async (request) => new Response(new URL(request.url).pathname, { status:200 }) },
   APPROVAL_SECRET: 'test-secret-not-the-real-one',
   NOTIFY_EMAIL: 'promo@giftingneeds.in',
   SEND_EMAIL: { send: async (m) => { mailsSent.push(m); } },
@@ -151,7 +151,7 @@ check('/api/me reports open', d.open === true && d.folderCount > 0);
 /* ============================== routing ============================== */
 
 r = await w.fetch(req('/'), env);
-check('root serves the hub', (await r.text()).includes('Three places to browse'));
+check('root serves the hub', (await r.text()) === '/home.html');
 
 for (const [near, target] of [
   ['/customer_login', '/catalogues'], ['/login', '/catalogues'],
@@ -165,7 +165,7 @@ for (const [near, target] of [
 
 for (const p of ['/catalogues', '/storefront', '/posters']) {
   r = await w.fetch(req(p), env);
-  check(`${p} is served`, (await r.text()) === 'static');
+  check(`${p} is served`, (await r.text()) === (p === '/posters' ? '/posters.html' : `${p}/`));
 }
 
 /* ========================== access requests ========================== */

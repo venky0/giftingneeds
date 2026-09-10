@@ -371,28 +371,7 @@ export default {
     }
 
     if (path === '' || path === '/index.html') {
-      return page('Gifting Needs', `
-        <h1 style="margin-bottom:1.5rem">Gifting Needs</h1>
-        <p class="muted" style="margin-top:-.5rem">Three places to browse the range.</p>
-        <dl style="background:none;padding:0">
-          <dd style="margin:0 0 .9rem"><a href="/storefront"
-            style="display:block;padding:1rem 1.15rem;background:#FBF7EE;border-radius:10px;
-                   text-decoration:none;color:inherit">
-            <strong>Storefront</strong><br>
-            <span class="muted">Browse products by category, brand and budget.</span></a></dd>
-          <dd style="margin:0 0 .9rem"><a href="${PORTAL_PATH}"
-            style="display:block;padding:1rem 1.15rem;background:#FBF7EE;border-radius:10px;
-                   text-decoration:none;color:inherit">
-            <strong>Catalogues</strong><br>
-            <span class="muted">Full supplier catalogues to view and download.</span></a></dd>
-          <dd style="margin:0"><a href="/posters"
-            style="display:block;padding:1rem 1.15rem;background:#FBF7EE;border-radius:10px;
-                   text-decoration:none;color:inherit">
-            <strong>Posters</strong><br>
-            <span class="muted">Festive creatives and campaign artwork.</span></a></dd>
-        </dl>
-        <p class="muted" style="margin-bottom:0">Gifting Needs · Bengaluru ·
-           <a href="tel:+916361054099" style="color:#A8630C;font-weight:700">+91 63610 54099</a></p>`);
+      return env.ASSETS.fetch(new Request(`${url.origin}/home.html`, request));
     }
 
     return env.ASSETS.fetch(request);
