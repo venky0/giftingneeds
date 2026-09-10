@@ -43,11 +43,12 @@ function folderMap(env) {
   }
 }
 
-function identity(request) {
-  // Set by Cloudflare Access. Absent means Access is not in front of
-  // this hostname — which must never be treated as "allow".
-  return (request.headers.get('Cf-Access-Authenticated-User-Email') || '').toLowerCase();
-}
+// Identity checks were removed deliberately: the client asked for three
+// open pages with no login, no code and no approval. Everything the
+// Worker serves is therefore public to anyone with the URL, including
+// the catalogue files streamed from Drive. Do not reintroduce a partial
+// check here — a gate that protects one route and not another reads as
+// security while providing none.
 
 function json(body, status = 200, extra = {}) {
   return new Response(JSON.stringify(body), {
@@ -68,15 +69,11 @@ function corsHeaders(request) {
   };
 }
 
-/** Which folders this caller may see. Empty array means none. */
-function allowedFolders(request, env) {
-  const email = identity(request);
-  if (!email) return { email: null, folders: [] };
-  const map = folderMap(env);
-
-  const entry = map[email] || map['*'];   // '*' = a folder shared with everyone approved
-  if (!entry) return { email, folders: [] };
-  return { email, folders: Array.isArray(entry) ? entry : [entry] };
+/** The libraries on offer. With no login there is one set, for everyone. */
+function openFolders(env) {
+  const entry = folderMap(env)['*'];
+  if (!entry) return [];
+  return Array.isArray(entry) ? entry : [entry];
 }
 
 /* ------------------------------------------------------------ approval UI */
@@ -272,19 +269,12 @@ export default {
     /* ==================== behind Access from here down ================== */
 
     if (url.pathname === '/api/me') {
-      const { email, folders } = allowedFolders(request, env);
-      return json({ email, folderCount: folders.length, gated: Boolean(email) });
+      return json({ open: true, folderCount: openFolders(env).length });
     }
 
     if (url.pathname === '/api/files') {
-      const { email, folders } = allowedFolders(request, env);
-      if (!email) {
-        return json({ error: 'not_authenticated',
-          message: 'Cloudflare Access is not in front of this site.' }, 401);
-      }
-      if (!folders.length) {
-        return json({ email, groups: [] });
-      }
+      const folders = openFolders(env);
+      if (!folders.length) return json({ groups: [] });
       try {
         const groups = [];
         for (const f of folders) {
@@ -304,16 +294,14 @@ export default {
             });
           }
         }
-        return json({ email, groups });
+        return json({ groups });
       } catch (err) {
-        return json({ email, error: 'drive_error', message: String(err.message || err) }, 502);
+        return json({ error: 'drive_error', message: String(err.message || err) }, 502);
       }
     }
 
     if (url.pathname.startsWith('/api/file/')) {
-      const { email, folders } = allowedFolders(request, env);
-      if (!email) return new Response('Forbidden', { status: 403 });
-
+      const folders = openFolders(env);
       const fileId = decodeURIComponent(url.pathname.slice('/api/file/'.length));
       if (!fileId) return new Response('Not found', { status: 404 });
 
@@ -342,24 +330,50 @@ export default {
 
     /* -------------------------- the portal itself ----------------------- */
 
-    // The portal lives at /customer-login, but customers type this URL by
-    // hand off an email or a WhatsApp message, and the near misses are
-    // predictable: an underscore for the hyphen, or just "login".
-    //
-    // Getting it slightly wrong currently means a bare browser 404 with
-    // no way back — on the one page a customer needs to reach. Cheaper to
-    // accept the obvious variants than to lose them there.
-    const alias = url.pathname.toLowerCase().replace(/\/+$/, '');
-    const ALIASES = [
-      '', '/index.html',
-      '/customer_login', '/customerlogin', '/customer-login/',
-      '/login', '/signin', '/sign-in', '/portal', '/customer',
-    ];
-    if (alias !== PORTAL_PATH && ALIASES.includes(alias)) {
-      return Response.redirect(`${url.origin}${PORTAL_PATH}`, 302);
+    // These URLs get typed by hand off a WhatsApp message, so the near
+    // misses are predictable and a bare browser 404 is an expensive way
+    // to lose someone. Each page accepts its obvious variants.
+    const path = url.pathname.toLowerCase().replace(/\/+$/, '');
+
+    const ALIASES = {
+      [PORTAL_PATH]: ['/customer_login', '/customerlogin', '/login', '/signin',
+                      '/sign-in', '/portal', '/customer', '/catalogues', '/catalogue'],
+      '/storefront': ['/store', '/shop', '/products', '/range'],
+      '/posters':    ['/poster', '/creatives'],
+    };
+    for (const [target, spellings] of Object.entries(ALIASES)) {
+      if (path !== target && spellings.includes(path)) {
+        return Response.redirect(`${url.origin}${target}`, 302);
+      }
     }
-    if (alias === PORTAL_PATH) {
-      return env.ASSETS.fetch(new Request(`${url.origin}/index.html`, request));
+
+    if (path === PORTAL_PATH)  return env.ASSETS.fetch(new Request(`${url.origin}/index.html`, request));
+    if (path === '/storefront') return env.ASSETS.fetch(new Request(`${url.origin}/storefront/index.html`, request));
+    if (path === '/posters')    return env.ASSETS.fetch(new Request(`${url.origin}/posters.html`, request));
+
+    if (path === '' || path === '/index.html') {
+      return page('Gifting Needs', `
+        <h1 style="margin-bottom:1.5rem">Gifting Needs</h1>
+        <p class="muted" style="margin-top:-.5rem">Three places to browse the range.</p>
+        <dl style="background:none;padding:0">
+          <dd style="margin:0 0 .9rem"><a href="/storefront"
+            style="display:block;padding:1rem 1.15rem;background:#FBF7EE;border-radius:10px;
+                   text-decoration:none;color:inherit">
+            <strong>Storefront</strong><br>
+            <span class="muted">Browse products by category, brand and budget.</span></a></dd>
+          <dd style="margin:0 0 .9rem"><a href="${PORTAL_PATH}"
+            style="display:block;padding:1rem 1.15rem;background:#FBF7EE;border-radius:10px;
+                   text-decoration:none;color:inherit">
+            <strong>Catalogues</strong><br>
+            <span class="muted">Full supplier catalogues to view and download.</span></a></dd>
+          <dd style="margin:0"><a href="/posters"
+            style="display:block;padding:1rem 1.15rem;background:#FBF7EE;border-radius:10px;
+                   text-decoration:none;color:inherit">
+            <strong>Posters</strong><br>
+            <span class="muted">Festive creatives and campaign artwork.</span></a></dd>
+        </dl>
+        <p class="muted" style="margin-bottom:0">Gifting Needs · Bengaluru ·
+           <a href="tel:+916361054099" style="color:#A8630C;font-weight:700">+91 63610 54099</a></p>`);
     }
 
     return env.ASSETS.fetch(request);

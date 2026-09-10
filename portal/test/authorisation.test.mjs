@@ -56,8 +56,7 @@ const w = mod.default;
 
 const env = {
   CUSTOMER_FOLDERS: JSON.stringify({
-    'priya@acme.com': [{ id:'FOLDER_A', label:'Acme' }, { id:'FOLDER_CAT', label:'Catalogues' }],
-    'raj@bharat.com': { id:'FOLDER_B', label:'Bharat' }
+    '*': [{ id:'FOLDER_A', label:'Acme' }, { id:'FOLDER_CAT', label:'Catalogues' }]
   }),
   ASSETS: { fetch: async () => new Response('static', { status:200 }) },
   APPROVAL_SECRET: 'test-secret-not-the-real-one',
@@ -84,74 +83,60 @@ globalThis.fetch = async (url, init = {}) => {
   throw new Error('unexpected fetch: ' + u);
 };
 
-const req = (path, email) => new Request('https://giftingneeds.org'+path, {
-  headers: email ? {'Cf-Access-Authenticated-User-Email': email} : {} });
+const req = (path) => new Request('https://giftingneeds.org'+path);
 
 let pass=0, fail=0;
 const check = (name, cond) => { cond ? (pass++, console.log('  PASS', name)) : (fail++, console.log('  FAIL', name)); };
 
-/* =============================== files =============================== */
+let r, d;
 
-let r = await w.fetch(req('/api/files'), env);
-check('no Access header -> 401', r.status === 401);
+/* ====================== files: open to everyone ====================== */
 
-r = await w.fetch(req('/api/files','priya@acme.com'), env);
-let d = await r.json();
-const acme = (d.groups || []).find(g => g.label === 'Acme');
-check('approved caller gets their group', !!acme && acme.files[0].name === 'A.pdf');
-check('and nothing belonging to anyone else',
-  !d.groups.some(g => g.files.some(f => f.name === 'B.pdf')));
-
-r = await w.fetch(req('/api/file/fileB','priya@acme.com'), env);
-check('cross-customer file id -> 404', r.status === 404);
-
-r = await w.fetch(req('/api/file/fileA','priya@acme.com'), env);
-check('own file downloads', r.status === 200);
-
-r = await w.fetch(req('/api/files','stranger@nowhere.com'), env);
+r = await w.fetch(req('/api/files'), env);
 d = await r.json();
-check('unmapped address -> no folders', d.groups?.length===0);
+check('no header needed — the libraries are open', r.status === 200 && d.groups.length > 0);
 
-/* ========================= folders inside folders ==================== */
-
-r = await w.fetch(req('/api/files','priya@acme.com'), env);
-d = await r.json();
 const labels = d.groups.map(g => g.label);
 check('subfolders become their own groups',
   labels.includes('Drinkware') && labels.includes('Bags'));
-check('loose files in the parent keep the library label',
-  labels.includes('Catalogues'));
+check('loose files keep the library label', labels.includes('Catalogues'));
 check('a folder is never listed as a downloadable file',
-  !d.groups.some(g => g.files.some(f => /Drinkware|Bags$/.test(f.name))));
+  !d.groups.some(g => g.files.some(f => /^(Drinkware|Bags)$/.test(f.name))));
 
-r = await w.fetch(req('/api/file/cup','priya@acme.com'), env);
+r = await w.fetch(req('/api/file/cup'), env);
 check('a file inside a subfolder downloads', r.status === 200);
 
-r = await w.fetch(req('/api/file/bag','priya@acme.com'), env);
-check('and so does one in a sibling subfolder', r.status === 200);
+r = await w.fetch(req('/api/file/fileA'), env);
+check('a top-level file downloads', r.status === 200);
 
-// THE IMPORTANT ONE: deep listing must not widen who can reach what.
-r = await w.fetch(req('/api/file/cup','raj@bharat.com'), env);
-check('another customer still cannot reach a subfolder file', r.status === 404);
+// Open does not mean "serves anything asked for": an id outside the
+// configured libraries must still be refused, or the Worker becomes a
+// proxy for the whole of the service account's Drive.
+r = await w.fetch(req('/api/file/not-in-any-folder'), env);
+check('an id outside the libraries is still refused', r.status === 404);
+
+r = await w.fetch(req('/api/me'), env);
+d = await r.json();
+check('/api/me reports open', d.open === true && d.folderCount > 0);
 
 /* ============================== routing ============================== */
 
-r = await w.fetch(req('/','priya@acme.com'), env);
-check('root redirects to /customer-login',
-  r.status===302 && r.headers.get('location')==='https://giftingneeds.org/customer-login');
+r = await w.fetch(req('/'), env);
+check('root serves the hub', (await r.text()).includes('Three places to browse'));
 
-r = await w.fetch(req('/customer-login','priya@acme.com'), env);
-check('/customer-login serves the portal', (await r.text())==='static');
-
-// Typed by hand off an email; the near misses must not dead-end.
-for (const near of ['/customer_login','/customerlogin','/login','/portal','/customer']) {
-  r = await w.fetch(req(near,'priya@acme.com'), env);
-  check('near miss ' + near + ' redirects',
-    r.status===302 && r.headers.get('location')==='https://giftingneeds.org/customer-login');
+for (const [near, target] of [
+  ['/customer_login', '/customer-login'], ['/login', '/customer-login'],
+  ['/store', '/storefront'], ['/shop', '/storefront'], ['/poster', '/posters'],
+]) {
+  r = await w.fetch(req(near), env);
+  check(`${near} redirects to ${target}`,
+    r.status === 302 && r.headers.get('location') === 'https://giftingneeds.org' + target);
 }
-// Differently-cased is the real path, so serve it rather than bounce.
-r = await w.fetch(req('/Customer-Login','priya@acme.com'), env);
-check('/Customer-Login is served, not redirected', (await r.text())==='static');
+
+for (const p of ['/customer-login', '/storefront', '/posters']) {
+  r = await w.fetch(req(p), env);
+  check(`${p} is served`, (await r.text()) === 'static');
+}
 
 /* ========================== access requests ========================== */
 

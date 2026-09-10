@@ -1,9 +1,8 @@
 /**
  * Gifting Needs client portal — front end.
  *
- * This file protects nothing. Cloudflare Access decides who reaches the
- * page; the Worker decides which Drive folder that address may read and
- * streams the bytes. Everything here just draws the result.
+ * This file protects nothing, and neither does anything behind it:
+ * the catalogues are open to anyone with the link, by request.
  *
  * There is no per-customer HTML and no manifest of customers: one page
  * serves everyone, and the Worker returns only the caller's own files.
@@ -42,21 +41,6 @@ const ClientPortal = (() => {
     } catch { return ''; }
   }
 
-  function showStatus(state, email) {
-    const el = $('portal-status');
-    if (!el) return;
-    if (state === 'secure') {
-      el.className = 'portal-status portal-status-secure';
-      el.innerHTML = `<span>Signed in as <strong>${esc(email)}</strong></span>
-        <a class="portal-signout" href="${LOGOUT_URL}">Sign out</a>`;
-    } else {
-      el.className = 'portal-status portal-status-open';
-      el.innerHTML = `<span><strong>This page is not protected yet.</strong>
-        Cloudflare Access is not in front of this site, so anyone with the
-        link can open it. Do not share it until the Access application is
-        live. Setup steps are in CLIENT-PORTAL.md.</span>`;
-    }
-  }
 
   function fileRow(f) {
     const meta = [niceSize(f.size), niceDate(f.modified)].filter(Boolean).join(' · ');
@@ -106,19 +90,9 @@ const ClientPortal = (() => {
       res = await fetch('/api/files', { cache: 'no-store' });
       data = await res.json();
     } catch (err) {
-      showStatus('open');
       renderError('Could not reach the document service.', String(err));
       return;
     }
-
-    if (res.status === 401 || !data.email) {
-      showStatus('open');
-      renderError('Not signed in.',
-        'Cloudflare Access is not in front of this site yet.');
-      return;
-    }
-
-    showStatus('secure', data.email);
 
     if (data.error) {
       renderError('The document service returned an error.', data.message);
