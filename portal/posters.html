@@ -3,61 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Posters | Corporate Gifting Categories — Gifting Needs</title>
-  <meta name="description" content="Browse all 46 corporate gifting poster categories — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
-  <link rel="icon" type="image/png" href="https://giftingneeds.in/favicon.png">
-  <link rel="stylesheet" href="https://giftingneeds.in/css/style.css?v=1.1">
-  <link rel="stylesheet" href="https://giftingneeds.in/css/diwali.css?v=1.2">
+  <title>Diwali 2026 Posters — Gifting Needs</title>
+  <meta name="description" content="48 Diwali 2026 campaign posters and 43 gift categories from Gifting Needs, Bengaluru. Open any poster and zoom in to read every product and price.">
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
+  <meta name="theme-color" content="#36131f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
        POSTERS PAGE — Gallery Styles
        ============================================================ */
-    :root {
-      --pg-gold: #C97B14;
-      --pg-gold-glow: rgba(212,175,55,0.2);
-      --pg-bg: #0a0e17;
-      --pg-bg2: #121824;
-      --pg-card: rgba(22,30,46,0.85);
-      --pg-border: rgba(255,255,255,0.08);
-      --pg-text: #f8fafc;
-      --pg-muted: #64748b;
-      --pg-sub: #94a3b8;
-      --pg-radius: 16px;
+    /* The Diwali palette shared with the portal home, catalogue and
+       storefront pages: wine and gold on cream. */
+    :root, [data-theme="light"] {
+      --pg-wine: #36131f;
+      --pg-wine-2: #5b2334;
+      --pg-gold: #a9762f;          /* dark enough to read on cream */
+      --pg-gold-soft: #efd29c;     /* the leaf gold, for wine backgrounds */
+      --pg-gold-glow: rgba(201,154,97,0.22);
+      --pg-bg: #faf4e9;
+      --pg-bg2: #fffbf5;
+      --pg-card: #fffbf5;
+      --pg-border: #e3d5c0;
+      --pg-text: #422532;
+      --pg-muted: #a08d84;
+      --pg-sub: #6d5a52;
+      --pg-serif: Georgia, 'Times New Roman', serif;
+      --pg-radius: 14px;
       --pg-trans: 0.3s cubic-bezier(0.4,0,0.2,1);
       --pg-bounce: 0.4s cubic-bezier(0.34,1.56,0.64,1);
     }
-    [data-theme="light"] {
-      --pg-bg: #f1f5f9;
-      --pg-bg2: #ffffff;
-      --pg-card: rgba(255,255,255,0.9);
-      --pg-border: rgba(0,0,0,0.08);
-      --pg-text: #0f172a;
-      --pg-muted: #94a3b8;
-      --pg-sub: #475569;
-    }
 
-    .pg-wrap { background: var(--pg-bg); font-family: 'Inter', sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--pg-bg); color: var(--pg-text);
+           font-family: 'Inter', Arial, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--pg-gold); outline-offset: 3px; }
+
+    .pg-wrap { background: var(--pg-bg); font-family: 'Inter', Arial, sans-serif; }
 
     /* ---- HERO ---- */
     .pg-hero {
       position: relative;
-      padding: 5rem 0 3.5rem;
+      padding: 3.6rem 0 3.2rem;
       overflow: hidden;
-      background: var(--pg-bg);
+      color: #f6e7d3;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,176,86,.20), transparent 58%),
+        radial-gradient(ellipse at 0% 100%, rgba(115,52,68,.55), transparent 55%),
+        var(--pg-wine);
     }
     .pg-hero-bg {
       position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 80% 55% at 50% 0%, rgba(212,175,55,0.13) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 10% 60%, rgba(99,102,241,0.07) 0%, transparent 60%);
+      background-image: radial-gradient(rgba(230,196,144,.5) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,.55), transparent 70%);
+      opacity: .35;
     }
-    .pg-hero-bg::after {
-      content: '';
-      position: absolute; inset: 0;
-      background-image: radial-gradient(circle at 1px 1px, rgba(212,175,55,0.05) 1px, transparent 0);
-      background-size: 36px 36px;
+    /* A half mandala behind the title, and two lanterns hung off the top
+       edge — the same artwork the festive homepage uses. */
+    .pg-hero::before {
+      content: ''; position: absolute; pointer-events: none;
+      left: 50%; top: -70px; width: 520px; height: 520px;
+      transform: translateX(-50%);
+      background: url('/assets/festival/half-mandala.webp') center/contain no-repeat;
+      opacity: .16; mix-blend-mode: screen;
+    }
+    .pg-lantern {
+      position: absolute; top: -12px; width: 60px; pointer-events: none;
+      opacity: .92; filter: drop-shadow(0 8px 24px rgba(255,170,80,.28));
+      animation: pgSway 7s ease-in-out infinite;
+    }
+    .pg-lantern-l { left: 6%; }
+    .pg-lantern-r { right: 6%; width: 74px; animation-delay: -3.5s; }
+    @keyframes pgSway { 50% { transform: rotate(3.5deg); } }
+    @media (max-width: 900px) { .pg-lantern { display: none; } }
+    /* marigold strip closing the hero */
+    .pg-hero-edge {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 16px;
+      background: url('/assets/festival/marigold-border.webp') center/auto 100% repeat-x;
+      opacity: .9;
     }
     .pg-hero-inner {
       position: relative; z-index: 1;
@@ -65,43 +91,45 @@
       text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
     }
     .pg-badge {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .35rem 1rem;
-      background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.25);
-      border-radius: 9999px; font-size: .78rem; font-weight: 600;
-      color: var(--pg-gold); letter-spacing: .06em; text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: .6rem;
+      font-size: .64rem; font-weight: 700; letter-spacing: .21em;
+      color: var(--pg-gold-soft); text-transform: uppercase;
+    }
+    .pg-badge::before, .pg-badge::after {
+      content: ''; width: 26px; height: 1px; background: var(--pg-gold-soft); opacity: .7;
     }
     .pg-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
-      font-weight: 800; color: var(--pg-text); line-height: 1.1; margin: 0;
+      font-family: var(--pg-serif);
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 400; color: #fdf6ea; line-height: 1.05;
+      letter-spacing: -.035em; margin: 0;
     }
-    .pg-title .gold {
-      background: linear-gradient(135deg,#f6d365 0%,#C97B14 45%,#b8860b 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
+    .pg-title .gold { color: var(--pg-gold-soft); font-style: italic; }
     .pg-subtitle {
-      max-width: 580px; font-size: 1rem; color: var(--pg-sub); line-height: 1.7;
+      max-width: 560px; font-size: .98rem; color: #dcc3c6; line-height: 1.8; margin: 0;
     }
     .pg-stats {
       display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;
-      background: var(--pg-card); border: 1px solid var(--pg-border);
-      border-radius: 18px; padding: 1.1rem 2.2rem;
-      backdrop-filter: blur(16px);
+      background: rgba(255,246,232,.05); border: 1px solid rgba(239,210,156,.22);
+      border-radius: 4px; padding: 1rem 2.2rem;
     }
-    .pg-stat { display: flex; flex-direction: column; align-items: center; gap: .15rem; }
-    .pg-stat-val { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--pg-gold); }
-    .pg-stat-lbl { font-size: .72rem; color: var(--pg-muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
-    .pg-stat-div { width: 1px; height: 32px; background: var(--pg-border); }
+    .pg-stat { display: flex; flex-direction: column; align-items: center; gap: .2rem; }
+    .pg-stat-val { font-family: var(--pg-serif); font-size: 1.45rem; font-weight: 400; color: var(--pg-gold-soft); }
+    .pg-stat-lbl { font-size: .62rem; color: #c3a8ac; text-transform: uppercase; letter-spacing: .14em; font-weight: 600; }
+    .pg-stat-div { width: 1px; height: 32px; background: rgba(239,210,156,.25); }
+    .pg-hero-note {
+      display: inline-flex; align-items: center; gap: .55rem;
+      font: italic 1rem/1.5 var(--pg-serif); color: #e7c68e; margin: 0;
+    }
+    .pg-hero-note img { width: 30px; height: auto; }
 
     /* ---- FILTER BAR ---- */
     .pg-filter-bar {
       position: sticky; top: 0; z-index: 200;
-      background: rgba(10,14,23,0.92); backdrop-filter: blur(20px);
+      background: rgba(250,244,233,.95); backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--pg-border);
-      padding: .8rem 0; box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      padding: .8rem 0; box-shadow: 0 4px 18px rgba(72,32,46,.07);
     }
-    [data-theme="light"] .pg-filter-bar { background: rgba(248,250,252,0.94); }
     .pg-filter-inner {
       max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
       display: flex; align-items: center; gap: .9rem;
@@ -160,7 +188,7 @@
       border: 1px solid; display: flex; align-items: center; justify-content: center;
       font-size: 1.5rem; flex-shrink: 0;
     }
-    .pg-group-title { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .pg-group-title { font-family: var(--pg-serif); font-size: 1.25rem; font-weight: 700; margin: 0; }
     .pg-group-count { font-size: .78rem; color: var(--pg-muted); margin: 0; }
     .pg-group-line { flex: 1; height: 1px; }
 
@@ -239,7 +267,7 @@
     .pg-card-icon-row { display: flex; align-items: flex-start; gap: .55rem; }
     .pg-card-emoji { font-size: 1.3rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
     .pg-card-name {
-      font-family: 'Outfit', sans-serif; font-size: .93rem; font-weight: 700;
+      font-family: var(--pg-serif); font-size: .93rem; font-weight: 700;
       color: var(--pg-text); line-height: 1.3; margin: 0;
       transition: color var(--pg-trans);
     }
@@ -267,7 +295,7 @@
       padding: 5rem 2rem; text-align: center;
     }
     .pg-empty-icon { font-size: 3.5rem; opacity: .4; }
-    .pg-empty h3 { font-family: 'Outfit', sans-serif; font-size: 1.3rem; color: var(--pg-text); margin: 0; }
+    .pg-empty h3 { font-family: var(--pg-serif); font-size: 1.3rem; color: var(--pg-text); margin: 0; }
     .pg-empty p { color: var(--pg-muted); font-size: .88rem; margin: 0; }
     .pg-empty-btn {
       padding: .6rem 1.4rem; background: linear-gradient(135deg, var(--pg-gold), #b89228);
@@ -284,35 +312,31 @@
     }
     @keyframes pgLbIn { from{opacity:0} to{opacity:1} }
     .pg-lb-box {
-      background: #0f172a; border: 1px solid rgba(255,255,255,.08);
+      background: var(--pg-wine); border: 1px solid rgba(255,255,255,.08);
       border-radius: 20px; width: 100%; max-width: 880px;
       max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;
-      box-shadow: 0 30px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(212,175,55,.12);
+      box-shadow: 0 30px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(239,210,156,.14);
       animation: pgLbBoxIn .3s cubic-bezier(.34,1.56,.64,1);
     }
-    [data-theme="light"] .pg-lb-box { background: #fff; border-color: rgba(0,0,0,.1); }
     @keyframes pgLbBoxIn { from{opacity:0;transform:scale(.94) translateY(18px)} to{opacity:1;transform:scale(1) translateY(0)} }
     .pg-lb-head {
       display: flex; align-items: flex-start; justify-content: space-between;
       gap: 1rem; padding: 1.2rem 1.4rem .9rem;
       border-bottom: 1px solid rgba(255,255,255,.08); flex-shrink: 0;
     }
-    [data-theme="light"] .pg-lb-head { border-color: rgba(0,0,0,.08); }
     .pg-lb-meta { display: flex; align-items: flex-start; gap: .7rem; }
     .pg-lb-emoji { font-size: 1.9rem; line-height: 1; }
-    .pg-lb-name { font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:700; color:#f8fafc; margin:0 0 .2rem; }
-    [data-theme="light"] .pg-lb-name { color:#0f172a; }
-    .pg-lb-desc { font-size: .76rem; color: #64748b; margin: 0; max-width: 380px; line-height: 1.5; }
+    .pg-lb-name { font-family:var(--pg-serif); font-size:1.15rem; font-weight:400; color:#fdf6ea; margin:0 0 .2rem; }
+    .pg-lb-desc { font-size: .76rem; color: #c8aeb2; margin: 0; max-width: 380px; line-height: 1.5; }
     .pg-lb-right { display:flex; align-items:center; gap:.65rem; flex-shrink:0; }
     .pg-lb-counter {
-      font-size:.78rem; color:#64748b; font-weight:600;
-      background:rgba(255,255,255,.06); padding:.22rem .6rem;
-      border-radius:9999px; border:1px solid rgba(255,255,255,.08);
+      font-size:.78rem; color:#e0c6a4; font-weight:600;
+      background:rgba(239,210,156,.08); padding:.22rem .6rem;
+      border-radius:9999px; border:1px solid rgba(239,210,156,.22);
     }
-    [data-theme="light"] .pg-lb-counter { background:rgba(0,0,0,.05); border-color:rgba(0,0,0,.08); }
     .pg-lb-close {
-      width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.1); color:#94a3b8; cursor:pointer;
+      width:36px; height:36px; border-radius:50%; background:rgba(239,210,156,.08);
+      border:1px solid rgba(239,210,156,.2); color:#e0c6a4; cursor:pointer;
       display:flex; align-items:center; justify-content:center; font-size:1.1rem;
       transition:all var(--pg-trans);
     }
@@ -350,7 +374,7 @@
       font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center;
       transition:background var(--pg-trans), color var(--pg-trans);
     }
-    .pg-zoom-btn:hover { background:var(--pg-gold); color:#0a0e17; }
+    .pg-zoom-btn:hover { background:var(--pg-gold-soft); color:var(--pg-wine); }
     .pg-zoom-btn[disabled] { opacity:.35; cursor:default; }
     .pg-zoom-btn[disabled]:hover { background:transparent; color:#e2e8f0; }
     .pg-zoom-level {
@@ -381,75 +405,139 @@
       color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;
       font-size:1.3rem; transition:all var(--pg-trans); z-index:2;
     }
-    .pg-lb-nav:hover { background:var(--pg-gold); border-color:var(--pg-gold); color:#0a0e17; }
+    .pg-lb-nav:hover { background:var(--pg-gold-soft); border-color:var(--pg-gold-soft); color:var(--pg-wine); }
     .pg-lb-prev { left:1rem; }
     .pg-lb-next { right:1rem; }
     .pg-lb-thumbs {
       display:flex; gap:.45rem; padding:.7rem 1.4rem;
       border-top:1px solid rgba(255,255,255,.08); overflow-x:auto; scrollbar-width:none; flex-shrink:0;
     }
-    [data-theme="light"] .pg-lb-thumbs { border-color:rgba(0,0,0,.08); }
     .pg-lb-thumbs::-webkit-scrollbar { display:none; }
     .pg-lb-thumb {
       width:52px; height:52px; border-radius:7px; overflow:hidden;
       border:2px solid rgba(255,255,255,.1); cursor:pointer; flex-shrink:0;
       padding:0; background:none; transition:all var(--pg-trans);
     }
-    .pg-lb-thumb:hover { border-color:rgba(212,175,55,.5); }
-    .pg-lb-thumb.active { border-color:var(--pg-gold); box-shadow:0 0 10px rgba(212,175,55,.3); }
+    .pg-lb-thumb:hover { border-color:rgba(239,210,156,.55); }
+    .pg-lb-thumb.active { border-color:var(--pg-gold-soft); box-shadow:0 0 10px rgba(239,210,156,.35); }
     .pg-lb-thumb img { width:100%; height:100%; object-fit:cover; pointer-events:none; -webkit-user-drag:none; }
     .pg-lb-foot {
       display:flex; align-items:center; gap:.45rem; flex-wrap:wrap;
       padding:.7rem 1.4rem; border-top:1px solid rgba(255,255,255,.08); flex-shrink:0;
     }
-    [data-theme="light"] .pg-lb-foot { border-color:rgba(0,0,0,.08); }
     .pg-lb-tag {
-      font-size:.7rem; font-weight:600; color:var(--pg-gold);
-      background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.2);
+      font-size:.7rem; font-weight:600; color:var(--pg-gold-soft);
+      background:rgba(239,210,156,.08); border:1px solid rgba(239,210,156,.22);
       border-radius:4px; padding:.18rem .5rem;
     }
     .pg-lb-cta {
       display:inline-flex; align-items:center; gap:.35rem; margin-left:auto;
-      padding:.42rem .95rem; background:linear-gradient(135deg,var(--pg-gold),#b89228);
-      color:#0a0e17; border-radius:7px; font-size:.8rem; font-weight:700;
+      padding:.45rem 1rem; background:var(--pg-gold-soft);
+      color:var(--pg-wine); border-radius:4px; font-size:.8rem; font-weight:700;
       text-decoration:none; transition:all var(--pg-trans); border:none; cursor:pointer;
       font-family:'Inter',sans-serif;
     }
-    .pg-lb-cta:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(212,175,55,.3); }
+    .pg-lb-cta:hover { transform:translateY(-1px); background:#ffe2ad; box-shadow:0 6px 18px rgba(239,210,156,.28); }
 
     /* ---- CTA SECTION ---- */
     .pg-cta {
-      background: linear-gradient(135deg, rgba(212,175,55,.06) 0%, rgba(99,102,241,.04) 100%);
-      border-top: 1px solid var(--pg-border); padding: 3.5rem 0;
+      position: relative; overflow: hidden;
+      background: radial-gradient(ellipse at 50% 120%, rgba(201,153,80,.30), transparent 62%), #f0e4d0;
+      border-top: 1px solid var(--pg-border); padding: 3.4rem 0 3.8rem;
     }
+    .pg-cta::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 42px;
+      background: url('/assets/festival/footer-diyas.webp') center bottom/auto 100% repeat-x;
+      opacity: .85; pointer-events: none;
+    }
+    .pg-cta-inner { position: relative; z-index: 1; }
+    .pg-cta-mark { width: 46px; height: auto; margin: 0 auto 1rem; display: block; opacity: .85; }
     .pg-cta-inner { max-width:1280px; margin:0 auto; padding:0 1.5rem; text-align:center; }
-    .pg-cta-title { font-family:'Outfit',sans-serif; font-size:clamp(1.5rem,3.5vw,2rem); font-weight:700; color:var(--pg-text); margin:0 0 .6rem; }
+    .pg-cta-title { font-family:var(--pg-serif); font-size:clamp(1.5rem,3.5vw,2rem); font-weight:700; color:var(--pg-text); margin:0 0 .6rem; }
+    .pg-cta-title em { color: var(--pg-gold); font-style: italic; }
     .pg-cta-sub { font-size:.96rem; color:var(--pg-sub); max-width:480px; margin:0 auto 1.4rem; line-height:1.7; }
     .pg-cta-btns { display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center; }
     .pg-btn-gold {
       display:inline-flex; align-items:center; gap:.4rem;
-      padding:.65rem 1.4rem; background:linear-gradient(135deg,var(--pg-gold),#b89228);
-      color:#0a0e17; border:none; border-radius:8px; font-weight:700;
+      padding:.75rem 1.5rem; background:var(--pg-wine);
+      color:var(--pg-gold-soft); border:none; border-radius:4px; font-weight:700;
       font-size:.9rem; cursor:pointer; text-decoration:none; font-family:'Inter',sans-serif;
       transition:all var(--pg-trans);
     }
-    .pg-btn-gold:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(212,175,55,.3); }
+    .pg-btn-gold:hover { transform:translateY(-2px); background:#62283c; box-shadow:0 8px 22px rgba(54,19,31,.28); }
     .pg-btn-outline {
       display:inline-flex; align-items:center; gap:.4rem;
-      padding:.65rem 1.4rem; background:transparent;
-      color:var(--pg-text); border:1px solid var(--pg-border); border-radius:8px;
+      padding:.75rem 1.5rem; background:transparent;
+      color:var(--pg-text); border:1px solid #cdb08a; border-radius:4px;
       font-weight:600; font-size:.9rem; cursor:pointer; text-decoration:none;
       font-family:'Inter',sans-serif; transition:all var(--pg-trans);
     }
     .pg-btn-outline:hover { border-color:var(--pg-gold); color:var(--pg-gold); }
     .pg-btn-wa {
       display:inline-flex; align-items:center; gap:.4rem;
-      padding:.65rem 1.4rem; background:linear-gradient(135deg,#25d366,#128c7e);
-      color:#fff; border:none; border-radius:8px; font-weight:700;
+      padding:.75rem 1.5rem; background:linear-gradient(135deg,#25d366,#128c7e);
+      color:#fff; border:none; border-radius:4px; font-weight:700;
       font-size:.9rem; cursor:pointer; text-decoration:none; font-family:'Inter',sans-serif;
       transition:all var(--pg-trans);
     }
     .pg-btn-wa:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(37,211,102,.3); }
+
+    /* ============================================================
+       PAGE CHROME — the festive shell shared with the portal home
+       ============================================================ */
+    .pg-announce {
+      background: #e6c490; color: #462534; text-align: center;
+      font-size: .56rem; font-weight: 700; letter-spacing: .22em;
+      padding: .75rem 1.25rem; text-transform: uppercase;
+    }
+    .pg-announce span { margin: 0 1.25rem; }
+    .pg-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1.5rem; padding: 1.1rem 6%;
+      background: var(--pg-wine); color: #f8ead8;
+      border-bottom: 1px solid rgba(234,198,138,.15);
+    }
+    .pg-nav-brand { background: #fffaf0; border-radius: 4px; padding: .3rem .75rem; line-height: 0; }
+    .pg-nav-brand img { width: 140px; height: 44px; object-fit: contain; }
+    .pg-nav-links { display: flex; gap: 2.1rem; font-size: .82rem; }
+    .pg-nav-links a { padding-bottom: .3rem; border-bottom: 1px solid transparent; }
+    .pg-nav-links a:hover { color: #e5bc79; }
+    .pg-nav-links a[aria-current="page"] { color: var(--pg-gold-soft); border-bottom-color: var(--pg-gold-soft); }
+    .pg-nav-cta { font-size: .74rem; border: 1px solid rgba(203,165,112,.45); padding: .75rem 1.15rem; white-space: nowrap; }
+    .pg-nav-cta:hover { border-color: var(--pg-gold-soft); color: var(--pg-gold-soft); }
+    .pg-nav-cta span { margin-left: 1.1rem; }
+
+    .pg-foot {
+      background: var(--pg-wine); color: #d5b6aa; font-size: .72rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1.5rem; flex-wrap: wrap; padding: 2.2rem 6%;
+      /* keep the last link clear of the floating WhatsApp button */
+      padding-right: calc(6% + 4.5rem);
+    }
+    .pg-foot-brand { font: 1.5rem var(--pg-serif); color: var(--pg-gold-soft); }
+    .pg-foot-brand span { display: block; font: .62rem 'Inter', Arial, sans-serif; color: #bd9d9e; margin-top: .5rem; letter-spacing: .04em; }
+    .pg-foot a:hover { color: var(--pg-gold-soft); }
+    .pg-foot-links { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+
+    .pg-wa {
+      position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 500;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #25d366; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 22px rgba(37,211,102,.35); transition: transform var(--pg-trans);
+    }
+    .pg-wa:hover { transform: scale(1.07); }
+    .pg-wa svg { width: 27px; height: 27px; fill: #fff; }
+
+    @media (max-width: 900px) {
+      .pg-nav { padding: .9rem 5%; gap: 1rem; flex-wrap: wrap; }
+      .pg-nav-brand img { width: 104px; height: 34px; }
+      .pg-nav-cta { display: none; }
+      .pg-nav-links { gap: 1.1rem; font-size: .74rem; }
+      .pg-announce { font-size: .5rem; letter-spacing: .12em; }
+      .pg-announce span { margin: 0 .5rem; }
+      .pg-foot { padding: 1.8rem 6% 5rem; }
+      .pg-foot-brand { flex-basis: 100%; }
+    }
 
     /* ---- RESPONSIVE ---- */
     @media(max-width:768px){
@@ -479,87 +567,50 @@
     }
   </style>
 
-  <link rel="canonical" href="https://giftingneeds.in/posters.html">
+  <link rel="canonical" href="https://giftingneeds.org/posters">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Gifting Needs">
   <meta property="og:locale" content="en_IN">
-  <meta property="og:url" content="https://giftingneeds.in/posters.html">
-  <meta property="og:title" content="Posters | Corporate Gifting Categories — Gifting Needs">
-  <meta property="og:description" content="Browse all 46 corporate gifting poster categories — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
+  <meta property="og:url" content="https://giftingneeds.org/posters">
+  <meta property="og:title" content="Diwali 2026 Posters — Gifting Needs">
+  <meta property="og:description" content="48 Diwali 2026 campaign posters and 43 gift categories from Gifting Needs, Bengaluru. Open any poster and zoom in to read every product and price.">
   <meta property="og:image" content="https://giftingneeds.in/images/diwali_poster.jpg">
   <meta property="og:image:alt" content="Gifting Needs Diwali corporate gift hampers">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Posters | Corporate Gifting Categories — Gifting Needs">
-  <meta name="twitter:description" content="Browse all 46 corporate gifting poster categories — chocolate hampers, dry fruits, tech gadgets, apparel, drinkware and more. Pan-India delivery with custom branding.">
+  <meta name="twitter:title" content="Diwali 2026 Posters — Gifting Needs">
+  <meta name="twitter:description" content="48 Diwali 2026 campaign posters and 43 gift categories from Gifting Needs, Bengaluru. Open any poster and zoom in to read every product and price.">
   <meta name="twitter:image" content="https://giftingneeds.in/images/diwali_poster.jpg">
-  <meta name="theme-color" content="#171230">
 </head>
 <body>
 
-  <!-- Loader -->
-  <div id="site-loader" style="position:fixed;inset:0;background:#0D0920;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease,visibility .4s ease;">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
-      <div style="width:50px;height:50px;border:3px solid rgba(212,175,55,.15);border-top-color:#C97B14;border-radius:50%;animation:spin 1s linear infinite;"></div>
-      <div style="font-family:'Playfair Display',serif;color:#C97B14;letter-spacing:.15em;font-size:1.3rem;font-weight:700;">GIFTING NEEDS</div>
-    </div>
-  </div>
-  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+  <a class="pg-skip" href="#pg-gallery" style="position:absolute;left:12px;top:-100px;background:#fff;padding:12px;z-index:10"
+     onfocus="this.style.top='12px'" onblur="this.style.top='-100px'">Skip to the posters</a>
 
-  <!-- NAVBAR -->
-  <!-- Diwali order cut-off countdown -->
-  <div class="announcement-bar-mockup">
-    <div class="container announcement-flex">
-      <div class="announcement-left">
-        <span style="color:#C97B14; font-size:12px;">🪔</span>
-        <span class="countdown-strip" data-countdown></span>
-      </div>
-      <div class="announcement-right">
-        <a href="https://giftingneeds.in/contact.html">Bulk Orders</a>
-        <span style="color: rgba(255,255,255,0.3);">|</span>
-        <a href="https://giftingneeds.in/about.html">Pan India Delivery</a>
-        <span style="color: rgba(255,255,255,0.3);">|</span>
-        <a href="https://giftingneeds.in/solutions.html">Custom Branding</a>
-      </div>
-    </div>
-  </div>
+  <div class="pg-announce">The festival of lights, the art of giving <span>&#10022;</span> Diwali 2026 collection</div>
 
-  <header class="navbar scrolled" id="main-header">
-    <div class="container navbar-container">
-      <a href="https://giftingneeds.in/index.html" class="nav-logo" id="header-logo-link">
-        <img class="logo-img-tag" src="https://giftingneeds.in/uploads/gifting_needs_logo_dark.png" alt="Gifting Needs" style="height:56px;max-height:56px;width:auto;object-fit:contain;display:block;">
-      </a>
-      <nav class="nav-links" id="main-navigation">
-        <a href="https://giftingneeds.in/index.html" class="nav-link" id="nav-home">Home</a>
-        <a href="https://giftingneeds.in/diwali.html" class="nav-link" id="nav-diwali" style="color:var(--gold);font-weight:700">Diwali 2026</a>
-        <a href="https://giftingneeds.in/products.html" class="nav-link" id="nav-products">Products</a>
-        <a href="/posters" class="nav-link active" id="nav-posters">Posters</a>
-        <a href="https://giftingneeds.in/solutions.html" class="nav-link" id="nav-solutions">Custom Kits</a>
-        <a href="https://giftingneeds.in/portfolio.html" class="nav-link" id="nav-portfolio">Portfolio</a>
-        <a href="https://giftingneeds.in/about.html" class="nav-link" id="nav-about">About</a>
-        <a href="https://giftingneeds.in/contact.html" class="nav-link" id="nav-contact">Contact</a>
-      </nav>
-      <div class="nav-actions">
-        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme"></button>
-        <a href="https://giftingneeds.in/solutions.html" class="btn btn-outline" id="nav-cta-btn">Build A Kit</a>
-        <button class="menu-btn" id="mobile-menu-toggle" aria-label="Toggle Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
+  <header class="pg-nav">
+    <a class="pg-nav-brand" href="/" aria-label="Gifting Needs home">
+      <img src="/assets/logo.png" alt="Gifting Needs" width="140" height="44">
+    </a>
+    <nav class="pg-nav-links" aria-label="Main navigation">
+      <a href="/storefront/">Products</a>
+      <a href="/catalogues/">Catalogues</a>
+      <a href="/posters" aria-current="page">Posters</a>
+    </nav>
+    <a class="pg-nav-cta" href="tel:+916361054099">Let&rsquo;s talk gifting <span aria-hidden="true">&#8599;</span></a>
   </header>
 
-  <!-- ============================================================
-       POSTER GALLERY PAGE
-       ============================================================ -->
-  <div class="pg-wrap" style="margin-top:80px;">
+  <div class="pg-wrap">
 
     <!-- HERO -->
     <section class="pg-hero">
       <div class="pg-hero-bg"></div>
+      <img class="pg-lantern pg-lantern-l" src="/assets/festival/hanging-lantern.webp" alt="" aria-hidden="true">
+      <img class="pg-lantern pg-lantern-r" src="/assets/festival/lantern-pair.webp" alt="" aria-hidden="true">
       <div class="pg-hero-inner">
-        <div class="pg-badge">🎁 Premium Corporate Gifting Solutions</div>
-        <h1 class="pg-title">Our <span class="gold">Posters</span> Categories</h1>
-        <p class="pg-subtitle">48 Diwali 2026 campaign posters and 43 curated gift categories — open any one and zoom in to read every detail.</p>
+        <p class="pg-badge">Festive ideas, beautifully shared</p>
+        <h1 class="pg-title">Posters for a <span class="gold">brighter</span> Diwali</h1>
+        <p class="pg-subtitle">48 Diwali 2026 campaign posters and 43 curated gift categories. Open any one and zoom in &mdash; every price, every product, every detail is readable.</p>
         <div class="pg-stats">
           <div class="pg-stat"><span class="pg-stat-val">500+</span><span class="pg-stat-lbl">Products</span></div>
           <div class="pg-stat-div"></div>
@@ -569,7 +620,10 @@
           <div class="pg-stat-div"></div>
           <div class="pg-stat"><span class="pg-stat-val">Pan India</span><span class="pg-stat-lbl">Delivery</span></div>
         </div>
+        <p class="pg-hero-note"><img src="/assets/festival/diya-small.webp" alt="" aria-hidden="true">
+           May your celebrations glow.</p>
       </div>
+      <div class="pg-hero-edge" aria-hidden="true"></div>
     </section>
 
     <!-- FILTER BAR -->
@@ -601,8 +655,9 @@
     <!-- CTA -->
     <section class="pg-cta">
       <div class="pg-cta-inner">
-        <h2 class="pg-cta-title">Ready to Gift with Impact?</h2>
-        <p class="pg-cta-sub">Get a custom catalogue, pricing and branding samples — bulk orders 100 to 10,000+ units.</p>
+        <img class="pg-cta-mark" src="/assets/festival/lotus.webp" alt="" aria-hidden="true">
+        <h2 class="pg-cta-title">Make this Diwali <em>personal</em></h2>
+        <p class="pg-cta-sub">Choosing for your team or your clients? We&rsquo;ll put together a custom catalogue, pricing and branding samples &mdash; bulk orders 100 to 10,000+ units.</p>
         <div class="pg-cta-btns">
           <a href="tel:+916361054099" class="pg-btn-gold">📞 +91 63610 54099</a>
           <a href="mailto:sales@giftingneeds.in" class="pg-btn-outline">✉️ sales@giftingneeds.in</a>
@@ -632,7 +687,7 @@
         </div>
         <div class="pg-lb-img-area">
           <button class="pg-lb-nav pg-lb-prev" id="lb-prev" aria-label="Previous">‹</button>
-          <div class="pg-lb-img-wrap"><img id="lb-img" class="pg-lb-img" src="https://giftingneeds.in/" alt="" draggable="false"></div>
+          <div class="pg-lb-img-wrap"><img id="lb-img" class="pg-lb-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" draggable="false"></div>
           <button class="pg-lb-nav pg-lb-next" id="lb-next" aria-label="Next">›</button>
           <span class="pg-zoom-hint" id="lb-hint">Scroll or double-click to zoom · drag to move</span>
           <div class="pg-zoom-bar">
@@ -651,10 +706,6 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="https://giftingneeds.in/js/api.js?v=1.1"></script>
-  <script src="https://giftingneeds.in/js/leads.js?v=1.1"></script>
-  <script src="https://giftingneeds.in/js/main.js?v=1.1"></script>
-  <script src="https://giftingneeds.in/js/diwali.js?v=1.1"></script>
   <script>
   // ============================================================
   // POSTER GALLERY DATA & ENGINE
@@ -1150,77 +1201,20 @@
   </script>
 
   <!-- FOOTER -->
-  <footer class="footer" id="main-footer">
-    <div class="container">
-      <div class="footer-top">
-        <div>
-          <div class="nav-logo" style="margin-bottom:1rem;">
-            <img class="logo-img-tag" src="https://giftingneeds.in/uploads/gifting_needs_logo_light.png" alt="Gifting Needs" style="height:56px;max-height:56px;width:auto;object-fit:contain;display:block;">
-          </div>
-          <p class="footer-logo-desc">Crafting premium, sustainable, and highly personalized corporate hampers, welcome onboarding packs, and custom tech utilities since 2018.</p>
-          <div class="footer-socials">
-            <a href="#" class="social-icon-btn">FB</a>
-            <a href="#" class="social-icon-btn">LN</a>
-            <a href="#" class="social-icon-btn">IG</a>
-          </div>
-        </div>
-        <div>
-          <h4 class="footer-title">Our Solutions</h4>
-          <ul class="footer-links-list">
-            <li><a href="https://giftingneeds.in/solutions.html" class="footer-link">Employee Welcome Kits</a></li>
-            <li><a href="https://giftingneeds.in/products.html?category=tech" class="footer-link">Technology & Electronics</a></li>
-            <li><a href="https://giftingneeds.in/products.html?category=drinkware" class="footer-link">Premium Drinkware</a></li>
-            <li><a href="https://giftingneeds.in/products.html?category=eco" class="footer-link">Eco-Friendly Gifts</a></li>
-            <li><a href="https://giftingneeds.in/products.html?category=hampers" class="footer-link">Festive Hampers</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="footer-title">Quick Links</h4>
-          <ul class="footer-links-list">
-            <li><a href="https://giftingneeds.in/index.html" class="footer-link">Home Overview</a>
-            <a href="https://giftingneeds.in/diwali.html" class="footer-link">Diwali 2026 Hampers</a></li>
-            <li><a href="https://giftingneeds.in/products.html" class="footer-link">Product Catalog</a></li>
-            <li><a href="https://giftingneeds.in/posters.html" class="footer-link">Posters</a></li>
-            <li><a href="https://giftingneeds.in/solutions.html" class="footer-link">Box Customizer</a></li>
-            <li><a href="https://giftingneeds.in/about.html" class="footer-link">Our Story</a></li>
-            <li><a href="https://giftingneeds.in/contact.html" class="footer-link">Get a Quote</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="footer-title">Get in Touch</h4>
-          <div class="footer-contact-item"><span>📍</span><span>No. 124 (Old No. 123/1), 8th Cross, 19th Main Road, Marenahalli Palya, 2nd Phase, J.P. Nagar, Bengaluru – 560078, Karnataka, India</span></div>
-          <div class="footer-contact-item"><span>📧</span><span>nunulal@giftingneeds.in / sales@giftingneeds.in</span></div>
-          <div class="footer-contact-item"><span>📞</span><span>+91 63610 54099 / +91 86189 67417</span></div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 NUNULAL PODDAR | Gifting Needs. All rights reserved. GSTIN: 29AAWFG9249H1ZH</p>
-        <div class="footer-bottom-links">
-          <a href="#" class="footer-link">Privacy Policy</a>
-          <a href="#" class="footer-link">Terms & Conditions</a>
-        </div>
-      </div>
+  <footer class="pg-foot">
+    <a href="/" class="pg-foot-brand">Gifting Needs<span>Thoughtful gifts. Brighter connections.</span></a>
+    <p style="margin:0">Bengaluru, India &middot; <a href="tel:+916361054099">+91 63610 54099</a></p>
+    <div class="pg-foot-links">
+      <a href="/storefront/">Products</a>
+      <a href="/catalogues/">Catalogues</a>
+      <a href="mailto:sales@giftingneeds.in">sales@giftingneeds.in</a>
     </div>
   </footer>
 
-  <div class="floating-contact-pannel" id="float-contact-buttons">
-    <a href="https://wa.me/916361054099?text=Hi%20Gifting%20Needs,%20we%20want%20to%20inquire%20about%20corporate%20products." target="_blank" class="float-btn float-btn-whatsapp" aria-label="WhatsApp">
-      <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.57 1.978 14.1 1.953 12.006 1.953c-5.437 0-9.863 4.374-9.868 9.803-.001 1.77.476 3.5 1.378 5.027L2.5 21.007l4.147-1.853zm12.39-7.147c-.285-.143-1.687-.832-1.947-.927-.26-.096-.45-.143-.637.143-.188.285-.724.927-.887 1.116-.164.188-.327.21-.612.068-.285-.143-1.206-.444-2.296-1.416-.849-.757-1.423-1.693-1.59-1.977-.167-.285-.018-.439.124-.58.128-.127.285-.332.427-.497.143-.166.19-.285.285-.475.095-.19.047-.356-.024-.497-.07-.143-.637-1.537-.872-2.106-.23-.553-.46-.477-.63-.486-.164-.008-.352-.01-.54-.01-.188 0-.495.07-.754.356-.26.285-.99.967-.99 2.361 0 1.394 1.014 2.741 1.155 2.93.14.19 1.997 3.05 4.838 4.278.675.293 1.202.468 1.612.598.678.215 1.295.185 1.783.111.544-.08 1.687-.69 1.925-1.356.238-.665.238-1.233.167-1.357-.07-.123-.26-.19-.545-.333z"/></svg>
-    </a>
-    <a href="https://giftingneeds.in/contact.html" class="float-btn float-btn-inquiry" aria-label="Request Quote">
-      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
-    </a>
-  </div>
-
-  <!-- Sticky Diwali quote bar -->
-  <div class="quote-bar" role="complementary" aria-label="Get a Diwali quote">
-    <p><strong>Diwali orders close 10 October.</strong> Get pricing for your headcount today.</p>
-    <div class="qb-actions">
-      <a class="btn btn-gold" href="https://giftingneeds.in/diwali.html">See Diwali hampers</a>
-      <a class="btn btn-outline" href="https://wa.me/916361054099?text=Hi%20Gifting%20Needs%2C%20we%20need%20a%20Diwali%20bulk%20quote."
-         target="_blank" rel="noopener">WhatsApp us</a>
-    </div>
-  </div>
+  <a class="pg-wa" href="https://wa.me/916361054099?text=Hi%20Gifting%20Needs%2C%20we%20saw%20your%20Diwali%202026%20posters."
+     target="_blank" rel="noopener" aria-label="Message Gifting Needs on WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.57 1.978 14.1 1.953 12.006 1.953c-5.437 0-9.863 4.374-9.868 9.803-.001 1.77.476 3.5 1.378 5.027L2.5 21.007l4.147-1.853zm12.39-7.147c-.285-.143-1.687-.832-1.947-.927-.26-.096-.45-.143-.637.143-.188.285-.724.927-.887 1.116-.164.188-.327.21-.612.068-.285-.143-1.206-.444-2.296-1.416-.849-.757-1.423-1.693-1.59-1.977-.167-.285-.018-.439.124-.58.128-.127.285-.332.427-.497.143-.166.19-.285.285-.475.095-.19.047-.356-.024-.497-.07-.143-.637-1.537-.872-2.106-.23-.553-.46-.477-.63-.486-.164-.008-.352-.01-.54-.01-.188 0-.495.07-.754.356-.26.285-.99.967-.99 2.361 0 1.394 1.014 2.741 1.155 2.93.14.19 1.997 3.05 4.838 4.278.675.293 1.202.468 1.612.598.678.215 1.295.185 1.783.111.544-.08 1.687-.69 1.925-1.356.238-.665.238-1.233.167-1.357-.07-.123-.26-.19-.545-.333z"/></svg>
+  </a>
 
 </body>
 </html>
