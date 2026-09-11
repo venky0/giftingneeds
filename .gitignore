@@ -4,3 +4,8 @@
 *service-account*.json
 *-key.json
 portal/**/credentials*.json
+
+# Supplier price lists and quotation sheets. These were committed once and
+# had to be scrubbed out of history; the files stay on disk and in Drive,
+# never in git.
+pricing/
