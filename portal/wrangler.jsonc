@@ -43,6 +43,12 @@
     { "name": "SEND_EMAIL", "destination_address": "promo@giftingneeds.in" }
   ],
 
+  // Storefront estimates are mailed to promo@ on every download. Cap it per
+  // visitor so a script can't flood the inbox: 5 per minute per IP.
+  "ratelimits": [
+    { "name": "ESTIMATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
+  ],
+
   "observability": {
     "enabled": true
   }

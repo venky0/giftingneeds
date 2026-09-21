@@ -294,7 +294,8 @@
     const items = selected();
     const total = calc(items).total;
     return `
-      <p class="qlead">${F.delivery === 'multi' ? 'Enter the total quantity across all locations.' : 'How many of each?'}</p>
+      <p class="qlead">${F.delivery === 'multi' ? 'Enter the total quantity across all locations.' : 'How many of each?'}
+        When you download, a copy of the estimate and your details goes to the Gifting Needs team so we can follow up.</p>
       <ul class="qitems">
         ${items.map(x => `
           <li data-k="${esc(x.k)}">
@@ -372,9 +373,12 @@
     const btn = $('.qnext', modal), msg = $('.qmsg', modal);
     btn.disabled = true; btn.textContent = 'Preparing your PDF…'; msg.textContent = '';
     try {
-      await buildPdf();
+      const r = await buildPdf();
       msg.textContent = 'Your estimate has been downloaded.';
       btn.textContent = 'Download again';
+      sendCopy(r).then(s => {
+        if (s === 'sent') msg.textContent = 'Your estimate has been downloaded, and a copy has gone to our team — we\'ll be in touch.';
+      }).catch(err => console.warn(err));
     } catch (e) {
       console.error(e);
       msg.textContent = 'Sorry, the PDF could not be created. Please check your connection and try again.';
@@ -578,7 +582,38 @@
     }
 
     const slug = (F.company || 'Estimate').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
-    doc.save(`${estNo.replace(/\s+/g, '-')}-${slug}.pdf`);
+    const filename = `${estNo.replace(/\s+/g, '-')}-${slug}.pdf`;
+    doc.save(filename);
+    return { doc, estNo, filename, C, ship, buyerState };
+  }
+
+  // Mail Gifting Needs a copy of the estimate the customer just downloaded.
+  // The download never waits on this and never fails because of it.
+  let lastSent = '';
+  async function sendCopy(r) {
+    const F = f();
+    const sig = JSON.stringify([state.items, F]);
+    if (sig === lastSent) return 'same';            // "Download again" with nothing changed
+    const res = await fetch('/api/estimate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        estNo: r.estNo,
+        filename: r.filename,
+        pdf: r.doc.output('datauristring').split(',')[1],
+        customer: {
+          company: F.company, gstin: F.gstin, contact: F.contact, phone: F.phone, email: F.email,
+          address: [F.addr, `${F.city} ${F.pin}`].filter(Boolean).join(', '),
+          state: r.buyerState,
+          delivery: r.ship.join('\n'),
+        },
+        items: r.C.lines.map(l => ({ name: l.d.n, brand: l.d.v, code: l.d.c, qty: l.qty, amount: r2(l.amount * (1 + l.r / 100)) })),
+        total: r.C.total,
+      }),
+    });
+    if (!res.ok) throw new Error('copy not sent: ' + res.status);
+    lastSent = sig;
+    return 'sent';
   }
 
   /* ------------------------------------------------------------ mount */

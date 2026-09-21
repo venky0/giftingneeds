@@ -13,6 +13,8 @@
  */
 import { readFileSync } from 'fs';
 
+// estimate.js has its own tests (estimate.test.mjs); here it only needs to exist.
+const estimateStub = `async function handleEstimate() { return new Response('{}', { status: 200 }); }`;
 const approvalSrc = readFileSync('portal/src/approval.js', 'utf8')
   .replace(/^export /gm, '')
   .replace("await import('cloudflare:email')", '{ EmailMessage: FakeEmailMessage }');
@@ -24,7 +26,8 @@ const treeSrc = driveSrc.slice(
 
 const indexSrc = readFileSync('portal/src/index.js', 'utf8')
   .replace("import { listFolderTree, streamFile } from './drive.js';", '')
-  .replace(/import \{[^}]*\} from '\.\/approval\.js';/, '');
+  .replace(/import \{[^}]*\} from '\.\/approval\.js';/, '')
+  .replace("import { handleEstimate } from './estimate.js';", '');
 
 class FakeEmailMessage {
   constructor(from, to, raw) { this.from = from; this.to = to; this.raw = raw; }
@@ -48,6 +51,7 @@ async function listFolder(env, id){ LIST_CALLS.push(id); return FOLDERS[id] || [
 async function streamFile(env,id,name){ return new Response('bytes', {status:200}); }
 ${treeSrc}
 ${approvalSrc}
+${estimateStub}
 ${indexSrc}
 export { LIST_CALLS, signRequest, verifyToken };
 `;

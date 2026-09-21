@@ -25,6 +25,7 @@
 
 import { listFolderTree, streamFile } from './drive.js';
 import { readRequest, signRequest, verifyToken, grantAccess, emailRequest } from './approval.js';
+import { handleEstimate } from './estimate.js';
 
 const PORTAL_PATH = '/catalogues';
 
@@ -114,6 +115,10 @@ const esc = s => String(s == null ? '' : s)
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    /* ============ storefront: copy of a downloaded estimate ============ */
+
+    if (url.pathname === '/api/estimate') return handleEstimate(request, env);
 
     /* ================= public: request catalogue access ================= */
 
