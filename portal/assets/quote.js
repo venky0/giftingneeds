@@ -463,7 +463,7 @@
     y += 7;
 
     // ---- items
-    const IMG = 14, money = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const IMG = 12.5, money = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     // the variant text is often already part of the name; don't print it twice
     const desc = d => [d.d && !d.n.includes(d.d) ? d.d : '', [d.v, d.c].filter(Boolean).join(' | ')].filter(Boolean).join(' - ');
     doc.autoTable({
@@ -480,9 +480,9 @@
         '',
       ]),
       theme: 'plain',
-      styles: { font: 'helvetica', fontSize: 9.5, textColor: ink, cellPadding: { top: 3.2, bottom: 3.2, left: 2, right: 2 }, valign: 'top' },
+      styles: { font: 'helvetica', fontSize: 9.5, textColor: ink, cellPadding: { top: 2.8, bottom: 2.8, left: 2, right: 2 }, valign: 'top' },
       headStyles: { fillColor: [60, 60, 60], textColor: [255, 255, 255], fontStyle: 'normal', fontSize: 9.5, valign: 'middle', minCellHeight: 10 },
-      bodyStyles: { minCellHeight: IMG + 5 },
+      bodyStyles: { minCellHeight: IMG + 4.5 },
       columnStyles: {
         0: { cellWidth: 11, halign: 'center' },
         1: { cellWidth: 'auto' },
@@ -490,7 +490,7 @@
         3: { cellWidth: 18, halign: 'right' },
         4: { cellWidth: 20, halign: 'right' },
         5: { cellWidth: 24, halign: 'right' },
-        6: { cellWidth: IMG + 5 },
+        6: { cellWidth: IMG + 6 },
       },
       didParseCell(h) { if (h.section === 'head') h.cell.styles.halign = ['center', 'left', 'right', 'right', 'right', 'right', 'left'][h.column.index]; },
       willDrawCell(h) {
@@ -500,7 +500,7 @@
       },
       didDrawCell(h) {
         if (h.section !== 'body') return;
-        const c = h.cell, x0 = c.x + 2, top = c.y + 3.2 + 3;
+        const c = h.cell, x0 = c.x + 2, top = c.y + 2.8 + 3;
         if (h.column.index === 1) {
           const ln = C.lines[h.row.index];
           set(9.5); let yy = top;
@@ -515,7 +515,7 @@
           const t = thumbs[h.row.index];
           if (t) {
             const k = Math.min(IMG / t.w, IMG / t.h), w = t.w * k, hh = t.h * k;
-            doc.addImage(t.data, 'JPEG', c.x + (c.width - w) / 2, c.y + 2.5, w, hh);
+            doc.addImage(t.data, 'JPEG', c.x + (c.width - w) / 2, c.y + 2.2, w, hh);
           }
         }
         if (h.column.index === 6) {   // row separator, full width
@@ -524,7 +524,7 @@
         }
       },
     });
-    y = doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 7;
 
     // ---- totals
     const intra = F.state === SELLER.stateCode;
@@ -537,21 +537,26 @@
         rows.push([`CGST${half} (${half}%)`, money(g.cgst)], [`SGST${half} (${half}%)`, money(g.sgst)]);
       } else rows.push([`IGST${pct(g.r)} (${pct(g.r)}%)`, money(g.tax)]);
     });
-    const need = rows.length * 9 + 30;
-    if (y + need > H - 24) { doc.addPage(); y = 20; }
+    // Keep the whole totals block together, but only move it to a new page
+    // when it genuinely doesn't fit above the footer.
+    const STEP = 7;
+    set(8.8, 'bolditalic'); const wordLines = doc.splitTextToSize(words(C.total), R - 149);
+    // exact height of what follows: the rows, the Total band, the words
+    const need = rows.length * STEP + 11 + (wordLines.length - 1) * 4 + 1.5;
+    if (y + need > H - 17) { doc.addPage(); y = 20; }   // footer rule sits at H - 14.5
     const LX = 158;
     rows.forEach(([l, v]) => {
-      set(9.5); doc.text(l, LX, y, { align: 'right' }); doc.text(v, R - 2, y, { align: 'right' }); y += 9;
+      set(9.5); doc.text(l, LX, y, { align: 'right' }); doc.text(v, R - 2, y, { align: 'right' }); y += STEP;
     });
-    doc.setFillColor(245, 244, 242); doc.rect(106, y - 5.5, R - 106, 10.5, 'F');
+    doc.setFillColor(245, 244, 242); doc.rect(106, y - 5, R - 106, 9.5, 'F');
     set(9.5, 'bold'); doc.text('Total', LX, y + 0.8, { align: 'right' });
     const tot = rupeeText('₹' + money(C.total));
     if (tot) doc.addImage(tot.data, 'PNG', R - 2 - tot.w, y + 0.8 - tot.h * 0.78, tot.w, tot.h);
     else doc.text('Rs. ' + money(C.total), R - 2, y + 0.8, { align: 'right' });
-    y += 12;
-    set(9, 'normal', grey); doc.text('Total In Words:', 148, y, { align: 'right' });
-    set(9, 'bolditalic');
-    doc.splitTextToSize(words(C.total), R - 151).forEach(l => { doc.text(l, 151, y); y += 4; });
+    y += 11;
+    set(9, 'normal', grey); doc.text('Total In Words:', 146, y, { align: 'right' });
+    set(8.8, 'bolditalic');
+    wordLines.forEach(l => { doc.text(l, 149, y); y += 4; });
     y += 6;
 
     // ---- bank details and terms
