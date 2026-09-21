@@ -6,8 +6,8 @@
  * and the browser builds a PDF on the spot. Nothing is sent anywhere:
  * the selection and form live in localStorage so a reload loses nothing.
  *
- * Prices on the storefront are GST-inclusive, so the PDF backs the tax
- * out of the total rather than adding it on top.
+ * Prices on the storefront are GST-inclusive, so the PDF backs each line's
+ * tax out at that product's own rate rather than adding it on top.
  */
 (function () {
   'use strict';
@@ -24,7 +24,10 @@
     phone: '+91 63610 54099',
     email: 'sales@giftingneeds.in',
   };
-  const GST_RATE = 0.18;
+  // GST % per product comes from the catalogue's `g` field; products the
+  // client hasn't classified yet fall back to 18%.
+  const DEFAULT_GST = 18;
+  const rateOf = d => (typeof d.g === 'number' ? d.g : DEFAULT_GST);
   const STORE_KEY = 'gnq.v1';
   const JSPDF = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
   const AUTOTABLE = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
@@ -258,7 +261,7 @@
             <button type="button" class="qrm" aria-label="Remove ${esc(x.d.n)}">×</button>
           </li>`).join('')}
       </ul>
-      <div class="qtotal"><span>Total incl. 18% GST</span><b>${inr(total)}</b></div>`;
+      <div class="qtotal"><span>Total incl. GST</span><b>${inr(total)}</b></div>`;
   }
 
   function render() {
@@ -416,6 +419,7 @@
       { content: `${x.d.n}\n${[x.d.v, x.d.c].filter(Boolean).join('  |  ')}` },
       String(x.qty),
       rs(x.d.p),
+      rateOf(x.d) + '%',
       rs(x.d.p * x.qty),
       '',
     ]);
@@ -423,7 +427,7 @@
     doc.autoTable({
       startY: y,
       margin: { left: M, right: M, bottom: 18 },
-      head: [['#', 'Product', 'Qty', 'Rate (incl. GST)', 'Amount', 'Image']],
+      head: [['#', 'Product', 'Qty', 'Rate (incl. GST)', 'GST', 'Amount', 'Image']],
       body: rows,
       theme: 'grid',
       styles: { font: 'helvetica', fontSize: 8.5, textColor: ink, cellPadding: 2.2, valign: 'middle', lineColor: [234, 220, 203], lineWidth: 0.2 },
@@ -432,14 +436,15 @@
         0: { cellWidth: 8, halign: 'center' },
         1: { cellWidth: 'auto' },
         2: { cellWidth: 13, halign: 'right' },
-        3: { cellWidth: 29, halign: 'right' },
-        4: { cellWidth: 30, halign: 'right', fontStyle: 'bold' },
-        5: { cellWidth: IMG + 4, minCellHeight: IMG + 4, halign: 'center' },
+        3: { cellWidth: 27, halign: 'right' },
+        4: { cellWidth: 12, halign: 'center' },
+        5: { cellWidth: 28, halign: 'right', fontStyle: 'bold' },
+        6: { cellWidth: IMG + 4, minCellHeight: IMG + 4, halign: 'center' },
       },
       bodyStyles: { minCellHeight: IMG + 4 },
       alternateRowStyles: { fillColor: [255, 251, 245] },
       didDrawCell(h) {
-        if (h.section !== 'body' || h.column.index !== 5) return;
+        if (h.section !== 'body' || h.column.index !== 6) return;
         const t = thumbs[h.row.index];
         if (!t) return;
         const k = Math.min(IMG / t.w, IMG / t.h), w = t.w * k, hh = t.h * k;
@@ -451,12 +456,23 @@
     // ---- totals
     const total = r2(items.reduce((t, x) => t + x.d.p * x.qty, 0));
     const qty = items.reduce((t, x) => t + x.qty, 0);
-    const taxable = r2(total / (1 + GST_RATE));
-    const gst = r2(total - taxable);
+    // Group lines by GST rate: each group's tax is backed out of its own
+    // inclusive total, so the groups always add back up to the grand total.
+    const byRate = new Map();
+    items.forEach(x => { const r = rateOf(x.d); byRate.set(r, (byRate.get(r) || 0) + x.d.p * x.qty); });
+    const groups = [...byRate.entries()].sort((a, b) => a[0] - b[0]).map(([r, amt]) => {
+      const taxable = r2(amt / (1 + r / 100));
+      return { r, taxable, tax: r2(amt - taxable) };
+    });
+    const taxable = r2(groups.reduce((t, g) => t + g.taxable, 0));
     const intra = F.state === SELLER.stateCode;
+    const pct = n => (Number.isInteger(n) ? n : n.toFixed(1)) + '%';
     const lines = [['Total quantity', String(qty)], ['Taxable value', rs(taxable)]];
-    if (intra) { const c = r2(gst / 2); lines.push(['CGST @ 9%', rs(c)], ['SGST @ 9%', rs(r2(gst - c))]); }
-    else lines.push(['IGST @ 18%', rs(gst)]);
+    groups.forEach(g => {
+      if (!g.tax) return;
+      if (intra) { const c = r2(g.tax / 2); lines.push([`CGST @ ${pct(g.r / 2)}`, rs(c)], [`SGST @ ${pct(g.r / 2)}`, rs(r2(g.tax - c))]); }
+      else lines.push([`IGST @ ${pct(g.r)}`, rs(g.tax)]);
+    });
 
     const need = lines.length * 5.5 + 30;
     if (y + need > 297 - 18) { doc.addPage(); y = M; }
@@ -476,7 +492,7 @@
 
     // ---- notes
     const notes = [
-      'Prices include GST at 18%. Place of supply: ' + (buyerState || '-') + (intra ? ' (intra-state: CGST + SGST).' : ' (inter-state: IGST).'),
+      'Prices include GST at the rate shown against each item. Place of supply: ' + (buyerState || '-') + (intra ? ' (intra-state: CGST + SGST).' : ' (inter-state: IGST).'),
       'This quotation was generated on giftingneeds.org. Final prices, stock and delivery timelines are confirmed by Gifting Needs when you place the order.',
       `To confirm this order, reply with reference ${ref} to ${SELLER.email} or call ${SELLER.phone}.`,
     ];
