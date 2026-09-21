@@ -12,18 +12,26 @@
 (function () {
   'use strict';
 
+  // As printed on the client's own estimates (GN EST-000347).
   const SELLER = {
     name: 'Gifting Needs',
     lines: [
-      'No. 124 (Old No. 123/1), 8th Cross, 19th Main Road,',
-      'Marenahalli Palya, 2nd Phase, J.P. Nagar,',
-      'Bengaluru - 560078, Karnataka',
+      'No.124 ( Old No. 123/1 ) 8th Cross, 19th Main Rd, Marenahalli palya, 2nd Phase, J. P. Nagar, Bengaluru,',
+      'Bengaluru Karnataka 560078',
+      'India',
     ],
     gstin: '29AAWFG9249H1ZH',
     stateCode: '29',
-    phone: '+91 63610 54099',
-    email: 'sales@giftingneeds.in',
+    mobile: '6361054099',
+    email: 'info@giftingneeds.in',
   };
+  const BANK = [['Bank Name', 'ICICI Bank'], ['A/c No', '344105000608'], ['IFSC', 'ICIC0003441']];
+  const TERMS = [
+    'Offer Price is Including Logo Branding.',
+    'Shipping:  Delivery Outside Bangalore will be charged extra as per actuals.',
+    'Lead Time: 6-8 Working days.',
+    'Payment Terms:  50% Advance, 50% On delivery.',
+  ];
   // GST % per product comes from the catalogue's `g` field; products the
   // client hasn't classified yet fall back to 18%.
   const DEFAULT_GST = 18;
@@ -69,6 +77,26 @@
     return out;
   }
 
+
+  // Storefront prices include GST. The estimate format shows rates before
+  // GST and adds the tax under the sub total, so each price is converted
+  // back first. The page and the PDF both use this, so their totals agree.
+  function calc(items) {
+    const lines = items.map(x => {
+      const r = rateOf(x.d), rate = r2(x.d.p / (1 + r / 100));
+      return { d: x.d, qty: x.qty, r, rate, amount: r2(rate * x.qty) };
+    });
+    const by = new Map();
+    lines.forEach(l => by.set(l.r, r2((by.get(l.r) || 0) + l.amount)));
+    const groups = [...by.entries()].sort((a, b) => a[0] - b[0]).map(([r, base]) => {
+      const tax = r2(base * r / 100), cgst = r2(tax / 2);
+      return { r, base, tax, cgst, sgst: r2(tax - cgst) };
+    });
+    const subtotal = r2(lines.reduce((t, l) => t + l.amount, 0));
+    const total = r2(subtotal + groups.reduce((t, g) => t + g.tax, 0));
+    return { lines, groups, subtotal, total };
+  }
+
   /* ---------------------------------------------------------- helpers */
 
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -92,7 +120,7 @@
     const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven',
       'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
     const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-    const two = n => n < 20 ? a[n] : b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
+    const two = n => n < 20 ? a[n] : b[Math.floor(n / 10)] + (n % 10 ? '-' + a[n % 10] : '');
     const three = n => (n >= 100 ? a[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' : '') : '') + two(n % 100);
     const whole = n => {
       if (n === 0) return 'Zero';
@@ -107,7 +135,7 @@
       return parts.join(' ');
     };
     const rupees = Math.floor(num), paise = Math.round((num - rupees) * 100);
-    return 'Rupees ' + whole(rupees) + (paise ? ' and ' + two(paise) + ' Paise' : '') + ' Only';
+    return 'Indian Rupee ' + whole(rupees) + (paise ? ' and ' + two(paise) + ' Paise' : '') + ' Only';
   }
 
   function loadScript(src) {
@@ -136,6 +164,22 @@
       img.onerror = () => res(null);
       img.src = url;
     });
+  }
+
+  // jsPDF's built-in fonts have no ₹ glyph; the grand total is rendered by
+  // the browser onto a canvas and placed as an image instead.
+  function rupeeText(str, pt = 9.5) {
+    try {
+      const S = 6, c = document.createElement('canvas'), g = c.getContext('2d');
+      const font = `bold ${pt * S}px Helvetica, Arial, sans-serif`;
+      g.font = font;
+      const w = Math.ceil(g.measureText(str).width), h = Math.ceil(pt * S * 1.3);
+      c.width = w; c.height = h;
+      g.font = font; g.fillStyle = '#222'; g.textBaseline = 'alphabetic';
+      g.fillText(str, 0, pt * S);
+      const mm = 25.4 / 72 / S;
+      return { data: c.toDataURL('image/png'), w: w * mm, h: h * mm };
+    } catch (e) { return null; }
   }
   const imgUrl = d => d.i ? '/storefront/images/' + d.i + '?v=enhanced1' : null;
 
@@ -173,7 +217,7 @@
     const n = items.length;
     bar.hidden = n === 0;
     if (!n) return;
-    const total = items.reduce((t, x) => t + x.d.p * x.qty, 0);
+    const total = calc(items).total;
     $('.qbar-count', bar).textContent = n + (n === 1 ? ' product' : ' products') + ' selected';
     $('.qbar-total', bar).textContent = inr(total) + ' incl. GST';
   }
@@ -248,7 +292,7 @@
         </div>`}`;
     // step 3 — quantities
     const items = selected();
-    const total = items.reduce((t, x) => t + x.d.p * x.qty, 0);
+    const total = calc(items).total;
     return `
       <p class="qlead">${F.delivery === 'multi' ? 'Enter the total quantity across all locations.' : 'How many of each?'}</p>
       <ul class="qitems">
@@ -271,7 +315,7 @@
     $('.qbody', modal).innerHTML = body();
     $('.qback', modal).style.visibility = step ? 'visible' : 'hidden';
     const next = $('.qnext', modal);
-    next.textContent = step === STEPS.length - 1 ? 'Download quotation PDF' : 'Continue';
+    next.textContent = step === STEPS.length - 1 ? 'Download estimate PDF' : 'Continue';
     next.disabled = false;
     $('.qmsg', modal).textContent = '';
     const first = $('.qbody input:not([type=radio]):not([type=checkbox]), .qbody textarea', modal);
@@ -329,12 +373,12 @@
     btn.disabled = true; btn.textContent = 'Preparing your PDF…'; msg.textContent = '';
     try {
       await buildPdf();
-      msg.textContent = 'Your quotation has been downloaded.';
+      msg.textContent = 'Your estimate has been downloaded.';
       btn.textContent = 'Download again';
     } catch (e) {
       console.error(e);
       msg.textContent = 'Sorry, the PDF could not be created. Please check your connection and try again.';
-      btn.textContent = 'Download quotation PDF';
+      btn.textContent = 'Download estimate PDF';
     }
     btn.disabled = false;
   }
@@ -345,174 +389,191 @@
     await loadScript(JSPDF);
     await loadScript(AUTOTABLE);
     const { jsPDF } = window.jspdf;
-    const F = f(), items = selected();
-    const [logo, ...thumbs] = await Promise.all([toJpeg('/assets/logo.png', 600), ...items.map(x => x.d.i ? toJpeg(imgUrl(x.d)) : null)]);
+    const F = f(), items = selected(), C = calc(items);
+    const [logo, ...thumbs] = await Promise.all([
+      toJpeg('/assets/quote-logo.png', 400),
+      ...items.map(x => x.d.i ? toJpeg(imgUrl(x.d)) : null),
+    ]);
 
+    // Laid out to match the client's own Zoho estimate (GN EST-000347):
+    // grey table header, rates before GST, tax added under the sub total.
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const W = 210, M = 14;
-    const wine = [101, 38, 59], gold = [184, 123, 45], ink = [56, 37, 42], mut = [120, 100, 103];
-    const now = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    const ref = `GNQ-${String(now.getFullYear()).slice(2)}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-    const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-
-    // ---- header
-    let y = M;
-    if (logo) { const h = 14, w = Math.min(60, h * logo.w / logo.h); doc.addImage(logo.data, 'JPEG', M, y, w, h); }
-    doc.setTextColor(...wine); doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
-    doc.text('QUOTATION', W - M, y + 6, { align: 'right' });
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...mut);
-    doc.text('Proforma - not a tax invoice', W - M, y + 11, { align: 'right' });
-    doc.setTextColor(...ink);
-    doc.text(`Ref: ${ref}`, W - M, y + 16, { align: 'right' });
-    doc.text(`Date: ${dateStr}`, W - M, y + 20.5, { align: 'right' });
-    y += 25;
-    doc.setDrawColor(...gold); doc.setLineWidth(0.5); doc.line(M, y, W - M, y);
-    y += 6;
-
-    // ---- from / bill to
-    const colW = (W - 2 * M - 8) / 2;
-    const block = (x, title, lines) => {
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...gold);
-      doc.text(title.toUpperCase(), x, y);
-      let yy = y + 5;
-      lines.forEach(([txt, bold]) => {
-        doc.setFont('helvetica', bold ? 'bold' : 'normal'); doc.setFontSize(bold ? 10 : 8.5); doc.setTextColor(...ink);
-        doc.splitTextToSize(txt, colW).forEach(l => { doc.text(l, x, yy); yy += bold ? 5 : 4; });
-      });
-      return yy;
+    const W = 210, H = 297, L = 16, R = 196;
+    const ink = [34, 34, 34], grey = [110, 110, 110], rule = [221, 221, 221];
+    const now = new Date(), pad = n => String(n).padStart(2, '0');
+    const estNo = `GN EST-W${String(now.getFullYear()).slice(2)}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+    const estDate = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+    const set = (size, style = 'normal', color = ink) => { doc.setFont('helvetica', style); doc.setFontSize(size); doc.setTextColor(...color); };
+    const LH = 3.9;   // line height for 9pt body text
+    const lines = (arr, x, y, width, size = 9, style = 'normal', color = ink) => {
+      set(size, style, color);
+      arr.filter(Boolean).forEach(t => doc.splitTextToSize(String(t), width).forEach(l => { doc.text(l, x, y); y += LH; }));
+      return y;
     };
-    const buyerState = STATES[F.state] || '';
-    const y1 = block(M, 'From', [
-      [SELLER.name, true], ...SELLER.lines.map(l => [l]),
-      [`GSTIN: ${SELLER.gstin}`], [`${SELLER.phone}  |  ${SELLER.email}`],
-    ]);
-    const y2 = block(M + colW + 8, 'Bill to', [
-      [F.company, true], [F.addr], [`${F.city} - ${F.pin}, ${buyerState}`],
-      [`GSTIN: ${F.gstin}   State code: ${F.state}`],
-      ...(F.contact || F.phone ? [[[F.contact, F.phone].filter(Boolean).join('  |  ')]] : []),
-      ...(F.email ? [[F.email]] : []),
-    ]);
-    y = Math.max(y1, y2) + 3;
 
-    // ---- delivery
-    doc.setFillColor(251, 244, 234); doc.setDrawColor(234, 220, 203); doc.setLineWidth(0.2);
-    const delLines = [];
+    // ---- header: logo left, title and number right
+    if (logo) { const h = 26, w = h * logo.w / logo.h; doc.addImage(logo.data, 'JPEG', L, 18, w, h); }
+    set(13.5); doc.text('SALES QUOTATION | PROFORMA INVOICE', R, 23, { align: 'right' });
+    set(10, 'bold'); doc.text(estNo, R, 28, { align: 'right' });
+
+    // ---- seller
+    let y = 50;
+    set(12, 'bold'); doc.text(SELLER.name, L, y); y += 5;
+    y = lines([...SELLER.lines, `GSTIN ${SELLER.gstin}`, `MOB ${SELLER.mobile}`, `E-Mail ${SELLER.email}`], L, y, 95);
+
+    // ---- bill to
+    const buyerState = STATES[F.state] || '';
+    const addrLines = String(F.addr || '').split(/\n+/).map(s => s.trim()).filter(Boolean);
+    const cityLine = [F.city, `${F.pin} ${buyerState}`].filter(Boolean).join(', ');
+    y += 8;
+    set(10.5); doc.text('Bill To', L, y); y += 4.8;
+    y = lines([F.company], L, y, 95, 9.5, 'bold');
+    y = lines([...addrLines, cityLine, 'India', `GSTIN ${F.gstin}`,
+               [F.contact, F.phone, F.email].filter(Boolean).join('  |  ')], L, y, 95);
+
+    // ---- ship to
+    y += 8;
+    set(10.5); doc.text('Ship To', L, y); y += 4.8;
+    let ship;
     if (F.delivery === 'multi') {
-      delLines.push(`Multiple locations (${F.locCount})`);
-      (F.locList || '').split('\n').map(s => s.trim()).filter(Boolean).forEach(s => delLines.push('- ' + s));
+      ship = [`Multiple locations (${F.locCount})`,
+              ...String(F.locList || '').split('\n').map(s => s.trim()).filter(Boolean)];
+    } else if (F.sameAddr) {
+      ship = [...addrLines, cityLine, 'India', `GSTIN ${F.gstin}`];
     } else {
-      delLines.push('Single location - ' + (F.sameAddr ? 'billing address' : F.shipAddr.replace(/\s*\n\s*/g, ', ')));
+      ship = [...String(F.shipAddr || '').split(/\n+/).map(s => s.trim()).filter(Boolean), 'India'];
     }
-    const wrapped = delLines.flatMap(l => doc.splitTextToSize(l, W - 2 * M - 30));
-    const boxH = 5 + wrapped.length * 4;
-    doc.rect(M, y, W - 2 * M, boxH, 'FD');
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...gold);
-    doc.text('DELIVERY', M + 3, y + 5);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...ink);
-    wrapped.forEach((l, i) => doc.text(l, M + 25, y + 5 + i * 4));
-    y += boxH + 5;
+    const shipTop = y;
+    y = lines(ship, L, y, 70);
+
+    // ---- estimate date and reference, bottom-aligned with Ship To
+    const ref = items.map(x => x.d.n.split(/\s+[—-]\s+/)[0]).join(', ');
+    set(9); const refLines = doc.splitTextToSize(ref.length > 90 ? ref.slice(0, 87) + '...' : ref, 40);
+    const metaH = 6.5 + refLines.length * LH;
+    let my = Math.max(shipTop, y - metaH);
+    set(10, 'normal', grey); doc.text('Estimate Date :', 157, my, { align: 'right' });
+    set(9); doc.text(estDate, R, my, { align: 'right' }); my += 6.5;
+    set(10, 'normal', grey); doc.text('Reference# :', 157, my, { align: 'right' });
+    set(9); refLines.forEach(l => { doc.text(l, R, my, { align: 'right' }); my += LH; });
+    y = Math.max(y, my);
+
+    // ---- place of supply
+    y += 6;
+    set(9); doc.text(`Place Of Supply: ${buyerState} (${F.state})`, L, y);
+    y += 7;
 
     // ---- items
-    const rows = items.map((x, i) => [
-      String(i + 1),
-      { content: `${x.d.n}\n${[x.d.v, x.d.c].filter(Boolean).join('  |  ')}` },
-      String(x.qty),
-      rs(x.d.p),
-      rateOf(x.d) + '%',
-      rs(x.d.p * x.qty),
-      '',
-    ]);
-    const IMG = 17;
+    const IMG = 14, money = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    // the variant text is often already part of the name; don't print it twice
+    const desc = d => [d.d && !d.n.includes(d.d) ? d.d : '', [d.v, d.c].filter(Boolean).join(' | ')].filter(Boolean).join(' - ');
     doc.autoTable({
       startY: y,
-      margin: { left: M, right: M, bottom: 18 },
-      head: [['#', 'Product', 'Qty', 'Rate (incl. GST)', 'GST', 'Amount', 'Image']],
-      body: rows,
-      theme: 'grid',
-      styles: { font: 'helvetica', fontSize: 8.5, textColor: ink, cellPadding: 2.2, valign: 'middle', lineColor: [234, 220, 203], lineWidth: 0.2 },
-      headStyles: { fillColor: wine, textColor: [255, 244, 226], fontStyle: 'bold', fontSize: 8 },
+      margin: { left: L, right: W - R, bottom: 22, top: 16 },
+      head: [['#', 'Item & Description', 'HSN/SAC', 'Qty', 'Rate', 'Amount', '']],
+      body: C.lines.map((ln, i) => [
+        String(i + 1),
+        ln.d.n + '\n' + doc.splitTextToSize(desc(ln.d), 60).slice(0, 2).join(' '),
+        ln.d.h || '',
+        money(ln.qty) + '\npcs',
+        money(ln.rate),
+        money(ln.amount),
+        '',
+      ]),
+      theme: 'plain',
+      styles: { font: 'helvetica', fontSize: 9.5, textColor: ink, cellPadding: { top: 3.2, bottom: 3.2, left: 2, right: 2 }, valign: 'top' },
+      headStyles: { fillColor: [60, 60, 60], textColor: [255, 255, 255], fontStyle: 'normal', fontSize: 9.5, valign: 'middle', minCellHeight: 10 },
+      bodyStyles: { minCellHeight: IMG + 5 },
       columnStyles: {
-        0: { cellWidth: 8, halign: 'center' },
+        0: { cellWidth: 11, halign: 'center' },
         1: { cellWidth: 'auto' },
-        2: { cellWidth: 13, halign: 'right' },
-        3: { cellWidth: 27, halign: 'right' },
-        4: { cellWidth: 12, halign: 'center' },
-        5: { cellWidth: 28, halign: 'right', fontStyle: 'bold' },
-        6: { cellWidth: IMG + 4, minCellHeight: IMG + 4, halign: 'center' },
+        2: { cellWidth: 20, halign: 'right' },
+        3: { cellWidth: 18, halign: 'right' },
+        4: { cellWidth: 20, halign: 'right' },
+        5: { cellWidth: 24, halign: 'right' },
+        6: { cellWidth: IMG + 5 },
       },
-      bodyStyles: { minCellHeight: IMG + 4 },
-      alternateRowStyles: { fillColor: [255, 251, 245] },
+      didParseCell(h) { if (h.section === 'head') h.cell.styles.halign = ['center', 'left', 'right', 'right', 'right', 'right', 'left'][h.column.index]; },
+      willDrawCell(h) {
+        // Item name and its grey description line, and "pcs" under the
+        // quantity, are drawn by hand in didDrawCell below.
+        if (h.section === 'body' && (h.column.index === 1 || h.column.index === 3)) h.cell._lines = h.cell.text, h.cell.text = [];
+      },
       didDrawCell(h) {
-        if (h.section !== 'body' || h.column.index !== 6) return;
-        const t = thumbs[h.row.index];
-        if (!t) return;
-        const k = Math.min(IMG / t.w, IMG / t.h), w = t.w * k, hh = t.h * k;
-        doc.addImage(t.data, 'JPEG', h.cell.x + (h.cell.width - w) / 2, h.cell.y + (h.cell.height - hh) / 2, w, hh);
+        if (h.section !== 'body') return;
+        const c = h.cell, x0 = c.x + 2, top = c.y + 3.2 + 3;
+        if (h.column.index === 1) {
+          const ln = C.lines[h.row.index];
+          set(9.5); let yy = top;
+          doc.splitTextToSize(ln.d.n, c.width - 4).forEach(l => { doc.text(l, x0, yy); yy += 4.2; });
+          set(8, 'normal', grey);
+          doc.splitTextToSize(desc(ln.d), c.width - 4).slice(0, 2).forEach(l => { doc.text(l, x0, yy); yy += 3.6; });
+        } else if (h.column.index === 3) {
+          const xr = c.x + c.width - 2;
+          set(9.5); doc.text(money(C.lines[h.row.index].qty), xr, top, { align: 'right' });
+          set(7.5, 'normal', grey); doc.text('pcs', xr, top + 3.8, { align: 'right' });
+        } else if (h.column.index === 6) {
+          const t = thumbs[h.row.index];
+          if (t) {
+            const k = Math.min(IMG / t.w, IMG / t.h), w = t.w * k, hh = t.h * k;
+            doc.addImage(t.data, 'JPEG', c.x + (c.width - w) / 2, c.y + 2.5, w, hh);
+          }
+        }
+        if (h.column.index === 6) {   // row separator, full width
+          doc.setDrawColor(...rule); doc.setLineWidth(0.3);
+          doc.line(L, c.y + c.height, R, c.y + c.height);
+        }
       },
     });
-    y = doc.lastAutoTable.finalY + 6;
+    y = doc.lastAutoTable.finalY + 8;
 
     // ---- totals
-    const total = r2(items.reduce((t, x) => t + x.d.p * x.qty, 0));
-    const qty = items.reduce((t, x) => t + x.qty, 0);
-    // Group lines by GST rate: each group's tax is backed out of its own
-    // inclusive total, so the groups always add back up to the grand total.
-    const byRate = new Map();
-    items.forEach(x => { const r = rateOf(x.d); byRate.set(r, (byRate.get(r) || 0) + x.d.p * x.qty); });
-    const groups = [...byRate.entries()].sort((a, b) => a[0] - b[0]).map(([r, amt]) => {
-      const taxable = r2(amt / (1 + r / 100));
-      return { r, taxable, tax: r2(amt - taxable) };
-    });
-    const taxable = r2(groups.reduce((t, g) => t + g.taxable, 0));
     const intra = F.state === SELLER.stateCode;
-    const pct = n => (Number.isInteger(n) ? n : n.toFixed(1)) + '%';
-    const lines = [['Total quantity', String(qty)], ['Taxable value', rs(taxable)]];
-    groups.forEach(g => {
+    const pct = n => (Number.isInteger(n) ? String(n) : n.toFixed(1));
+    const rows = [['Sub Total', money(C.subtotal)]];
+    C.groups.forEach(g => {
       if (!g.tax) return;
-      if (intra) { const c = r2(g.tax / 2); lines.push([`CGST @ ${pct(g.r / 2)}`, rs(c)], [`SGST @ ${pct(g.r / 2)}`, rs(r2(g.tax - c))]); }
-      else lines.push([`IGST @ ${pct(g.r)}`, rs(g.tax)]);
+      if (intra) {
+        const half = pct(g.r / 2);
+        rows.push([`CGST${half} (${half}%)`, money(g.cgst)], [`SGST${half} (${half}%)`, money(g.sgst)]);
+      } else rows.push([`IGST${pct(g.r)} (${pct(g.r)}%)`, money(g.tax)]);
     });
-
-    const need = lines.length * 5.5 + 30;
-    if (y + need > 297 - 18) { doc.addPage(); y = M; }
-    const lx = W - M - 80, vx = W - M;
-    doc.setFontSize(9);
-    lines.forEach(([l, v]) => {
-      doc.setFont('helvetica', 'normal'); doc.setTextColor(...mut); doc.text(l, lx, y);
-      doc.setTextColor(...ink); doc.text(v, vx, y, { align: 'right' }); y += 5.5;
+    const need = rows.length * 9 + 30;
+    if (y + need > H - 24) { doc.addPage(); y = 20; }
+    const LX = 158;
+    rows.forEach(([l, v]) => {
+      set(9.5); doc.text(l, LX, y, { align: 'right' }); doc.text(v, R - 2, y, { align: 'right' }); y += 9;
     });
-    doc.setFillColor(...wine); doc.rect(lx - 3, y - 3.5, 80 + 3, 9, 'F');
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.setTextColor(255, 244, 226);
-    doc.text('Grand total', lx, y + 2.5); doc.text(rs(total), vx - 2, y + 2.5, { align: 'right' });
+    doc.setFillColor(245, 244, 242); doc.rect(106, y - 5.5, R - 106, 10.5, 'F');
+    set(9.5, 'bold'); doc.text('Total', LX, y + 0.8, { align: 'right' });
+    const tot = rupeeText('₹' + money(C.total));
+    if (tot) doc.addImage(tot.data, 'PNG', R - 2 - tot.w, y + 0.8 - tot.h * 0.78, tot.w, tot.h);
+    else doc.text('Rs. ' + money(C.total), R - 2, y + 0.8, { align: 'right' });
     y += 12;
-    doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(...ink);
-    doc.splitTextToSize(words(total), W - 2 * M).forEach(l => { doc.text(l, W - M, y, { align: 'right' }); y += 4.2; });
-    y += 4;
+    set(9, 'normal', grey); doc.text('Total In Words:', 148, y, { align: 'right' });
+    set(9, 'bolditalic');
+    doc.splitTextToSize(words(C.total), R - 151).forEach(l => { doc.text(l, 151, y); y += 4; });
+    y += 6;
 
-    // ---- notes
-    const notes = [
-      'Prices include GST at the rate shown against each item. Place of supply: ' + (buyerState || '-') + (intra ? ' (intra-state: CGST + SGST).' : ' (inter-state: IGST).'),
-      'This quotation was generated on giftingneeds.org. Final prices, stock and delivery timelines are confirmed by Gifting Needs when you place the order.',
-      `To confirm this order, reply with reference ${ref} to ${SELLER.email} or call ${SELLER.phone}.`,
-    ];
-    if (y + 22 > 297 - 18) { doc.addPage(); y = M; }
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...gold); doc.text('NOTES', M, y); y += 4.5;
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...mut);
-    notes.forEach(n => doc.splitTextToSize(n, W - 2 * M).forEach(l => { doc.text(l, M, y); y += 3.8; }));
+    // ---- bank details and terms
+    const tail = () => { if (y > H - 30) { doc.addPage(); y = 20; } };
+    tail(); set(9); doc.text('Our Bank Details.', L, y); y += LH;
+    BANK.forEach(([k, v]) => { tail(); set(9); doc.text(k, L, y); doc.text(': ' + v, L + 19, y); y += LH; });
+    y += 7; tail();
+    set(10.5); doc.text('Terms & Conditions', L, y); y += 5;
+    TERMS.forEach(t => { tail(); y = lines([t], L, y, R - L, 8.5); });
 
     // ---- footer on every page
     const pages = doc.getNumberOfPages();
     for (let i = 1; i <= pages; i++) {
       doc.setPage(i);
-      doc.setDrawColor(...gold); doc.setLineWidth(0.3); doc.line(M, 297 - 13, W - M, 297 - 13);
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...mut);
-      doc.text(`${SELLER.name}  |  ${SELLER.phone}  |  ${SELLER.email}  |  giftingneeds.org`, M, 297 - 8.5);
-      doc.text(`Page ${i} of ${pages}`, W - M, 297 - 8.5, { align: 'right' });
+      doc.setDrawColor(...rule); doc.setLineWidth(0.3); doc.line(14, H - 14.5, 198, H - 14.5);
+      set(9, 'normal', [150, 150, 150]);
+      doc.text('"This is a computer-generated Estimate | Proforma Invoice hence no signature is required."', W / 2, H - 10.5, { align: 'center' });
+      doc.text(String(i), R, H - 5.5, { align: 'right' });
     }
 
-    const slug = (F.company || 'Quotation').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
-    doc.save(`Gifting-Needs-Quotation-${slug}-${ref.slice(4)}.pdf`);
+    const slug = (F.company || 'Estimate').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+    doc.save(`${estNo.replace(/\s+/g, '-')}-${slug}.pdf`);
   }
 
   /* ------------------------------------------------------------ mount */
@@ -573,7 +634,7 @@
         state.items[k] = q; save();
         const d = products().get(k);
         $('.qline', li).textContent = inr(d.p * q);
-        const total = selected().reduce((t, x) => t + x.d.p * x.qty, 0);
+        const total = calc(selected()).total;
         $('.qtotal b', modal).textContent = inr(total);
         renderBar();
       }
