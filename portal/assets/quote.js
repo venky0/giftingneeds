@@ -191,6 +191,18 @@
       return `<button type="button" class="qadd${on ? ' on' : ''}" data-k="${esc(k)}" aria-pressed="${on}">` +
              (on ? '✓ Added to quote' : '+ Add to quote') + '</button>';
     },
+    // Used by the storefront's quick view, which shows one product at a
+    // time and needs to read and change what is in the quote.
+    has: d => keyOf(d) in state.items,
+    qty: d => state.items[keyOf(d)] || 0,
+    toggle(d) { toggle(keyOf(d), null); syncButtons(); },
+    setQty(d, q) {
+      const k = keyOf(d);
+      if (!(k in state.items)) return;
+      state.items[k] = Math.max(1, Math.floor(q) || 1);
+      save(); renderBar();
+    },
+    openWizard: () => open(),
   };
 
   function toggle(k, btn) {
@@ -246,8 +258,8 @@
     <label class="qf${opts.full ? ' full' : ''}">
       <span>${label}${opts.req ? ' <i>*</i>' : ''}</span>
       ${opts.area
-        ? `<textarea name="${name}" rows="${opts.rows || 3}" placeholder="${esc(opts.ph || '')}">${esc(f()[name])}</textarea>`
-        : `<input name="${name}" value="${esc(f()[name])}" placeholder="${esc(opts.ph || '')}"
+        ? `<textarea name="${name}" aria-label="${esc(label)}" rows="${opts.rows || 3}" placeholder="${esc(opts.ph || '')}">${esc(f()[name])}</textarea>`
+        : `<input name="${name}" aria-label="${esc(label)}" value="${esc(f()[name])}" placeholder="${esc(opts.ph || '')}"
              ${opts.type ? `type="${opts.type}"` : ''} ${opts.mode ? `inputmode="${opts.mode}"` : ''}
              ${opts.max ? `maxlength="${opts.max}"` : ''} autocomplete="${opts.ac || 'off'}">`}
       <em class="qerr" data-for="${name}"></em>
@@ -271,7 +283,7 @@
         ${field('city', 'City', { req: true, ac: 'address-level2' })}
         ${field('pin', 'Pincode', { req: true, mode: 'numeric', max: 6, ac: 'postal-code' })}
         <label class="qf full"><span>State <i>*</i></span>
-          <select name="state"><option value="">Select state</option>
+          <select name="state" aria-label="State"><option value="">Select state</option>
             ${Object.entries(STATES).map(([c, s]) => `<option value="${c}"${F.state === c ? ' selected' : ''}>${s}</option>`).join('')}
           </select><em class="qerr" data-for="state"></em></label>
       </div>`;
