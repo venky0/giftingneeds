@@ -1,0 +1,160 @@
+/* Portal-only rules, lifted from the main site stylesheet so this
+   deployment carries nothing it does not use. */
+
+/* ------------------------------------------------------------
+   13. CLIENT PORTAL
+   Pages under /clients/ are gated by Cloudflare Access, not by
+   anything here. The status strip exists to make the difference
+   visible: green once Access reports a signed-in identity, and a
+   loud warning while the folder is still reachable by anyone.
+   ------------------------------------------------------------ */
+
+.portal-head { margin-bottom: 1.5rem; }
+
+.portal-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 0.9rem 1.15rem;
+  margin-bottom: 1.75rem;
+  border-radius: 8px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+.portal-status:empty { display: none; }
+.portal-status > span { flex: 1 1 auto; min-width: 0; }
+
+.portal-status-secure {
+  background: rgba(47, 107, 79, 0.12);
+  border: 1px solid rgba(47, 107, 79, 0.4);
+  color: var(--text-primary);
+}
+/* Deliberately alarming: an unprotected folder holding a customer's
+   files is the failure this whole page exists to prevent. */
+.portal-status-open {
+  background: var(--crimson-glow);
+  border: 1px solid var(--crimson);
+  border-left: 4px solid var(--crimson);
+  color: var(--text-primary);
+}
+.portal-status-open strong { color: var(--crimson); }
+.portal-status code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88em;
+  background: var(--bg-section-alt);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+.portal-signout {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--text-gold);
+  white-space: nowrap;
+}
+
+.portal-files { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.portal-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+}
+.portal-file-main { flex: 1 1 240px; min-width: 0; }
+.portal-file-label { display: block; font-weight: 700; color: var(--text-primary); }
+.portal-file-note { display: block; margin-top: 0.2rem; font-size: 0.86rem; color: var(--text-muted); }
+.portal-file-kind {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.portal-file-dl { flex: 0 0 auto; padding: 0.5rem 1.15rem; font-size: 0.85rem; }
+.portal-empty { color: var(--text-muted); padding: 2rem 0; }
+
+@media (max-width: 560px) {
+  .portal-file-dl { width: 100%; justify-content: center; }
+  .portal-signout { margin-left: 0; }
+}
+
+/* ------------------------------------------------------------
+   Google Drive folder card
+   Files live in Drive, not in this repository — no size ceiling
+   and nothing private committed to a public repo. Two allowlists
+   are in play: Cloudflare admits the visitor to this page, Google
+   admits them to the folder. The card names the expected address
+   so a mismatch reads as instructions rather than a dead end.
+   ------------------------------------------------------------ */
+.portal-drive {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  transition: transform .2s var(--diwali-ease), box-shadow .2s, border-color .2s;
+}
+.portal-drive:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-hover);
+}
+.portal-drive-icon {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  color: var(--text-gold);
+  background: var(--bg-section-alt);
+  border-radius: 8px;
+}
+.portal-drive-main { flex: 1 1 260px; min-width: 0; }
+.portal-drive-main strong { display: block; color: var(--text-primary); font-size: 1.05rem; }
+.portal-drive-note { display: block; margin-top: .2rem; font-size: .9rem; color: var(--text-muted); }
+.portal-drive-who { display: block; margin-top: .45rem; font-size: .82rem; color: var(--text-subtle); }
+.portal-drive-cta { flex: 0 0 auto; }
+
+@media (max-width: 560px) {
+  .portal-drive-cta { width: 100%; justify-content: center; }
+}
+
+/* ---- document groups (one per Drive folder the caller may read) ---- */
+.portal-group { margin-bottom: 2rem; }
+.portal-group-title {
+  display: flex; align-items: baseline; gap: .75rem;
+  font-size: 1.05rem; font-weight: 700; color: var(--text-primary);
+  margin: 0 0 .85rem; padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+.portal-group-title span {
+  font-size: .72rem; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessible category accordion. */
+.portal-group-title:has(.portal-group-toggle) { display:block; padding:0; }
+.portal-group-title:has(.portal-group-toggle)::before { content:none; }
+.portal-group-toggle { display:flex; align-items:center; gap:.75rem; width:100%; padding:1rem; border:0; border-radius:inherit; background:transparent; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+.portal-group-toggle::before { content:'✦'; color:var(--text-gold); }
+.portal-group-toggle::after { content:'+'; flex-shrink:0; font-size:1.4rem; line-height:1; }
+.portal-group-toggle[aria-expanded="true"]::after { content:'−'; }
+.portal-group-toggle span { margin-left:auto; flex-shrink:0; }
+.portal-group-toggle:focus-visible { outline:3px solid var(--text-gold); outline-offset:3px; }
+.portal-files[hidden] { display:none; }
+
+.portal-files > :first-child { scroll-margin-top: 1rem; }

@@ -1,0 +1,59 @@
+{
+  // Explicit config so the deploy is reproducible. Without this, wrangler
+  // auto-detects at build time and writes its own file, which is how the
+  // first build swept in the repo's .git pack and failed on the Workers
+  // 25 MiB per-asset limit.
+  //
+  // The Cloudflare build runs with root directory "portal", so the paths
+  // below are relative to portal/.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "giftingneeds",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-31",
+
+  // Static portal pages. The Worker falls through to these for anything
+  // that is not an /api/ route.
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+
+  // Keep variables set in the dashboard when deploying from git.
+  //
+  // This file must NOT declare CUSTOMER_FOLDERS. It once carried a
+  // placeholder "{}" next to a comment saying to set the real value in
+  // the dashboard — so every git deploy silently reset the mapping and
+  // emptied every customer's portal, while the page still said "signed
+  // in" and simply showed no documents. A wrong answer that looks like
+  // a working one.
+  //
+  // The real mapping lives only in the dashboard, which also keeps
+  // customer email addresses out of this public repository:
+  //
+  //   {"priya@acme.com": {"id": "FOLDER_ID", "label": "Diwali 2026"}}
+  //
+  // The key "*" means "every address the Access policy admits".
+  "keep_vars": true,
+
+  // Outbound mail. destination_address pins the binding to one recipient:
+  // even if the Worker were compromised, it cannot be used to send mail
+  // anywhere else.
+  "send_email": [
+    { "name": "SEND_EMAIL", "destination_address": "promo@giftingneeds.in" }
+  ],
+
+  // Storefront estimates are mailed to promo@ on every download. Cap it per
+  // visitor so a script can't flood the inbox: 5 per minute per IP.
+  "ratelimits": [
+    { "name": "ESTIMATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
+  ],
+
+  "observability": {
+    "enabled": true
+  }
+
+  // GOOGLE_SERVICE_ACCOUNT is a SECRET, never a var, and never in this
+  // file. Add it in the dashboard under Settings -> Variables and
+  // Secrets, or with: wrangler secret put GOOGLE_SERVICE_ACCOUNT
+}

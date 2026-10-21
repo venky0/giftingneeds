@@ -1,0 +1,10 @@
+# GitHub Pages builds giftingneeds.in from this folder.
+#
+# The portal/ folder is the other site, giftingneeds.org, which Cloudflare
+# deploys from the same commit. It is excluded here so the .org site is not
+# published a second time under giftingneeds.in/portal/.
+exclude:
+  - portal
+  - pricing
+  - README.md
+  - CLIENT-PORTAL.md
