@@ -667,6 +667,11 @@ function initClientTicker() {
 /* ============================================================
    5. PRODUCT CATALOG DISPLAY & CLIENT-SIDE FILTERING
    ============================================================ */
+// Season picks for corporate gifting, best-suited first.
+const XMAS_RANK = { p7: 1, p8: 2, p4: 3, p6: 4, p12: 5, p11: 6, p2: 7, p3: 8, p1: 9, p10: 10, p5: 11, p9: 12, p13: 13 };
+const XMAS_BADGE = { p7: 'New Year pick', p8: 'New Year pick', p4: 'Christmas pick', p6: 'Christmas pick', p12: 'Christmas pick', p11: 'Christmas pick', p2: 'Christmas pick', p3: 'Christmas pick', p1: 'Christmas pick' };
+
+
 let PRODUCTS_DATA = [
   // Technology
   {
@@ -817,14 +822,14 @@ let PRODUCTS_DATA = [
     category: 'hampers',
     categoryLabel: 'Festive & Gourmet Hampers',
     badge: 'festive',
-    badgeText: 'Diwali Special',
+    badgeText: 'Christmas Special',
     title: 'Royal Mysore Gold Sweets & Nut Hamper',
     price: 1850,
     minQty: 25,
     icon: '🎁',
-    image: 'images/diwali_hamper_category.jpg',
-    desc: 'A gourmet Diwali celebration in a gold-foiled box — premium cashews, almonds, pistachios, organic forest honey, handmade chocolates, and a traditional brass diya. Pure festive delight.',
-    specs: { 'Packaging': 'Premium Gold-Foiled Rigged Gift Box', 'Box Size': '32cm x 24cm x 8cm', 'Inclusions': '5 gourmet jars + Brass Diya', 'Shelf Life': '90 Days' }
+    image: 'images/xmas/gourmet-sm.webp',
+    desc: 'A gourmet festive celebration in a gold-foiled box — premium cashews, almonds, pistachios, organic forest honey and handmade chocolates. Pure festive delight, made to your budget and branding.',
+    specs: { 'Packaging': 'Premium Gold-Foiled Rigged Gift Box', 'Box Size': '32cm x 24cm x 8cm', 'Inclusions': '5 gourmet jars', 'Shelf Life': '90 Days' }
   },
   {
     id: 'p12',
@@ -946,7 +951,9 @@ function initProductCatalog() {
     } else if (activeFilters.sort === 'price-high') {
       filtered.sort((a, b) => b.price - a.price);
     } else if (activeFilters.sort === 'popular') {
-      filtered.sort((a, b) => (b.badge === 'popular' ? 1 : 0) - (a.badge === 'popular' ? 1 : 0));
+      // Christmas & New Year picks first, then the usual bestsellers
+      filtered.sort((a, b) => (XMAS_RANK[a.id] || 99) - (XMAS_RANK[b.id] || 99) ||
+        (b.badge === 'popular' ? 1 : 0) - (a.badge === 'popular' ? 1 : 0));
     }
 
     // Render count
@@ -971,7 +978,10 @@ function initProductCatalog() {
       
       // Badge HTML
       let badgeHTML = '';
-      if (product.badge) {
+      if (XMAS_BADGE[product.id] && activeFilters.sort === 'popular') {
+        const ny = XMAS_BADGE[product.id] === 'New Year pick';
+        badgeHTML = `<span class="product-card-badge ${ny ? 'badge-ny' : 'badge-xmas'}">🎄 ${XMAS_BADGE[product.id]}</span>`;
+      } else if (product.badge) {
         let badgeClass = 'badge-new';
         if (product.badge === 'popular') badgeClass = 'badge-popular';
         if (product.badge === 'festive') badgeClass = 'badge-festive';

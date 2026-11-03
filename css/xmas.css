@@ -1,0 +1,101 @@
+/* ==========================================================================
+   Christmas & New Year 2026-27 theme  (loaded after style.css on every page)
+   Re-skins the site through the design tokens, so no page needs rewriting.
+   Palette: Pine green, Berry red, Champagne gold, Snow cream.
+   ========================================================================== */
+
+:root {
+  --bg-primary:      #FBF8F1;   /* Snow cream */
+  --bg-secondary:    #F1ECDD;
+  --bg-card:         #FFFFFF;
+  --bg-card-hover:   #FFFCF4;
+  --bg-glass:        rgba(251, 248, 241, 0.94);
+  --bg-header:       #0E2A1F;   /* Pine night */
+  --bg-dark:         #08170F;
+  --bg-section-alt:  #ECEFE2;
+
+  --primary:         #14472F;   /* Pine */
+  --primary-light:   #1F6B49;
+  --primary-glow:    rgba(20, 71, 47, 0.14);
+  --gold:            #B8892B;   /* Champagne gold */
+  --gold-bright:     #E3B64F;
+  --gold-glow:       rgba(227, 182, 79, 0.24);
+  --crimson:         #B3202A;   /* Berry */
+  --crimson-glow:    rgba(179, 32, 42, 0.12);
+  --charcoal:        #1B2A22;
+
+  --text-primary:    #1B2420;
+  --text-muted:      #47554C;
+  --text-subtle:     #7B887F;
+  --text-on-header:  #F8F4E6;
+  --text-gold:       #8A6516;
+
+  --border:          rgba(184, 137, 43, 0.28);
+  --border-strong:   rgba(20, 71, 47, 0.25);
+
+  --gradient-hero:   linear-gradient(135deg, rgba(8,23,15,0.94) 0%, rgba(8,23,15,0.55) 55%, rgba(8,23,15,0.05) 100%);
+  --gradient-gold:   linear-gradient(135deg, #B8892B 0%, #F1CD7A 50%, #B8892B 100%);
+  --gradient-btn:    linear-gradient(135deg, #14472F 0%, #1F6B49 100%);
+  --gradient-gold-btn: linear-gradient(135deg, #E3B64F 0%, #B8892B 100%);
+  --gradient-crimson-btn: linear-gradient(135deg, #B3202A 0%, #D13A44 100%);
+
+  --shadow-card:     0 4px 20px rgba(27,36,32,0.07), 0 1px 3px rgba(0,0,0,0.03);
+  --shadow-hover:    0 16px 40px rgba(20,71,47,0.18), 0 4px 12px rgba(227,182,79,0.16);
+  --shadow-header:   0 4px 30px rgba(8,23,15,0.24);
+  --shadow-gold:     0 4px 20px rgba(227,182,79,0.3);
+}
+[data-theme="dark"] {
+  --bg-primary:      #08140E;
+  --bg-secondary:    #0E2A1F;
+  --bg-card:         #12301F;
+  --bg-card-hover:   #173B26;
+  --bg-glass:        rgba(8, 20, 14, 0.95);
+  --bg-header:       #06100B;
+  --bg-dark:         #040B07;
+  --bg-section-alt:  #0C2218;
+  --primary:         #5DB587;
+  --primary-light:   #7AD0A1;
+  --primary-glow:    rgba(93, 181, 135, 0.18);
+  --text-primary:    #F4F0E2;
+  --text-muted:      #B9C7BD;
+  --text-subtle:     #8A9A8F;
+  --text-gold:       #E3B64F;
+  --border:          rgba(227, 182, 79, 0.3);
+}
+
+/* announcement bar + header accents */
+.announcement-bar-mockup { background: linear-gradient(90deg, #0A2118 0%, #123A29 50%, #0A2118 100%) !important; border-bottom: 1px solid rgba(227,182,79,.3); }
+.countdown-strip .cd-label { color: #E3B64F; }
+.countdown-unit b { color: #fff; }
+.nav-link.xm-nav, .nav-link-mockup.xm-nav { color: var(--gold) !important; font-weight: 700 !important; }
+.nav-link.xm-nav::before, .nav-link-mockup.xm-nav::before { content: "🎄 "; }
+
+/* quote bar */
+.quote-bar { background: linear-gradient(90deg, #0A2118, #14472F) !important; }
+
+/* snow canvas */
+#xm-snow { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; }
+
+/* festive picks banner on products.html */
+.xm-festive { margin: 0 0 2.2rem; border-radius: 22px; overflow: hidden; position: relative; display: grid; grid-template-columns: 1.1fr 1fr; background: #0A2118; color: #F8F4E6; box-shadow: var(--shadow-hover); }
+.xm-festive-copy { padding: 2.4rem 2.4rem 2.2rem; position: relative; z-index: 1; }
+.xm-festive-eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #E3B64F; }
+.xm-festive h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.7rem, 3.2vw, 2.4rem); line-height: 1.12; margin: .6rem 0 .8rem; color: #fff; }
+.xm-festive p { margin: 0 0 1.2rem; line-height: 1.65; color: rgba(248,244,230,.82); max-width: 52ch; }
+.xm-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1.4rem; padding: 0; list-style: none; }
+.xm-chips li { font-size: .82rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid rgba(227,182,79,.5); color: #F1CD7A; background: rgba(255,255,255,.05); }
+.xm-festive-cta { display: flex; flex-wrap: wrap; gap: .7rem; }
+.xm-btn { display: inline-flex; align-items: center; padding: .8rem 1.5rem; border-radius: 999px; font-weight: 700; font-size: .95rem; text-decoration: none; border: 1.5px solid transparent; transition: transform .2s; }
+.xm-btn:hover { transform: translateY(-2px); }
+.xm-btn-gold { background: var(--gradient-gold-btn); color: #10281d; }
+.xm-btn-line { border-color: rgba(255,255,255,.5); color: #fff; }
+.xm-festive-img { min-height: 260px; position: relative; }
+.xm-festive-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.xm-festive-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #0A2118 0%, transparent 35%); }
+@media (max-width: 820px) { .xm-festive { grid-template-columns: 1fr; } .xm-festive-img { min-height: 200px; order: -1; } .xm-festive-img::after { background: linear-gradient(0deg, #0A2118 0%, transparent 45%); } .xm-festive-copy { padding: 1.6rem; } }
+
+/* "Christmas / New Year pick" badges in the product grid */
+.product-card-badge.badge-xmas { background: linear-gradient(135deg, #B3202A, #D13A44); color: #fff; }
+.product-card-badge.badge-ny { background: linear-gradient(135deg, #14472F, #1F6B49); color: #F1CD7A; }
+
+@media (prefers-reduced-motion: reduce) { #xm-snow { display: none; } }

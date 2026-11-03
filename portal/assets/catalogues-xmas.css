@@ -1,0 +1,7 @@
+/* Christmas & New Year skin for the catalogues page (after catalogues-diwali.css) */
+body{--text-primary:#1b2420;--text-muted:#47554c;--text-subtle:#6c7a70;--text-gold:#8a6516;background:#fbf8f1;background-image:radial-gradient(circle at 5% 0%,#e8efd9 0,transparent 30%)}
+.diwali-hero{background:linear-gradient(100deg,rgba(6,20,13,.94) 0%,rgba(6,20,13,.72) 50%,rgba(6,20,13,.15) 100%),url(/assets/xmas/new-year.webp) center/cover,#0a2118!important;grid-template-columns:1fr!important}
+.diwali-hero:before{border-color:#e3b64f55}
+.diwali-art{display:none!important}
+.diwali-hero h1 em,.diwali-hero em{color:#f1cd7a}
+@media(max-width:700px){.diwali-hero{background:linear-gradient(0deg,rgba(6,20,13,.9) 0%,rgba(6,20,13,.6) 100%),url(/assets/xmas/new-year.webp) center/cover,#0a2118!important}}
