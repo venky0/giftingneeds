@@ -11,10 +11,12 @@
   window.filtered=function(){
     var r=orig().filter(function(d){return !HIDE.test(d.n)});
     if(mode==='off') return r;
+    // pinned concept gift sets (d.t) always lead, ahead of the season picks
+    var pins=r.filter(function(d){return d.t}); r=r.filter(function(d){return !d.t});
     var picks=r.filter(function(d){return d.x}), rest=r.filter(function(d){return !d.x});
     if(mode==='only') return picks.sort(function(a,b){return $('sort').value==='pa'?(a.x-b.x||a.p-b.p):0});
     if($('sort').value==='pa') picks.sort(function(a,b){return a.x-b.x||a.p-b.p});
-    return picks.concat(rest);
+    return pins.concat(picks,rest);
   };
   var n=DATA.filter(function(d){return d.x&&!HIDE.test(d.n)}).length;
   var bar=document.querySelector('.bar');
