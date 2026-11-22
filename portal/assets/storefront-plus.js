@@ -198,7 +198,15 @@
     const desc = qv.querySelector('.gnp-qv-desc');
     desc.textContent = d.d && d.d !== d.n ? d.d : '';
     desc.hidden = !desc.textContent;
-    qv.querySelector('.gnp-qv-price').innerHTML = `<b>${inr(d.p)}</b> <span>incl. GST</span>`;
+    qv.querySelector('.gnp-qv-price').innerHTML = d.t ? '<b>Price on request</b> <span>made to order</span>' : `<b>${inr(d.p)}</b> <span>incl. GST</span>`;
+    const acts = qv.querySelector('.gnp-qv-actions');
+    let req = qv.querySelector('.gnp-qv-req');
+    if (!req) { req = document.createElement('a'); req.className = 'qreq gnp-qv-req'; req.target = '_blank'; req.rel = 'noopener'; acts.after(req); }
+    acts.hidden = !!d.t;
+    req.hidden = !d.t;
+    req.textContent = 'Request this set on WhatsApp';
+    req.href = 'https://wa.me/916361054099?text=' + encodeURIComponent('Hi Gifting Needs, I would like a quote for: ' + d.n + ' (' + d.c + ')');
+    const note = qv.querySelector('.gnp-qv-note'); if (note) note.hidden = !!d.t;
     qv.querySelector('.gnp-qv-meta').innerHTML =
       (d.c ? `<dt>Code</dt><dd>${esc(d.c)}</dd>` : '') +
       (d.k ? `<dt>Category</dt><dd>${esc(d.k)}</dd>` : '') +
@@ -268,7 +276,7 @@
 
     // --- a tile opens the quick view; its own button still adds to quote
     $('grid').addEventListener('click', e => {
-      if (e.target.closest('.qadd')) return;
+      if (e.target.closest('.qadd,.qreq')) return;
       const card = e.target.closest('.card');
       const d = card && product(card.dataset.k);
       if (d) openQuickView(d);
@@ -276,7 +284,7 @@
     $('grid').addEventListener('keydown', e => {
       if (e.key !== 'Enter' && e.key !== ' ') return;
       const card = e.target.closest('.card');
-      if (!card || e.target.closest('.qadd')) return;
+      if (!card || e.target.closest('.qadd,.qreq')) return;
       e.preventDefault();
       const d = product(card.dataset.k);
       if (d) openQuickView(d);
