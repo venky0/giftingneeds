@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diwali 2026 Posters — Gifting Needs</title>
+  <title>Gifting Posters — Gifting Needs</title>
   <meta name="description" content="48 Diwali 2026 campaign posters and 43 gift categories from Gifting Needs, Bengaluru. Open any poster and zoom in to read every product and price.">
   <link rel="icon" type="image/png" href="/assets/favicon.png">
-  <meta name="theme-color" content="#36131f">
+  <meta name="theme-color" content="#0a2118">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,8 +17,8 @@
     /* The Diwali palette shared with the portal home, catalogue and
        storefront pages: wine and gold on cream. */
     :root, [data-theme="light"] {
-      --pg-wine: #36131f;
-      --pg-wine-2: #5b2334;
+      --pg-wine: #0a2118;
+      --pg-wine-2: #14472f;
       --pg-gold: #a9762f;          /* dark enough to read on cream */
       --pg-gold-soft: #efd29c;     /* the leaf gold, for wine backgrounds */
       --pg-gold-glow: rgba(201,154,97,0.22);
@@ -26,7 +26,7 @@
       --pg-bg2: #fffbf5;
       --pg-card: #fffbf5;
       --pg-border: #e3d5c0;
-      --pg-text: #422532;
+      --pg-text: #1b2420;
       --pg-muted: #a08d84;
       --pg-sub: #6d5a52;
       --pg-serif: Georgia, 'Times New Roman', serif;
@@ -586,7 +586,7 @@
   <a class="pg-skip" href="#pg-gallery" style="position:absolute;left:12px;top:-100px;background:#fff;padding:12px;z-index:10"
      onfocus="this.style.top='12px'" onblur="this.style.top='-100px'">Skip to the posters</a>
 
-  <div class="pg-announce">The festival of lights, the art of giving <span>&#10022;</span> Diwali 2026 collection</div>
+  <div class="pg-announce">🎄 CHRISTMAS &amp; NEW YEAR 2026–27 ✦ GIFTING COLLECTION</div>
 
   <header class="pg-nav">
     <a class="pg-nav-brand" href="/" aria-label="Gifting Needs home">
@@ -609,7 +609,7 @@
       <img class="pg-lantern pg-lantern-r" src="/assets/festival/lantern-pair.webp" alt="" aria-hidden="true">
       <div class="pg-hero-inner">
         <p class="pg-badge">Festive ideas, beautifully shared</p>
-        <h1 class="pg-title">Posters for a <span class="gold">brighter</span> Diwali</h1>
+        <h1 class="pg-title">Posters for a <span class="gold">brighter</span> season</h1>
         <p class="pg-subtitle">141 Diwali 2026 campaign posters and 62 curated gift categories. Open any one and zoom in &mdash; every price, every product, every detail is readable.</p>
         <div class="pg-stats">
           <div class="pg-stat"><span class="pg-stat-val">500+</span><span class="pg-stat-lbl">Products</span></div>
@@ -787,6 +787,26 @@
     {id:'welcome-kits', name:'Welcome Kits & Joining Kits', icon:'🎒', group:'corporate-programs', description:'Impressive employee onboarding kits with branded stationery, drinkware, tech and more.', tags:['Welcome Kit','Onboarding','Joining','Employee'], images:['WhatsApp Image 2026-07-28 at 5.30.27 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.27 PM (1).jpeg','WhatsApp Image 2026-07-28 at 5.30.11 PM (1).jpeg']},
     {id:'executive-gifts', name:'Executive Gifts', icon:'💼', group:'corporate-programs', description:'Ultra-premium executive gift sets for CXOs, VVIPs and special occasions.', tags:['Executive','VVIP','Premium','Corporate'], images:['WhatsApp Image 2026-07-28 at 5.30.27 PM (2).jpeg','WhatsApp Image 2026-07-28 at 5.30.14 PM.jpeg','WhatsApp Image 2026-07-28 at 5.30.27 PM (3).jpeg']},
   ];
+
+  // Christmas & New Year season: the Diwali campaign posters are hidden here.
+  (function () {
+    var D = /diwali/i;
+    for (var i = CATEGORIES.length - 1; i >= 0; i--) {
+      var c = CATEGORIES[i];
+      if (c.id === 'poster-diwali-corporate' || c.id === 'diwali-gifting') { CATEGORIES.splice(i, 1); continue; }
+      c.images = (c.images || []).filter(function (n) { return !D.test(n); });
+      if (!c.images.length) { CATEGORIES.splice(i, 1); continue; }
+      c.tags = (c.tags || []).filter(function (t) { return !D.test(t); });
+      c.description = (c.description || '').replace(/premium Diwali /gi, 'premium ').replace(/Diwali 2026 /gi, '').replace(/Diwali/gi, 'festive');
+    }
+    GROUPS.forEach(function (g) {
+      if (g.id === 'diwali-posters') g.label = 'Product Posters';
+      if (g.id === 'festive') { g.icon = '🎄'; g.label = 'Seasonal'; }
+    });
+    for (var j = GROUPS.length - 1; j >= 0; j--) {
+      if (!CATEGORIES.some(function (c) { return c.group === GROUPS[j].id; })) GROUPS.splice(j, 1);
+    }
+  })();
 
   // ---- State ----
   let activeGroup = 'all';

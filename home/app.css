@@ -1,0 +1,569 @@
+/* ==========================================================================
+   Gifting Needs — "Warm premium Indian", royal edition (UI prototype)
+
+   One motion language for the whole page: everything eases out on the
+   same curve, enters from the same distance, and staggers on the same
+   beat. Depth comes from real CSS 3D — a hero diorama you fly into and
+   a panoramic ring you turn — not from flat parallax.
+   ========================================================================== */
+
+:root {
+  /* Jewel tones of an Indian festival night. Base is royal indigo, not
+     brown; colour carries meaning — saffron and marigold are festivity,
+     rani pink is celebration, peacock teal is the royal accent. */
+  --velvet:  #120a26;          /* night indigo: the page */
+  --wine:    #23104a;          /* royal purple: raised surfaces */
+  --wine-2:  #5b1a6e;          /* plum */
+  --wine-3:  #b0245c;          /* rani pink */
+  --ruby:    #d43a6a;
+  --peacock: #11a3a0;
+  --emerald: #1f8f5f;
+  --saffron: #f39a2b;
+  --marigold:#ffbe3d;
+  --gold:    #ecc56f;
+  --gold-hi: #ffe7a3;
+  --gold-lo: #b7883a;
+  --ivory:   #fff7e8;
+  --ivory-2: #fbecd2;
+  --ink:     #24123f;
+  --mut:     #7d6a92;
+  --foil: linear-gradient(115deg, #c98a2e 0%, #ffe7a3 22%, #ecc56f 42%, #fff6d4 55%, #f39a2b 78%, #ffd98a 100%);
+
+  --serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --sans:  "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --e-out:   cubic-bezier(.16, 1, .3, 1);      /* the house curve */
+  --e-inout: cubic-bezier(.65, 0, .35, 1);
+  --t1: .35s; --t2: .7s; --t3: 1.1s;
+  --rise: 34px;                                   /* every entrance travels this far */
+  --beat: .09s;                                   /* every stagger steps by this */
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; color: var(--ivory);
+  /* the page is woven: indigo silk with gold zari (Gemini), held back to a whisper */
+  background: linear-gradient(rgba(18,10,38,.9), rgba(18,10,38,.9)), url(img/silk.webp) 0 0 / 460px repeat, var(--velvet);
+  font: 400 16px/1.65 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--gold); color: var(--velvet); }
+.skip { position: absolute; left: 12px; top: -80px; z-index: 200; background: var(--gold); color: var(--velvet); padding: 10px 14px; border-radius: 6px; }
+.skip:focus { top: 12px; }
+:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 4px; }
+
+/* film grain: velvet should feel like cloth, not a flat fill */
+.grain {
+  position: fixed; inset: -50%; z-index: 150; pointer-events: none; opacity: .055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-3%,2%)} 40%{transform:translate(2%,-3%)} 60%{transform:translate(-2%,-1%)} 80%{transform:translate(3%,3%)} 100%{transform:translate(0,0)} }
+
+.scroll-rail { position: fixed; left: 0; right: 0; top: 0; height: 2px; z-index: 120; pointer-events: none; }
+.scroll-rail i { display: block; height: 100%; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: var(--foil); }
+
+/* ------------------------------------------------------------------ type */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px; margin: 0 0 20px;
+  font: 600 11px/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--gold);
+}
+.eyebrow.gold { color: var(--gold-hi); }
+.e-orn { width: 14px; height: 21px; color: var(--gold); }
+.display {
+  font: 380 clamp(46px, 7.2vw, 112px)/.98 var(--serif); letter-spacing: -.03em; margin: 0 0 28px;
+  font-variation-settings: "opsz" 144;
+}
+.display.sm { font-size: clamp(40px, 5.6vw, 84px); }
+.display em, .display .it { font-style: italic; font-weight: 300; }
+.h2 { font: 380 clamp(36px, 4.6vw, 68px)/1.04 var(--serif); letter-spacing: -.025em; margin: 0 0 18px; font-variation-settings: "opsz" 144; }
+.h2 em { font-style: italic; font-weight: 300; }
+.h2 em, .display em, .foil {
+  background: var(--foil); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text;
+  color: transparent; animation: foil 7s linear infinite;
+}
+@keyframes foil { from { background-position: 0% 0; } to { background-position: 220% 0; } }
+/* background-clip: text only paints inside the glyph box, and italics lean
+   out of theirs — pad the box so the last letter's tail isn't sheared off */
+.h2 em, .display em, .foil, .welcome em { padding-right: .12em; margin-right: -.12em; padding-bottom: .06em; }
+.lede { font-size: 17px; color: var(--mut); max-width: 44ch; }
+
+/* headline words rise out of a mask, one beat apart */
+.display .line { display: block; overflow: hidden; padding: .06em 0 .1em; margin: -.06em 0 -.1em; }
+.display .w { display: inline-block; }
+html.js .display .w { transform: translateY(105%) rotate(4deg); opacity: 0; transition: transform var(--t3) var(--e-out), opacity var(--t2) var(--e-out); transition-delay: calc(var(--i, 0) * var(--beat) + .15s); }
+html.js .display.in .w { transform: none; opacity: 1; }
+
+/* the single entrance used everywhere */
+html.js .reveal { opacity: 0; transform: translateY(var(--rise)); filter: blur(6px);
+  transition: opacity var(--t2) var(--e-out), transform var(--t3) var(--e-out), filter var(--t2) var(--e-out);
+  transition-delay: calc(var(--d, 0) * var(--beat) * 1.4); }
+html.js .reveal.in { opacity: 1; transform: none; filter: none; }
+
+/* ---------------------------------------------------------------- buttons */
+.btn {
+  --mx: 0px; --my: 0px;
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 52px; padding: 0 28px; border-radius: 999px; overflow: hidden; isolation: isolate;
+  font: 600 14px/1 var(--sans); letter-spacing: .02em; cursor: pointer; border: 0;
+  transform: translate(var(--mx), var(--my));
+  transition: transform var(--t2) var(--e-out), box-shadow var(--t2) var(--e-out), background-color var(--t1);
+}
+.btn span { position: relative; z-index: 2; transition: transform var(--t2) var(--e-out); }
+.btn::after {                                  /* the light that crosses on hover */
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.55) 48%, transparent 66%);
+  transform: translateX(-120%); transition: transform .9s var(--e-out);
+}
+.btn:hover::after { transform: translateX(120%); }
+.btn:active { transform: translate(var(--mx), var(--my)) scale(.97); }
+.btn.lg { height: 60px; padding: 0 34px; font-size: 15px; }
+.btn-gold { background: var(--foil); background-size: 180% 100%; color: var(--velvet);
+  box-shadow: 0 10px 30px -10px rgba(236,197,111,.6), inset 0 1px 0 rgba(255,255,255,.5); }
+.btn-gold:hover { box-shadow: 0 18px 44px -12px rgba(255,231,163,.75), inset 0 1px 0 rgba(255,255,255,.6); }
+.btn-ghost { color: var(--ivory); background: rgba(255,247,232,.04); box-shadow: inset 0 0 0 1px rgba(236,197,111,.45); backdrop-filter: blur(8px); }
+.btn-ghost:hover { box-shadow: inset 0 0 0 1px var(--gold-hi); background: rgba(255,247,232,.09); }
+.btn-wine { background: var(--wine); color: var(--gold-hi); box-shadow: inset 0 0 0 1px rgba(236,197,111,.35); }
+
+/* -------------------------------------------------------------------- nav */
+.nav {
+  position: fixed; left: 50%; top: 18px; z-index: 100; translate: -50% 0;
+  width: min(1180px, calc(100% - 28px)); height: 66px; padding: 0 10px 0 22px;
+  display: flex; align-items: center; gap: 28px; border-radius: 999px;
+  background: rgba(18,10,38,.38); backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: inset 0 0 0 1px rgba(236,197,111,.18), 0 20px 50px -30px rgba(0,0,0,.7);
+  transition: transform var(--t2) var(--e-out), background-color var(--t2), height var(--t2) var(--e-out);
+}
+.nav.solid { background: rgba(18,10,38,.82); height: 58px; }
+.nav.hide { transform: translateY(-140%); }
+.nav-logo img { height: 34px; width: auto; filter: brightness(1.1); }
+.nav-links { display: flex; gap: 26px; margin-left: auto; font-size: 13.5px; }
+.nav-links a { position: relative; color: rgba(255,247,232,.82); transition: color var(--t1); }
+.nav-links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: var(--gold); transform: scaleX(0); transition: transform var(--t2) var(--e-out); }
+.nav-links a:hover { color: var(--gold-hi); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-cta { height: 46px; padding: 0 22px; }
+.nav-burger { display: none; width: 46px; height: 46px; border-radius: 50%; border: 0; background: rgba(236,197,111,.12); margin-left: auto; cursor: pointer; position: relative; }
+.nav-burger i { position: absolute; left: 14px; right: 14px; height: 1.5px; background: var(--gold-hi); transition: transform var(--t2) var(--e-out); }
+.nav-burger i:first-child { top: 19px; } .nav-burger i:last-child { top: 26px; }
+.nav-burger[aria-expanded="true"] i:first-child { transform: translateY(3.5px) rotate(45deg); }
+.nav-burger[aria-expanded="true"] i:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+.sheet { position: fixed; inset: 0; z-index: 90; background: rgba(18,10,38,.96); backdrop-filter: blur(20px);
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 22px; font: 400 32px var(--serif); }
+.sheet[hidden] { display: none; }
+
+/* ----------------------------------------------------------------- curtain */
+.curtain { position: fixed; inset: 0; z-index: 300; pointer-events: none; }
+.curtain-half { position: absolute; top: 0; bottom: 0; width: 50.5%;
+  background: radial-gradient(ellipse at 50% 30%, var(--wine-3), var(--wine) 45%, var(--velvet));
+  transition: transform 1.5s var(--e-inout); }
+.curtain-half::before { content: ""; position: absolute; inset: 0; opacity: .5;
+  background: repeating-linear-gradient(90deg, rgba(0,0,0,.25) 0 2px, transparent 2px 38px, rgba(255,255,255,.04) 38px 40px, transparent 40px 76px); }
+.curtain-half.l { left: 0; box-shadow: inset -30px 0 60px rgba(0,0,0,.5); }
+.curtain-half.r { right: 0; box-shadow: inset 30px 0 60px rgba(0,0,0,.5); }
+.curtain-half.l::after, .curtain-half.r::after { content: ""; position: absolute; top: 0; bottom: 0; width: 6px; background: var(--foil); }
+.curtain-half.l::after { right: 0; } .curtain-half.r::after { left: 0; }
+.curtain-mark { position: absolute; left: 50%; top: 50%; translate: -50% -50%; text-align: center; color: var(--gold-hi);
+  transition: opacity .6s var(--e-out), transform 1s var(--e-out); }
+.curtain-mark svg { width: 88px; height: 54px; color: var(--gold); display: block; margin: 0 auto 14px; }
+.curtain-mark span { font: 400 15px var(--sans); letter-spacing: .4em; text-transform: uppercase; }
+.curtain.open .curtain-half.l { transform: translateX(-102%); }
+.curtain.open .curtain-half.r { transform: translateX(102%); }
+.curtain.open .curtain-mark { opacity: 0; transform: scale(.9); }
+.curtain.gone { display: none; }
+
+/* ===================================================================== HERO
+   The hero is a diorama. Each .layer sits at its own depth (--z, set from
+   data-z), the whole scene tilts toward the cursor, and scrolling moves
+   the camera forward, through the arch, into the page.                   */
+.hero { position: relative; height: 200vh; }
+.hero-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+  perspective: 1000px; perspective-origin: 50% 46%;
+  background: #0a0620; }
+/* the hero dissolves into the page instead of being cut off */
+.hero-pin::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 4; pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--velvet)); }
+.scene { position: absolute; inset: 0; transform-style: preserve-3d;
+  --cam: 0px; --rx: 0deg; --ry: 0deg;
+  transform: translateZ(var(--cam)) rotateX(var(--rx)) rotateY(var(--ry)); will-change: transform; }
+.layer { position: absolute; inset: 0; transform-style: preserve-3d;
+  /* a layer pushed back is scaled up by the same ratio, so it still fills the frame */
+  transform: translateZ(var(--z, 0px)) scale(var(--s, 1)); }
+
+/* --- the far layer is a photograph (generated with Gemini): a lake palace
+   lit gold at night. It starts dim and brightens as the page opens and as
+   you scroll toward it — the palace lighting up for your arrival. */
+.sky-photo { position: absolute; inset: -4%; background: url(img/hero-palace.webp) center 58% / cover no-repeat;
+  filter: brightness(calc(.42 + var(--wake, 0) * .66)) saturate(calc(.8 + var(--wake, 0) * .35)); }
+.sky-photo::after { content: ""; position: absolute; inset: 0; background:
+  radial-gradient(ellipse 85% 75% at 50% 48%, transparent 45%, rgba(7,4,24,.75) 100%),
+  linear-gradient(180deg, rgba(7,4,24,.55) 0%, transparent 22%, transparent 70%, rgba(7,4,24,.7) 100%); }
+/* light moving on the water below the palace */
+.lake-shimmer { position: absolute; left: 0; right: 0; bottom: 6%; height: 30%; opacity: .5; mix-blend-mode: screen;
+  background: repeating-linear-gradient(180deg, transparent 0 9px, rgba(255,214,140,.14) 9px 10px);
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent); animation: ripple 5s linear infinite; }
+
+/* --- the sky: dusk over a festival night. Deep indigo overhead, warming
+   through plum and rani to a saffron glow on the horizon, where the
+   palace is lit. Stars twinkle, a moon hangs, fireworks go up. */
+/* royal night: indigo overhead deepening to imperial purple, and the
+   horizon lit gold — the glow comes from the palace, not a sunset */
+.sky { position: absolute; inset: 0; background:
+  radial-gradient(ellipse 60% 34% at 50% 70%, rgba(255,215,120,.5), transparent 70%),
+  radial-gradient(ellipse 110% 50% at 50% 78%, rgba(236,197,111,.28), transparent 72%),
+  linear-gradient(180deg, #070418 0%, #0f0a33 26%, #24104f 50%, #3d1563 66%, #6b2a5e 78%, #b8863a 88%, #1c0d3f 100%); }
+.stars, .fireworks { position: absolute; inset: 0; width: 100%; height: 100%; }
+.moon { position: absolute; right: 16%; top: 11%; width: 9vmin; height: 9vmin; border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%, #fffbea, #ffe9b0 55%, #f5c86b);
+  box-shadow: 0 0 40px 10px rgba(255,236,180,.45), 0 0 140px 50px rgba(255,214,140,.22); }
+.moon i { position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 64% 60%, rgba(214,170,100,.35) 0 8%, transparent 9%),
+              radial-gradient(circle at 36% 66%, rgba(214,170,100,.28) 0 6%, transparent 7%),
+              radial-gradient(circle at 56% 30%, rgba(214,170,100,.22) 0 5%, transparent 6%); }
+
+/* --- the palace on the lake (drawn by motion.js as one SVG): a dark
+   silhouette whose windows glow, mirrored in water that ripples. */
+.lake { position: absolute; left: -10%; right: -10%; bottom: 0; height: 34%;
+  background: linear-gradient(180deg, rgba(236,197,111,.38), #1d0e45 30%, #090520 100%); }
+.lake::after { content: ""; position: absolute; inset: 0; opacity: .45;
+  background: repeating-linear-gradient(180deg, transparent 0 7px, rgba(255,214,140,.16) 7px 8px);
+  mask-image: linear-gradient(180deg, #000, transparent 85%); animation: ripple 5s linear infinite; }
+@keyframes ripple { to { background-position: 0 32px; } }
+.palace { position: absolute; left: 50%; bottom: 0; width: min(150vw, 2100px); height: 72%; translate: -50% 0; }
+.palace svg { position: absolute; left: 0; width: 100%; overflow: visible; }
+.palace .pal { bottom: 34%; height: 66%; }
+.palace .ref { top: 66%; height: 50%; transform: scaleY(-1); opacity: .42; filter: blur(2px);
+  mask-image: linear-gradient(0deg, #000 20%, transparent 95%); animation: waver 6s ease-in-out infinite; }
+@keyframes waver { 0%,100% { transform: scaleY(-1) skewX(0deg); } 50% { transform: scaleY(-1) skewX(.6deg) translateX(4px); } }
+.pal-body { fill: #170a34; }
+.pal-edge { fill: none; stroke: rgba(255,214,140,.5); stroke-width: 1.4; }
+.pal-gold { fill: #ecc56f; }
+.win { fill: #ffd56b; opacity: .12; transition: opacity .9s ease, fill .9s ease; }
+.win.gate { opacity: .05; } .win.gate.lit { opacity: .5; animation: none; }
+.win.lit { opacity: .9; filter: drop-shadow(0 0 5px rgba(255,214,107,.8)); animation: flicker var(--fl, 4s) ease-in-out infinite; }
+@keyframes flicker { 0%,100% { opacity: .95; } 47% { opacity: .78; } 52% { opacity: 1; } 70% { opacity: .86; } }
+
+/* --- sky lanterns: the festival itself, drifting up from the lake */
+.skylanterns { position: absolute; inset: 0; }
+.skylanterns i { position: absolute; bottom: -12%; width: var(--w); height: calc(var(--w) * 1.3); border-radius: 40% 40% 22% 22%;
+  background: radial-gradient(ellipse at 50% 70%, #fffbe3 0%, #ffe08a 28%, #ecc56f 58%, #a8712a 100%);
+  box-shadow: 0 0 calc(var(--w) * 1.4) calc(var(--w) * .4) rgba(255,214,120,.5);
+  opacity: 0; animation: rise var(--t) linear var(--dl) infinite; }
+@keyframes rise {
+  0%   { opacity: 0; transform: translate3d(0, 0, 0) rotate(-2deg); }
+  10%  { opacity: var(--o); }
+  85%  { opacity: var(--o); }
+  100% { opacity: 0; transform: translate3d(var(--dx), -115vh, 0) rotate(3deg) scale(.55); }
+}
+
+.lantern { position: absolute; top: -2vh; width: 90px; filter: drop-shadow(0 10px 40px rgba(255,170,80,.45)); transform-origin: 50% 0; animation: sway 6s ease-in-out infinite; }
+.lantern img { width: 100%; }
+/* the lantern image carries a long chain above its body, so it hangs from
+   above the frame; the left one sits outside the copy column */
+.lantern { top: -6vh; filter: drop-shadow(0 0 30px rgba(255,190,90,.55)); }
+.lantern-a { left: 1%; width: 74px; }
+.lantern-b { right: 2.5%; width: 92px; top: -2vh; animation-delay: -2s; }
+.lantern-c { left: 47%; width: 50px; top: -16vh; opacity: .85; animation-delay: -4s; }
+@keyframes sway { 0%,100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+
+.hero-glow { position: absolute; width: 60vmax; height: 60vmax; left: 0; top: 0; translate: -50% -50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255,231,163,.16), transparent 60%); transform: translateZ(40px); }
+
+.hero-grid { position: absolute; inset: 0; display: grid; grid-template-columns: 1.05fr .95fr; align-items: center;
+  gap: 3vw; padding: 110px max(5vw, 24px) 60px; max-width: 1400px; margin: 0 auto; }
+/* the palace is lit behind the copy: a soft pool of night keeps the words first */
+.hero-copy { position: relative; }
+.hero-copy::before { content: ""; position: absolute; inset: -12% -18% -10% -30%; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 60% 55% at 42% 52%, rgba(10,6,32,.82), rgba(10,6,32,.45) 55%, transparent 75%); }
+.hero-sub { font-size: 18px; color: rgba(255,247,232,.78); max-width: 46ch; margin: 0 0 34px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 30px; }
+.hero-facts { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13px; color: rgba(255,247,232,.65); }
+.hero-facts li { display: inline-flex; align-items: center; gap: 8px; }
+.hero-facts li::before { content: ""; width: 6px; height: 6px; transform: rotate(45deg); background: var(--gold); }
+
+/* the jharokha: a cusped arch window in a double gold frame */
+.hero-stage { position: relative; display: grid; place-items: center; height: min(74vh, 660px); transform-style: preserve-3d; }
+.mandala { position: absolute; width: 132%; aspect-ratio: 1; color: var(--gold); opacity: .32; animation: turn 120s linear infinite; transform: translateZ(-80px); }
+.mandala svg { width: 100%; height: 100%; }
+.mandala.big { width: 900px; opacity: .14; }
+@keyframes turn { to { rotate: 360deg; } }
+.arch { position: relative; width: min(84%, 440px); aspect-ratio: 3 / 4.3; transform: translateZ(60px); }
+.arch-finial { position: absolute; left: 50%; top: -40px; width: 74px; height: 44px; translate: -50% 0; color: var(--gold); }
+.arch-ring { position: absolute; inset: 0; padding: 12px; border-radius: 50% 50% 14px 14px / 30% 30% 14px 14px;
+  background: var(--foil); box-shadow: 0 50px 120px -40px rgba(0,0,0,.9), 0 0 0 1px rgba(255,231,163,.4), 0 0 80px -10px rgba(236,197,111,.35); }
+.arch-ring::before { content: ""; position: absolute; inset: 6px; border-radius: inherit; border: 1px solid rgba(18,10,38,.5); pointer-events: none; z-index: 2; }
+.arch-win { width: 100%; height: 100%; border-radius: 50% 50% 6px 6px / 29% 29% 6px 6px; overflow: hidden; background: var(--wine); }
+.arch-win img { width: 100%; height: 118%; object-fit: cover; transform: translateY(var(--py, 0px)) scale(1.06); }
+.arch-tag { position: absolute; left: 50%; bottom: -18px; translate: -50% 0; white-space: nowrap; padding: 8px 16px; border-radius: 999px;
+  background: var(--velvet); color: var(--gold-hi); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; box-shadow: inset 0 0 0 1px var(--gold-lo); }
+.stage-paisley { position: absolute; width: 60px; height: 90px; color: var(--gold); opacity: .55; transform: translateZ(120px); }
+.sp-a { left: 2%; top: 14%; rotate: -18deg; } .sp-b { right: 0; bottom: 12%; rotate: 160deg; }
+
+/* revealed mid-flight: you pass through the arch and this rises from inside the palace */
+.welcome { position: absolute; left: 50%; top: 44%; translate: -50% -50%; width: min(900px, 90vw); text-align: center;
+  opacity: var(--wo, 0); transform: scale(calc(.94 + var(--wo, 0) * .06)); }
+.welcome::before { content: ""; position: absolute; inset: -30% -20%; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 55% 50% at 50% 55%, rgba(10,6,32,.88), rgba(10,6,32,.55) 50%, transparent 72%); }
+.welcome h2 { text-shadow: 0 4px 30px rgba(10,6,32,.8); }
+.welcome svg { width: 84px; height: 50px; color: var(--gold); margin: 0 auto 18px; display: block; }
+.welcome p { margin: 0 0 14px; font: 600 11px var(--sans); letter-spacing: .4em; text-transform: uppercase; color: var(--gold); }
+.welcome h2 { margin: 0; font: 300 clamp(44px, 6.4vw, 100px)/1 var(--serif); letter-spacing: -.03em; color: var(--ivory); font-variation-settings: "opsz" 144; }
+.welcome em { font-style: italic; background: var(--foil); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: foil 7s linear infinite; }
+
+/* marigold petals drifting closest to the viewer */
+.petals { position: absolute; inset: 0; }
+.petals i { position: absolute; top: -10%; width: var(--w); height: calc(var(--w) * .62); border-radius: 60% 40% 60% 40%;
+  background: radial-gradient(circle at 30% 30%, #ffc260, #e0892f 60%, #a8501c);
+  opacity: .85; filter: blur(var(--b)); animation: fall var(--t) linear var(--dl) infinite; }
+@keyframes fall { to { transform: translate3d(var(--dx), 120vh, 0) rotate(720deg); } }
+
+.hero-scroll { position: absolute; left: 50%; bottom: 26px; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: rgba(255,247,232,.55); z-index: 5; }
+.hero-scroll i { width: 1px; height: 44px; background: linear-gradient(var(--gold), transparent); animation: drip 2.2s var(--e-inout) infinite; transform-origin: top; }
+@keyframes drip { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+/* ------------------------------------------------------------------ strip */
+.strip { position: relative; z-index: 2; overflow: hidden; border-block: 1px solid rgba(236,197,111,.35);
+  background: linear-gradient(rgba(35,16,74,.78), rgba(35,16,74,.78)), url(img/silk.webp) 0 0 / 300px repeat; }
+.strip-track { display: flex; gap: 34px; align-items: center; width: max-content; padding: 20px 0; animation: marquee 40s linear infinite;
+  font: italic 300 22px var(--serif); color: var(--gold-hi); white-space: nowrap; }
+.strip-track i { font-style: normal; font-size: 13px; color: var(--gold); }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+.divider { display: grid; place-items: center; padding: 70px 0 0; color: var(--gold); }
+.divider svg { width: 300px; height: 24px; }
+
+/* --------------------------------------------------------------- sections */
+.sec { position: relative; padding: 70px max(5vw, 24px) 120px; max-width: 1400px; margin: 0 auto; }
+.sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; margin-bottom: 54px; }
+.sec-note { max-width: 40ch; color: rgba(255,247,232,.62); margin: 0; }
+
+/* occasions — arch-topped cards on a draggable rail, tilting in 3D */
+.rail-wrap { margin: 0 calc(-1 * max(5vw, 24px)); }
+.rail { display: flex; gap: 26px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px max(5vw, 24px) 40px;
+  scrollbar-width: none; cursor: grab; perspective: 1200px; }
+.rail::-webkit-scrollbar { display: none; }
+.rail.drag { cursor: grabbing; scroll-snap-type: none; }
+.occ { flex: 0 0 min(360px, 78vw); scroll-snap-align: start; border-radius: 200px 200px 22px 22px; padding: 10px;
+  /* each occasion wears its own jewel, framed in gold */
+  background: linear-gradient(160deg, var(--gold-hi), var(--acc, var(--gold)) 38%, var(--gold-lo) 72%, var(--acc, var(--gold)));
+  box-shadow: 0 30px 70px -40px var(--acc, #000);
+  transform-style: preserve-3d; transform: rotateY(var(--ty, 0deg)) rotateX(var(--tx, 0deg)); transition: transform var(--t2) var(--e-out); }
+.occ-img { border-radius: 190px 190px 14px 14px; overflow: hidden; aspect-ratio: 4 / 4.6; background: var(--wine); }
+.occ-img img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 1.4s var(--e-out); }
+.occ:hover .occ-img img { transform: scale(1.16); }
+.occ-body { padding: 22px 16px 14px; background: var(--velvet); border-radius: 0 0 14px 14px; margin-top: -2px; transform: translateZ(30px); }
+.occ-k { font: italic 300 15px var(--serif); color: var(--acc, var(--gold)); }
+.occ-body { background: linear-gradient(180deg, var(--velvet), color-mix(in srgb, var(--acc, var(--velvet)) 16%, var(--velvet))) !important; }
+.occ:hover { box-shadow: 0 40px 90px -30px var(--acc, #000); }
+.occ h3 { font: 400 25px/1.2 var(--serif); margin: 4px 0 8px; }
+.occ p { margin: 0; font-size: 14px; color: rgba(255,247,232,.65); }
+.rail-bar { height: 1px; background: rgba(236,197,111,.2); margin-top: 6px; }
+.rail-bar i { display: block; height: 100%; width: 100%; background: var(--gold); transform-origin: 0 50%; transform: scaleX(.15); }
+
+/* collection — pinned; the copy steps through five ranges while the arch
+   on the right turns its image over in 3D, like a page in a book       */
+.collection { position: relative; height: 480vh; }
+.coll-pin { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; align-items: center; overflow: hidden;
+  background: linear-gradient(180deg, rgba(18,10,38,.96), rgba(26,13,56,.86) 50%, rgba(18,10,38,.96)), url(img/silk.webp) 0 0 / 460px repeat; }
+.coll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: center; padding: 90px max(5vw, 24px) 40px; max-width: 1400px; margin: 0 auto; width: 100%; }
+.coll-list { list-style: none; padding: 0; margin: 30px 0 34px; counter-reset: c; }
+.coll-list li { position: relative; padding: 14px 0 14px 44px; border-top: 1px solid rgba(236,197,111,.14); cursor: pointer;
+  opacity: .38; transition: opacity var(--t2) var(--e-out); }
+.coll-list li::before { counter-increment: c; content: "0" counter(c); position: absolute; left: 0; top: 16px; font: italic 300 14px var(--serif); color: var(--gold); }
+.coll-list li b { display: block; font: 400 22px/1.25 var(--serif); }
+.coll-list li span { display: block; max-height: 0; overflow: hidden; font-size: 14px; color: rgba(255,247,232,.65);
+  transition: max-height var(--t2) var(--e-out), margin var(--t2) var(--e-out); }
+.coll-list li.on { opacity: 1; }
+.coll-list li.on span { max-height: 60px; margin-top: 6px; }
+.coll-media { position: relative; display: grid; place-items: center; perspective: 1400px; }
+.coll-arch { position: relative; width: min(100%, 470px); aspect-ratio: 3 / 4; border-radius: 50% 50% 18px 18px / 30% 30% 18px 18px;
+  padding: 11px; background: var(--foil); box-shadow: 0 60px 120px -50px #000, 0 0 90px -20px rgba(236,197,111,.3); transform-style: preserve-3d; }
+/* the window behind the turning page: dark, with a faint ornament, never bare gold */
+.coll-arch::before { content: ""; position: absolute; inset: 11px; border-radius: 50% 50% 10px 10px / 29% 29% 10px 10px;
+  background: radial-gradient(ellipse at 50% 30%, var(--wine-2), var(--velvet) 75%); box-shadow: inset 0 0 40px rgba(0,0,0,.6); }
+.shot { position: absolute; inset: 11px; margin: 0; border-radius: 50% 50% 10px 10px / 29% 29% 10px 10px; overflow: hidden; background: var(--wine);
+  backface-visibility: hidden; transform-origin: 50% 50%;
+  transform: rotateY(-75deg) translateZ(40px); opacity: 0; transition: transform 1.2s var(--e-out), opacity .7s var(--e-out); }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot.on { transform: none; opacity: 1; }
+.shot.past { transform: rotateY(75deg) translateZ(40px); opacity: 0; }
+.coll-count { position: absolute; right: -6px; bottom: -40px; font: italic 300 18px var(--serif); color: rgba(255,247,232,.5); }
+.coll-count b { font: 400 54px var(--serif); color: var(--gold-hi); font-style: normal; margin-right: 4px; }
+
+/* ================================================================ PANORAMA
+   Twelve panels stand in a circle around the viewer. Scroll turns the
+   ring; panels facing away dim, the one in front comes forward.          */
+.pano { position: relative; height: 340vh; }
+.pano-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(42,18,88,.8), rgba(18,10,38,.95) 70%), url(img/silk.webp) 0 0 / 460px repeat; }
+.pano-head { position: absolute; left: 0; right: 0; top: 10vh; text-align: center; z-index: 3; padding: 0 24px; pointer-events: none; }
+.h2.light { color: var(--ivory); }
+.pano-hint { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: rgba(255,247,232,.45); margin: 4px 0 0; }
+.pano-stage { position: absolute; inset: 0; perspective: 1100px; perspective-origin: 50% 40%; cursor: grab; touch-action: pan-y; }
+.pano-stage.drag { cursor: grabbing; }
+.ring { position: absolute; left: 50%; top: 64%; width: 0; height: 0; transform-style: preserve-3d;
+  --rot: 0deg; --R: 620px; transform: translateZ(calc(var(--R) * -1)) rotateY(var(--rot)); }
+.ring figure { position: absolute; left: calc(var(--pw) / -2); top: calc(var(--ph) / -2); width: var(--pw); height: var(--ph); margin: 0;
+  --pw: 300px; --ph: 400px;
+  transform: rotateY(var(--a)) translateZ(var(--R)); border-radius: 150px 150px 14px 14px; padding: 7px;
+  background: linear-gradient(160deg, rgba(255,231,163,.8), rgba(183,136,58,.5)); }
+.ring figure img { width: 100%; height: 100%; object-fit: cover; border-radius: 145px 145px 9px 9px; filter: brightness(var(--lit, 1)) saturate(var(--sat, 1)); }
+.ring figcaption { position: absolute; left: 0; right: 0; bottom: -40px; text-align: center; font: italic 300 18px var(--serif); color: var(--gold-hi); opacity: var(--cap, 0); }
+.pano-floor { position: absolute; left: -20%; right: -20%; bottom: -10%; height: 40%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(236,197,111,.18), transparent 60%);
+  transform: rotateX(72deg); transform-origin: 50% 0; }
+
+/* ================================================================== EVENTS */
+.events { position: relative; min-height: 100vh; overflow: hidden; padding: 160px max(5vw, 24px) 140px; }
+.events-bg { position: absolute; inset: -12% 0; }
+.events-bg img { width: 100%; height: 100%; object-fit: cover; }
+/* the copy sits top-left over a bright stage photo, so the veil is darkest there */
+.events-veil { position: absolute; inset: 0; background:
+  linear-gradient(90deg, rgba(18,10,38,.92) 0%, rgba(18,10,38,.72) 45%, rgba(18,10,38,.45) 100%),
+  linear-gradient(180deg, var(--velvet) 0%, rgba(18,10,38,.55) 28%, rgba(18,10,38,.7) 70%, var(--velvet) 100%); }
+.events-lede { text-shadow: 0 2px 24px rgba(0,0,0,.6); }
+.events-inner { position: relative; max-width: 1300px; margin: 0 auto; }
+.events-lede { max-width: 52ch; font-size: 18px; color: rgba(255,247,232,.78); margin: 0 0 60px; }
+.ev-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; perspective: 1400px; }
+.ev { position: relative; display: block; min-height: 340px; padding: 26px; border-radius: 20px; overflow: hidden; isolation: isolate;
+  background: rgba(18,10,38,.6); box-shadow: inset 0 0 0 1px rgba(236,197,111,.22);
+  transform-style: preserve-3d; transform: rotateY(var(--ty, 0deg)) rotateX(var(--tx, 0deg)); transition: transform var(--t2) var(--e-out), box-shadow var(--t2); }
+.ev img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transform: scale(1.06); transition: transform 1.4s var(--e-out); }
+.ev::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, transparent 30%, rgba(18,10,38,.95) 88%); }
+/* corner brackets, like the frame on a miniature painting */
+.ev::after { content: ""; position: absolute; inset: 12px; pointer-events: none; border-radius: 12px;
+  background:
+    linear-gradient(var(--gold), var(--gold)) top left / 26px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) top left / 1px 26px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) top right / 26px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) top right / 1px 26px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) bottom left / 26px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) bottom left / 1px 26px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) bottom right / 26px 1px no-repeat, linear-gradient(var(--gold), var(--gold)) bottom right / 1px 26px no-repeat;
+  opacity: .7; transition: inset var(--t2) var(--e-out), opacity var(--t2); }
+.ev:hover::after { inset: 18px; opacity: 1; }
+.ev:hover img { transform: scale(1.14); }
+.ev h3 { position: absolute; left: 26px; right: 26px; bottom: 58px; margin: 0; font: 400 28px/1.15 var(--serif); transform: translateZ(40px); }
+.ev p { position: absolute; left: 26px; right: 60px; bottom: 26px; margin: 0; font-size: 14px; color: rgba(255,247,232,.7); transform: translateZ(30px); }
+.ev-go { position: absolute; right: 24px; bottom: 22px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
+  box-shadow: inset 0 0 0 1px var(--gold); color: var(--gold-hi); transition: background-color var(--t1), color var(--t1), transform var(--t2) var(--e-out); }
+.ev:hover .ev-go { background: var(--gold); color: var(--velvet); transform: translateX(4px); }
+.ev-cta { background: linear-gradient(150deg, var(--wine-3), var(--wine) 60%); }
+.ev-cta h3 { top: 34px; bottom: auto; font-size: 32px; }
+.ev-cta p { top: 112px; bottom: auto; right: 26px; font-size: 15px; }
+.ev-proof { margin: 40px 0 0; font-size: 14px; color: rgba(255,247,232,.6); letter-spacing: .04em; }
+.ev-proof strong { color: var(--gold-hi); font-weight: 500; }
+
+/* ---------------------------------------------------------------- branding */
+.branding { color: var(--ink); max-width: none; background: var(--ivory); padding-inline: 0; }
+.branding::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 36px; background:
+  radial-gradient(circle at 18px 0, var(--velvet) 17px, transparent 18px) 0 0 / 36px 36px repeat-x; }
+.branding > * { max-width: 1400px; margin-inline: auto; padding-inline: max(5vw, 24px); }
+.branding .eyebrow { color: var(--gold-lo); }
+.branding .h2 em { background-image: linear-gradient(115deg, #7a2740, #b0603a 40%, #9c7432 70%, #7a2740); background-size: 220% 100%; }
+.branding .sec-note { color: var(--mut); }
+.brand-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.bcard { position: relative; padding: 34px 30px; border-radius: 4px; background: #fffaf0; min-height: 210px;
+  box-shadow: 0 1px 0 rgba(183,136,58,.2), 0 30px 60px -40px rgba(35,16,74,.4);
+  transform-style: preserve-3d; transform: rotateY(var(--ty, 0deg)) rotateX(var(--tx, 0deg)); transition: transform var(--t2) var(--e-out); }
+.bcard::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(183,136,58,.35); pointer-events: none; }
+.bnum { font: italic 300 40px var(--serif); color: var(--gold-lo); display: block; margin-bottom: 16px; transform: translateZ(30px); }
+.bcard h3 { font: 400 25px var(--serif); margin: 0 0 8px; color: var(--wine); transform: translateZ(24px); }
+.bcard p { margin: 0; color: var(--mut); font-size: 15px; }
+.branding + .divider { background: var(--ivory); padding-bottom: 0; }
+.branding + .divider svg { color: var(--gold-lo); }
+
+/* ----------------------------------------------------------------- process */
+.process { background: var(--ivory); color: var(--ink); max-width: none; padding-inline: 0; }
+.process > * { max-width: 1400px; margin-inline: auto; padding-inline: max(5vw, 24px); }
+.process .eyebrow { color: var(--gold-lo); }
+.process .h2 em { background-image: linear-gradient(115deg, #7a2740, #b0603a 40%, #9c7432 70%, #7a2740); background-size: 220% 100%; }
+.steps { list-style: none; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; position: relative; padding-top: 34px; }
+.steps::before { content: ""; position: absolute; top: 56px; left: calc(max(5vw, 24px) + 22px); right: calc(max(5vw, 24px) + 22px); height: 1px;
+  background: linear-gradient(90deg, var(--gold-lo), var(--gold)); transform-origin: 0 50%; transform: scaleX(var(--draw, 0)); transition: transform 1.6s var(--e-out); }
+/* the diamond turns; the numeral inside it stays upright */
+.snum { position: relative; z-index: 1; isolation: isolate; display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 22px;
+  font: italic 400 18px var(--serif); color: var(--wine); }
+.snum::before { content: ""; position: absolute; inset: 0; z-index: -1; transform: rotate(45deg);
+  background: var(--ivory); box-shadow: inset 0 0 0 1px var(--gold-lo); }
+.steps li h3 { font: 400 24px var(--serif); margin: 0 0 8px; color: var(--wine); }
+.steps li p { margin: 0; color: var(--mut); font-size: 15px; }
+
+/* --------------------------------------------------------------------- CTA */
+.cta { position: relative; overflow: hidden; padding: 170px 24px; text-align: center;
+  background: radial-gradient(ellipse at 50% 100%, rgba(91,26,110,.85), rgba(18,10,38,.94) 70%), url(img/silk.webp) 0 0 / 460px repeat; }
+.cta-orn { position: absolute; left: 50%; top: 50%; width: 900px; height: 900px; translate: -50% -50%; pointer-events: none; display: grid; place-items: center; }
+.cta-inner { position: relative; max-width: 860px; margin: 0 auto; }
+.cta-sub { font-size: 18px; color: rgba(255,247,232,.72); max-width: 50ch; margin: 0 auto 40px; }
+.cta-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; }
+.cta-foot { margin-top: 40px; font-size: 12px; letter-spacing: .14em; color: rgba(255,247,232,.45); }
+
+.foot { border-top: 1px solid rgba(236,197,111,.18); padding: 44px max(5vw, 24px) 26px; background: var(--velvet); }
+.foot-in { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 30px; flex-wrap: wrap; font-size: 13px; color: rgba(255,247,232,.55); }
+.foot-logo { height: 32px; width: auto; }
+.foot-links { display: flex; gap: 22px; margin-left: auto; }
+.foot-links a:hover { color: var(--gold-hi); }
+.foot-in p { margin: 0; }
+.proto { max-width: 1400px; margin: 26px auto 0; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: rgba(236,197,111,.45); }
+
+/* ------------------------------------------------------------------ mobile */
+@media (max-width: 960px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-burger { display: block; }
+  .hero { height: 190vh; }
+  .hero-grid { grid-template-columns: 1fr; align-content: center; padding-top: 96px; gap: 26px; text-align: left; }
+  .hero-stage { height: 36vh; order: -1; margin-bottom: 22px; }
+  /* the arch is 1.43x taller than wide: size it from the stage height so it never overhangs */
+  .arch { width: min(calc(24vh - 22px), 240px); }
+  /* the stage is full-width here, so a percentage mandala grows to fill the whole screen */
+  .mandala { width: min(46vh, 380px); opacity: .22; }
+  .hero-scroll { display: none; }
+  .lantern { width: 64px; } .lantern-b { width: 84px; }
+  .hero-grid { padding-top: 104px; gap: 10px; }
+  .lantern-c, .stage-paisley { display: none; }
+  .hero-sub { font-size: 16px; margin-bottom: 26px; }
+  .sec-head { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .collection { height: auto; }
+  .coll-pin { position: relative; height: auto; }
+  .coll-grid { grid-template-columns: 1fr; padding-block: 80px; }
+  .coll-media { order: -1; }
+  .coll-arch { width: min(80vw, 360px); }
+  .coll-count { display: none; }
+  .ring figure { --pw: 190px; --ph: 260px; }
+  .ev-cards, .brand-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .steps::before { display: none; }
+  .foot-links { margin-left: 0; flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  .steps { grid-template-columns: 1fr; }
+  /* the whole hero has to fit one phone screen: arch, headline, two buttons, facts */
+  .hero-grid { align-content: start; padding: 92px 22px 24px; gap: 14px; }
+  .hero-stage { height: 30vh; }
+  .arch { width: min(42vw, 170px); }
+  .arch-finial { top: -30px; width: 56px; height: 34px; }
+  .arch-tag { font-size: 9px; padding: 6px 12px; bottom: -14px; }
+  .hero .eyebrow { font-size: 10px; margin-bottom: 12px; }
+  .display { font-size: 40px; margin-bottom: 16px; }
+  .hero-sub { font-size: 15px; margin-bottom: 20px; }
+  .hero-cta { gap: 10px; margin-bottom: 18px; }
+  .hero-cta .btn { height: 46px; padding: 0 20px; font-size: 13px; }
+  .hero-facts { font-size: 12px; gap: 6px 16px; }
+  .hero-scroll { display: none; }
+  .lantern-a { width: 56px; } .lantern-b { width: 76px; }
+  /* the welcome sits deep in the scene and is magnified by the camera, so it starts smaller */
+  .welcome { width: 86vw; top: 40%; }
+  .welcome h2 { font-size: 30px; }
+  .welcome svg { width: 60px; height: 36px; margin-bottom: 10px; }
+  .moon { width: 13vmin; height: 13vmin; right: 10%; top: 14%; }
+}
+
+/* -------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  html.js .reveal, html.js .display .w { opacity: 1; transform: none; filter: none; }
+  .hero, .collection, .pano { height: auto; }
+  .hero-pin, .coll-pin, .pano-pin { position: relative; height: auto; min-height: 100vh; }
+  .scene, .layer { transform: none !important; }
+  .curtain { display: none; }
+}
