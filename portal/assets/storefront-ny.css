@@ -1,0 +1,51 @@
+/* New Year 2027 layer for the portal storefront.
+   Loads after storefront-xmas.css; remove the two <link>/<script> tags to revert. */
+:root{--ny-night:#0b1530;--ny-gold:#e3b64f;--ny-gold2:#f6d27a}
+
+/* announcement ribbon with the live countdown */
+.ny-ribbon{position:relative;display:flex;align-items:center;justify-content:center;gap:6px 18px;flex-wrap:wrap;
+  padding:9px 46px 9px 16px;text-align:center;background:linear-gradient(90deg,#0b1530,#14472f 52%,#0b1530);
+  color:#f6e2a6;font:600 13px/1.45 system-ui,-apple-system,sans-serif;border-bottom:1px solid #e3b64f55}
+.ny-ribbon b{color:#fff;font-weight:700}
+.ny-ribbon .ny-left{font-variant-numeric:tabular-nums;color:var(--ny-gold2)}
+.ny-ribbon button{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;border-radius:50%;
+  background:transparent;color:#f6e2a6;font-size:20px;line-height:1;cursor:pointer}
+.ny-ribbon button:hover{background:#ffffff1f}
+.ny-ribbon[hidden]{display:none}
+
+/* header: the new logo lockup */
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header h1{margin:0;line-height:0}
+.ny-logo{display:block;height:36px;width:auto;border-radius:7px}
+header .tag{color:var(--ny-gold2)}
+
+/* hero: the New Year picture and a midnight tint */
+.festive-hero{background:linear-gradient(100deg,rgba(6,12,30,.95) 0%,rgba(6,12,30,.72) 46%,rgba(6,12,30,.08) 100%),
+  url(/assets/xmas/new-year.webp) center/cover,var(--ny-night)}
+.festive-hero:before{border-color:#e3b64f66}
+.festive-copy h2 em{color:var(--ny-gold2)}
+.ny-year{color:var(--ny-gold2);font-style:normal;letter-spacing:-.02em}
+.festive-button{background:var(--ny-gold);color:#0b1530}.festive-button:hover{background:var(--ny-gold2)}
+
+/* hero countdown cards */
+.ny-cards{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 24px}
+.ny-unit{min-width:74px;padding:11px 10px 9px;text-align:center;border:1px solid #e3b64f66;border-radius:12px;
+  background:rgba(11,21,48,.58);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.ny-unit b{display:block;font:700 30px/1 Georgia,serif;color:var(--ny-gold2);font-variant-numeric:tabular-nums}
+.ny-unit span{display:block;margin-top:6px;font:600 10px system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#cdd6e8}
+.ny-cards-title{margin:0 0 10px;font:700 11px system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#cdd6e8}
+.ny-done{font:italic 26px Georgia,serif;color:var(--ny-gold2);margin:0 0 24px}
+
+/* twinkling sparkles on the hero (off for reduced motion) */
+.festive-hero:after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background:radial-gradient(circle,#f6d27a 0 1.3px,transparent 2px) 12% 22%/190px 170px,
+             radial-gradient(circle,#fff 0 1px,transparent 1.6px) 63% 41%/230px 210px,
+             radial-gradient(circle,#f6d27a 0 1px,transparent 1.8px) 38% 78%/260px 190px}
+@media (prefers-reduced-motion:no-preference){.festive-hero:after{animation:ny-tw 4.5s ease-in-out infinite alternate}}
+@keyframes ny-tw{from{opacity:.25}to{opacity:.7}}
+
+/* the New Year picks switch */
+.xs-mode button.on{background:#0b1530;border-color:#0b1530;color:var(--ny-gold2)}
+.xs-pick.ny{background:linear-gradient(135deg,#0b1530,#1f3f7a);color:var(--ny-gold2)}
+
+@media(max-width:560px){.ny-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.ny-unit{min-width:0;padding:10px 4px 8px}.ny-unit b{font-size:25px}.ny-unit span{font-size:9px;letter-spacing:.08em}.ny-logo{height:30px}.ny-ribbon{font-size:12px;padding-right:40px}}
