@@ -40,3 +40,18 @@ canvas[style*="fixed"],.xm-snow,.snow-canvas{display:none!important}
 .form-input:focus,input:focus,select:focus,textarea:focus{outline:2px solid #C9962B;outline-offset:1px}
 .section-label{color:#C62B34;letter-spacing:.14em;font-weight:800}
 .faq-header{font-family:"Nunito",sans-serif;font-weight:800;color:#1E3A6B}
+
+/* christmas / new-year landing */
+.xh-hero{margin-top:0!important;background:#14284D}
+.xh-hero h1,.xh-hero h2,.xh-hero h3{color:#fff}
+.xh-hero h1 em{color:#F5A623}
+.xh-eyebrow{color:#F5A623}
+.xh-btn-gold{background:#F5A623;color:#14284D;box-shadow:0 8px 22px -8px rgba(245,166,35,.6)}
+.xh-btn-pine{background:#1E3A6B}.xh-btn-red{background:#C62B34}
+
+/* events hero */
+.ev-hero{margin-top:0!important;background:#14284D}
+.ev-hero h1,.ev-hero h2,.ev-hero h3{color:#fff}
+.ev-hero h1 em{color:#F5A623}
+.ev-hero::after{background:linear-gradient(100deg,rgba(20,40,77,.94) 0%,rgba(20,40,77,.72) 42%,rgba(20,40,77,.15) 100%)!important}
+#events-main,#xmas-home{padding-top:0!important}
