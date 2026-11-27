@@ -54,8 +54,8 @@ h1,h2,h3{margin:0}
 .hero-in{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;padding:56px 0 64px}
 .pill{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 10px;font:700 12.5px var(--sans);color:var(--navy);box-shadow:0 4px 14px -8px rgba(20,40,77,.3)}
 .pill em{font-style:normal;color:var(--muted);font-weight:600}.pill b{color:var(--spark)}
-.h-display{font:400 clamp(46px,6.2vw,84px)/1.02 var(--hand);color:var(--navy);margin:22px 0 20px}
-.h-display span{display:block}.h-display .tl{color:var(--accent);position:relative;display:inline-block}
+.h-display{font:400 clamp(46px,4.9vw,72px)/1.02 var(--hand);color:var(--navy);margin:22px 0 20px}
+.h-display span{display:block}.h-display .tl{white-space:nowrap;color:var(--accent);position:relative;display:inline-block}
 .h-display .tl svg{position:absolute;left:-2%;bottom:-10px;width:104%;height:14px;color:var(--spark)}
 .kicker{font:800 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
 .lede{max-width:52ch;color:#4B5563;font-size:17px;margin:0 0 26px}
