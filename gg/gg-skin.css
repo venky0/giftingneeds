@@ -1,0 +1,42 @@
+/* Re-skin of the original inner pages (About, Contact, Products, Solutions, Portfolio,
+   Events, New Year). The legacy stylesheet is built on CSS variables, so the new palette
+   and fonts are applied by redefining them; markup, forms and scripts are untouched.
+   Loads after css/style.css. Palette: Gifting Needs navy, red and gold. */
+:root,[data-theme="light"],[data-theme="dark"]{
+  --bg-primary:#FFFDFB;--bg-secondary:#F4F2ED;--bg-card:#FFFFFF;--bg-card-hover:#FFFFFF;--bg-glass:rgba(255,253,251,.94);
+  --bg-header:#14284D;--bg-dark:#14284D;--bg-section-alt:#F4F2ED;
+  --primary:#1E3A6B;--primary-light:#2D4F8A;--primary-glow:rgba(30,58,107,.13);
+  --gold:#C9962B;--gold-bright:#F5A623;--gold-glow:rgba(245,166,35,.22);
+  --crimson:#C62B34;--crimson-glow:rgba(198,43,52,.12);--charcoal:#1F2430;
+  --text-primary:#1F2430;--text-muted:#4B5563;--text-subtle:#6B7280;--text-on-header:#FFFFFF;--text-gold:#9A6B10;
+  --border:rgba(30,58,107,.14);--border-strong:rgba(30,58,107,.28);
+  --gradient-hero:linear-gradient(135deg,rgba(20,40,77,.94) 0%,rgba(20,40,77,.6) 55%,rgba(20,40,77,.08) 100%);
+  --gradient-gold:linear-gradient(135deg,#F5A623,#FFC857);--gradient-btn:linear-gradient(135deg,#1E3A6B,#2D4F8A);
+  --gradient-gold-btn:linear-gradient(135deg,#F5A623,#E39412);--gradient-crimson-btn:linear-gradient(135deg,#C62B34,#DD4650);
+  --shadow-card:0 1px 2px rgba(20,40,77,.06),0 12px 28px -16px rgba(20,40,77,.22);
+  --shadow-hover:0 18px 40px -16px rgba(20,40,77,.3);--shadow-header:0 4px 24px rgba(20,40,77,.12);--shadow-gold:0 8px 20px -10px rgba(245,166,35,.9);
+}
+html{scroll-padding-top:120px}
+body{font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;background:#FFFDFB;color:#1F2430}
+button,input,select,textarea{font-family:inherit}
+h1,h2,h3,h4,h5,h6,.serif-font{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-variation-settings:"opsz" 144;letter-spacing:-.015em;color:#1E3A6B}
+h1,h2{font-weight:600}h3,h4{font-weight:600}
+h1 em,h2 em{font-style:italic;font-weight:500;color:#C62B34}
+.btn{border-radius:12px;font-family:"Nunito",sans-serif;font-weight:800}
+.btn-gold,.btn-primary{box-shadow:0 8px 20px -10px rgba(245,166,35,.9)}
+
+/* the old navbar is replaced by the shared header; the page no longer needs its fixed-header offset */
+main{margin-top:0!important}
+.section-py{padding-top:56px}
+body > main:first-of-type,main.container{padding-top:48px}
+
+/* seasonal skins and effects from the Diwali / Christmas editions are retired */
+canvas[style*="fixed"],.xm-snow,.snow-canvas{display:none!important}
+.theme-toggle-btn,#theme-toggle,.float-btn[aria-label*="theme" i]{display:none!important}
+
+/* cards, forms, FAQ: friendlier radius and soft borders, same markup */
+.card,[class*="-card"]{border-radius:18px}
+.form-input,input[type=text],input[type=email],input[type=tel],input[type=number],select,textarea{border-radius:12px}
+.form-input:focus,input:focus,select:focus,textarea:focus{outline:2px solid #C9962B;outline-offset:1px}
+.section-label{color:#C62B34;letter-spacing:.14em;font-weight:800}
+.faq-header{font-family:"Nunito",sans-serif;font-weight:800;color:#1E3A6B}
