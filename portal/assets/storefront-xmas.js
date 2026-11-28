@@ -11,8 +11,10 @@
   window.filtered=function(){
     var r=orig().filter(function(d){return !HIDE.test(d.n)});
     if(mode==='off') return r;
-    // pinned concept gift sets (d.t) always lead, ahead of the season picks
-    var pins=r.filter(function(d){return d.t}); r=r.filter(function(d){return !d.t});
+    // featured hampers (d.f) and pinned concept gift sets (d.t, unless d.u) always lead, ahead of the season picks
+    var isPin=function(d){return d.f||(d.t&&!d.u)};
+    var pins=r.filter(function(d){return d.f}).concat(r.filter(function(d){return !d.f&&isPin(d)}));
+    r=r.filter(function(d){return !isPin(d)});
     var picks=r.filter(function(d){return d.x}), rest=r.filter(function(d){return !d.x});
     if(mode==='only') return picks.sort(function(a,b){return $('sort').value==='pa'?(a.x-b.x||a.p-b.p):0});
     if($('sort').value==='pa') picks.sort(function(a,b){return a.x-b.x||a.p-b.p});
