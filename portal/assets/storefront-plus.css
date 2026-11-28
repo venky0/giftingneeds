@@ -53,6 +53,8 @@
 .gnp-qv-price{margin:4px 0 0}
 .gnp-qv-price b{font-size:26px;color:var(--navy)}
 .gnp-qv-price span{font-size:12px;color:var(--mut);margin-left:6px}
+.gnp-qv-price s{font-size:14px;color:var(--mut);margin-left:8px}
+.gnp-qv-price .off{margin-left:6px;vertical-align:middle}
 .gnp-qv-meta{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:6px 0 0;font-size:13px}
 .gnp-qv-meta dt{color:var(--mut)}
 .gnp-qv-meta dd{margin:0}

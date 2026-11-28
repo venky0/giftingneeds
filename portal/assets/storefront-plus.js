@@ -198,7 +198,7 @@
     const desc = qv.querySelector('.gnp-qv-desc');
     desc.textContent = d.d && d.d !== d.n ? d.d : '';
     desc.hidden = !desc.textContent;
-    qv.querySelector('.gnp-qv-price').innerHTML = d.t ? '<b>Price on request</b> <span>made to order</span>' : `<b>${inr(d.p)}</b> <span>incl. GST</span>`;
+    qv.querySelector('.gnp-qv-price').innerHTML = d.t ? '<b>Price on request</b> <span>made to order</span>' : `<b>${inr(d.p)}</b> ${d.m > d.p ? `<s>MRP ${inr(d.m)}</s> <em class="off">${d.o}% off</em> ` : ''}<span>incl. GST</span>`;
     const acts = qv.querySelector('.gnp-qv-actions');
     let req = qv.querySelector('.gnp-qv-req');
     if (!req) { req = document.createElement('a'); req.className = 'qreq gnp-qv-req'; req.target = '_blank'; req.rel = 'noopener'; acts.after(req); }
