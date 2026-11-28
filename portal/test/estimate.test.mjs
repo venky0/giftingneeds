@@ -60,10 +60,28 @@ r = await handleEstimate(req({ ...good, customer: { ...good.customer, gstin: '' 
 check('missing GSTIN refused', r.status === 400);
 r = await handleEstimate(req({ ...good, customer: { ...good.customer, email: 'x@y.z>\r\nBcc: <a@b.c' } }), env);
 check('header injection via email is dropped', r.status === 200 && !/Bcc:/.test(sent.at(-1).raw.split('\r\n\r\n')[0]));
+const csvIn = 'Name,Phone,Address,City,Pincode,State,Quantity\r\n"=cmd|calc","9876543210","1 MG Rd, Floor 2",Bengaluru,560001,Karnataka,1\r\nAsha,+919123456780,2 Park St,Kolkata,700016,West Bengal,2\r\n';
+r = await handleEstimate(req({ ...good, sample: true, recipientsCsv: csvIn,
+  items: [{ ...good.items[0], discount: 3 }] }), env);
+const mb = sent.at(-1).raw;
+const parts = mb.split(/\r\n--gn-[0-9a-f-]+/);
+const textOf = p => Buffer.from(p.split('\r\n\r\n')[1].replace(/\r\n/g, ''), 'base64').toString('utf8');
+const csvPart = parts.find(p => p.includes('text/csv'));
+check('bulk estimate accepted', r.status === 200);
+check('recipient CSV attached', !!csvPart && /filename="GN-EST-W260921-171328-Acme-recipients\.csv"/.test(csvPart));
+const csvOut = csvPart ? textOf(csvPart) : '';
+check('formula cell neutralised', csvOut.includes(`"'=cmd|calc"`) && !/(^|,)"=/m.test(csvOut));
+check('commas inside an address survive', csvOut.includes('"1 MG Rd, Floor 2"'));
+const bt = textOf(parts[1]);
+check('body notes the sample request and list size', bt.includes('Branded sample first: YES') && bt.includes('Recipient list: 2 addresses'));
+check('body notes the volume price', bt.includes('volume price, 3% off'));
+r = await handleEstimate(req(good), env);
+check('no CSV part when no list sent', !sent.at(-1).raw.includes('text/csv') && textOf(sent.at(-1).raw.split(/\r\n--gn-[0-9a-f-]+/)[1]).includes('Branded sample first: no'));
+
 allow = false;
 r = await handleEstimate(req(good), env);
 check('rate limit enforced', r.status === 429);
-check('no mail sent when refused', sent.length === 2);
+check('no mail sent when refused', sent.length === 4);
 
 console.log(`\n  ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

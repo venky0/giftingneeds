@@ -9,6 +9,28 @@
  */
 
 const MAX_PDF_BYTES = 3 * 1024 * 1024;
+const MAX_CSV_CHARS = 400 * 1024;
+
+// Re-serialise the recipient list so every cell is quoted and no cell can
+// run as a spreadsheet formula, whatever the browser sent.
+function safeCsv(text) {
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ',') { row.push(cell); cell = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += ch;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  const out = rows.filter(r => r.some(c => c.trim())).map(r => r.map(c => {
+    let v = c.replace(/^'(?=[=+\-@\t\r])/, '');
+    if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+    return '"' + v.replace(/"/g, '""') + '"';
+  }).join(','));
+  return { csv: out.join('\r\n') + '\r\n', count: Math.max(0, out.length - 1) };
+}
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -68,8 +90,12 @@ export async function handleEstimate(request, env) {
   const items = (Array.isArray(body.items) ? body.items : []).slice(0, 300).map(it => ({
     name: clean(it.name, 200), brand: clean(it.brand, 60), code: clean(it.code, 120),
     qty: Math.max(0, Math.floor(Number(it.qty) || 0)), amount: Number(it.amount) || 0,
+    discount: Math.min(50, Math.max(0, Math.floor(Number(it.discount) || 0))),
   }));
   const total = Number(body.total) || 0;
+  const sample = body.sample === true;
+  const list = typeof body.recipientsCsv === 'string' && body.recipientsCsv.trim()
+    ? safeCsv(clean(body.recipientsCsv, MAX_CSV_CHARS).replace(/^\uFEFF/, '')) : null;
   const money = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const text = [
@@ -87,9 +113,11 @@ export async function handleEstimate(request, env) {
     '',
     'DELIVERY',
     cust.delivery,
+    ...(list ? [`Recipient list: ${list.count} addresses (CSV attached)`] : []),
+    `Branded sample first: ${sample ? 'YES, send one of each item for approval' : 'no'}`,
     '',
     `ITEMS (${items.length})`,
-    ...items.map((it, i) => `${i + 1}. ${it.name}${it.brand ? ' - ' + it.brand : ''}${it.code ? ' (' + it.code + ')' : ''}  x ${it.qty}  =  Rs. ${money(it.amount)}`),
+    ...items.map((it, i) => `${i + 1}. ${it.name}${it.brand ? ' - ' + it.brand : ''}${it.code ? ' (' + it.code + ')' : ''}  x ${it.qty}  =  Rs. ${money(it.amount)}${it.discount ? `  (volume price, ${it.discount}% off)` : ''}`),
     '',
     `TOTAL incl. GST: Rs. ${money(total)}`,
     '',
@@ -122,6 +150,14 @@ export async function handleEstimate(request, env) {
     'Content-Transfer-Encoding: base64',
     '',
     fold(pdf),
+    ...(list ? [
+      `--${boundary}`,
+      `Content-Type: text/csv; charset="utf-8"; name="${filename.replace(/\.pdf$/i, '')}-recipients.csv"`,
+      `Content-Disposition: attachment; filename="${filename.replace(/\.pdf$/i, '')}-recipients.csv"`,
+      'Content-Transfer-Encoding: base64',
+      '',
+      b64utf8('\uFEFF' + list.csv),
+    ] : []),
     `--${boundary}--`,
     '',
   ].join('\r\n');

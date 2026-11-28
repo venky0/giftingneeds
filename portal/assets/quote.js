@@ -36,6 +36,13 @@
   // client hasn't classified yet fall back to 18%.
   const DEFAULT_GST = 18;
   const rateOf = d => (typeof d.g === 'number' ? d.g : DEFAULT_GST);
+  // Volume pricing, applied per product line: [minimum quantity, % off].
+  // Starting values — the client confirms these before release.
+  const TIERS = [[1000, 10], [500, 7], [250, 5], [100, 3]];
+  const tierOf = qty => (TIERS.find(([min]) => qty >= min) || [0, 0])[1];
+  const nextTier = qty => [...TIERS].reverse().find(([min]) => qty < min);
+  const MAX_RECIPIENTS = 2000;
+  const CSV_COLS = ['Name', 'Phone', 'Address', 'City', 'Pincode', 'State', 'Quantity'];
   const STORE_KEY = 'gnq.v1';
   const JSPDF = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
   const AUTOTABLE = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
@@ -83,8 +90,9 @@
   // back first. The page and the PDF both use this, so their totals agree.
   function calc(items) {
     const lines = items.map(x => {
-      const r = rateOf(x.d), rate = r2(x.d.p / (1 + r / 100));
-      return { d: x.d, qty: x.qty, r, rate, amount: r2(rate * x.qty) };
+      const r = rateOf(x.d), disc = tierOf(x.qty), unit = r2(x.d.p * (1 - disc / 100));
+      const rate = r2(unit / (1 + r / 100));
+      return { d: x.d, qty: x.qty, r, disc, unit, rate, amount: r2(rate * x.qty) };
     });
     const by = new Map();
     lines.forEach(l => by.set(l.r, r2((by.get(l.r) || 0) + l.amount)));
@@ -146,6 +154,78 @@
       document.head.appendChild(s);
     });
   }
+
+  /* ------------------------------------------------- recipient lists */
+
+  // RFC 4180-ish: quoted fields, doubled quotes, CRLF or LF rows.
+  function parseCsv(text) {
+    text = String(text).replace(/^﻿/, '');
+    const rows = []; let row = [], cell = '', q = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (q) {
+        if (ch === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === ',') { row.push(cell); cell = ''; }
+      else if (ch === '\n' || ch === '\r') {
+        if (ch === '\r' && text[i + 1] === '\n') i++;
+        row.push(cell); rows.push(row); row = []; cell = '';
+      } else cell += ch;
+    }
+    if (cell || row.length) { row.push(cell); rows.push(row); }
+    return rows.filter(r => r.some(c => c.trim()));
+  }
+  // A cell starting with = + - @ would run as a formula in Excel; prefix it.
+  const csvCell = v => {
+    let s = String(v ?? '');
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  const toCsv = rows => rows.map(r => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
+  const STATE_BY_NAME = Object.fromEntries(Object.entries(STATES).map(([c, s]) => [s.toLowerCase(), c]));
+
+  function readRecipients(text) {
+    const rows = parseCsv(text);
+    if (rows.length < 2) return { list: [], errors: ['No recipients found. Start from the template: a heading row, then one person per row.'] };
+    const head = rows[0].map(h => h.trim().toLowerCase());
+    const col = (...names) => head.findIndex(h => names.some(n => h.startsWith(n)));
+    const ix = { name: col('name'), phone: col('phone', 'mobile'), addr: col('address'), city: col('city'),
+                 pin: col('pin', 'zip', 'postal'), state: col('state'), qty: col('qty', 'quantity', 'units') };
+    if (ix.name < 0 || ix.addr < 0 || ix.pin < 0) {
+      return { list: [], errors: [`The first row must hold the column headings (${CSV_COLS.join(', ')}). Download the template to start from.`] };
+    }
+    const list = [], errors = [];
+    rows.slice(1, MAX_RECIPIENTS + 1).forEach((r, i) => {
+      const g = k => (ix[k] >= 0 ? String(r[ix[k]] ?? '').trim() : '');
+      const st = g('state'), code = st.padStart(2, '0');
+      const rec = { name: g('name'), phone: g('phone'), addr: g('addr'), city: g('city'),
+                    pin: g('pin').replace(/\s+/g, ''), state: STATES[code] || STATES[STATE_BY_NAME[st.toLowerCase()]] || st,
+                    qty: Math.max(1, Math.floor(+g('qty') || 1)) };
+      const bad = [];
+      if (!rec.name) bad.push('name');
+      if (!rec.addr) bad.push('address');
+      if (!/^[1-9]\d{5}$/.test(rec.pin)) bad.push('pincode');
+      if (bad.length) errors.push(`Row ${i + 2}: check the ${bad.join(', ')}.`);
+      list.push(rec);
+    });
+    if (rows.length - 1 > MAX_RECIPIENTS) errors.push(`Only the first ${MAX_RECIPIENTS} recipients were read. Email us larger lists.`);
+    return { list, errors };
+  }
+  const recipients = () => f().recipients || [];
+  const rowErrors = () => (f().recipErrors || []).filter(e => e.startsWith('Row') || e.startsWith('No ') || e.startsWith('The first'));
+  const unitsOf = R => R.reduce((t, r) => t + r.qty, 0);
+  const placesOf = R => new Set(R.map(r => (r.city || r.pin).toLowerCase())).size;
+  const recipientsCsv = R => toCsv([CSV_COLS, ...R.map(r => [r.name, r.phone, r.addr, r.city, r.pin, r.state, r.qty])]);
+
+  function download(name, text, type) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type }));
+    a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+  }
+  const TEMPLATE = toCsv([CSV_COLS,
+    ['Priya Sharma', '9876543210', '4th Floor, Prestige Tower, Residency Road', 'Bengaluru', '560025', 'Karnataka', 1],
+    ['Rahul Mehta', '9123456780', '201 Kamala Mills, Lower Parel', 'Mumbai', '400013', 'Maharashtra', 1]]);
 
   // jsPDF only embeds JPEG/PNG; the storefront images are WebP, so each
   // one is redrawn onto a white canvas and re-encoded.
@@ -293,32 +373,66 @@
         <label class="qopt${F.delivery === 'single' ? ' on' : ''}"><input type="radio" name="delivery" value="single"${F.delivery === 'single' ? ' checked' : ''}>
           <b>Single location</b><span>Everything delivered to one address.</span></label>
         <label class="qopt${F.delivery === 'multi' ? ' on' : ''}"><input type="radio" name="delivery" value="multi"${F.delivery === 'multi' ? ' checked' : ''}>
-          <b>Multiple locations</b><span>Split across offices, branches or cities.</span></label>
+          <b>Multiple locations</b><span>Offices, branches, or straight to each person's home.</span></label>
       </div>
       ${F.delivery === 'single' ? `
         <label class="qcheck"><input type="checkbox" name="sameAddr"${F.sameAddr ? ' checked' : ''}> Deliver to the billing address</label>
         ${F.sameAddr ? '' : `<div class="qgrid">${field('shipAddr', 'Delivery address', { req: true, full: true, area: true, ph: 'Full address with pincode' })}</div>`}`
-      : `<div class="qgrid">
-          ${field('locCount', 'Number of locations', { req: true, mode: 'numeric', max: 4, ph: 'e.g. 12' })}
-          ${field('locList', 'Locations', { full: true, area: true, rows: 5, ph: 'One per line, e.g.\nMumbai 400001 - 40 units\nPune 411001 - 25 units' })}
-        </div>`}`;
+      : recipBlock(F) + (recipients().length ? '' : `
+        <p class="qor">No list yet? Tell us the locations and we'll collect addresses later.</p>
+        <div class="qgrid">
+          ${field('locCount', 'Number of locations', { mode: 'numeric', max: 4, ph: 'e.g. 12' })}
+          ${field('locList', 'Locations', { full: true, area: true, rows: 4, ph: 'One per line, e.g.\nMumbai 400001 - 40 units\nPune 411001 - 25 units' })}
+        </div>`)}
+      <label class="qcheck qsample"><input type="checkbox" name="sample"${F.sample ? ' checked' : ''}>
+        <span><b>Send me a branded sample first</b> — one of each item with my logo, for approval before bulk production.</span></label>`;
     // step 3 — quantities
-    const items = selected();
-    const total = calc(items).total;
+    const items = selected(), C = calc(items), R = F.delivery === 'multi' ? recipients() : [];
+    const units = unitsOf(R);
     return `
       <p class="qlead">${F.delivery === 'multi' ? 'Enter the total quantity across all locations.' : 'How many of each?'}
         When you download, a copy of the estimate and your details goes to the Gifting Needs team so we can follow up.</p>
+      ${units ? `<p class="qfillrow">Your recipient list adds up to <b>${units}</b> units.
+        <button type="button" class="qfill" data-n="${units}">Set every item to ${units}</button></p>` : ''}
       <ul class="qitems">
-        ${items.map(x => `
-          <li data-k="${esc(x.k)}">
-            ${x.d.i ? `<img src="${imgUrl(x.d)}" alt="" loading="lazy">` : '<span class="qnoimg"></span>'}
-            <div class="qname"><b>${esc(x.d.n)}</b><small>${esc(x.d.v)} · ${inr(x.d.p)} each</small></div>
-            <input class="qqty" type="number" min="1" step="1" inputmode="numeric" value="${x.qty}" aria-label="Quantity for ${esc(x.d.n)}">
-            <span class="qline">${inr(x.d.p * x.qty)}</span>
-            <button type="button" class="qrm" aria-label="Remove ${esc(x.d.n)}">×</button>
+        ${C.lines.map((ln, i) => `
+          <li data-k="${esc(items[i].k)}">
+            ${ln.d.i ? `<img src="${imgUrl(ln.d)}" alt="" loading="lazy">` : '<span class="qnoimg"></span>'}
+            <div class="qname"><b>${esc(ln.d.n)}</b><small>${unitText(ln)}</small></div>
+            <input class="qqty" type="number" min="1" step="1" inputmode="numeric" value="${ln.qty}" aria-label="Quantity for ${esc(ln.d.n)}">
+            <span class="qline">${inr(ln.unit * ln.qty)}</span>
+            <button type="button" class="qrm" aria-label="Remove ${esc(ln.d.n)}">×</button>
           </li>`).join('')}
       </ul>
-      <div class="qtotal"><span>Total incl. GST</span><b>${inr(total)}</b></div>`;
+      <div class="qtotal"><span>Total incl. GST</span><b>${inr(C.total)}</b></div>
+      <p class="qtiers"><b>Volume pricing</b>, per item: ${[...TIERS].reverse().map(([m, p]) => `${m}+ units <i>${p}% off</i>`).join(' · ')}</p>`;
+  }
+
+  function unitText(ln) {
+    const nx = nextTier(ln.qty);
+    return `${esc(ln.d.v)} · ${inr(ln.unit)} each` +
+      (ln.disc ? ` <span class="qdisc">${ln.disc}% volume price</span>` : '') +
+      (nx ? ` <span class="qnext-tier">${nx[0] - ln.qty} more for ${nx[1]}% off</span>` : '');
+  }
+
+  function recipBlock(F) {
+    const R = recipients(), E = F.recipErrors || [];
+    return `<div class="qup">
+      <div class="qup-row"><div><b>Shipping to each person?</b>
+        <span>Upload your recipient list. We pack and ship to every address, and track each one.</span></div>
+        <button type="button" class="qtpl">Download template</button></div>
+      <label class="qfile"><input type="file" class="qcsv" accept=".csv,text/csv">
+        <span>${R.length ? 'Replace recipient list' : 'Upload recipient list (.csv)'}</span></label>
+      <small class="qhint">From Excel or Google Sheets: File → Save as / Download → CSV. Up to ${MAX_RECIPIENTS.toLocaleString('en-IN')} rows.</small>
+      ${R.length ? `
+        <p class="qup-sum"><b>${R.length}</b> recipients · <b>${unitsOf(R)}</b> units · <b>${placesOf(R)}</b> cities
+          <button type="button" class="qcsv-clear">Remove list</button></p>
+        <div class="qup-tbl"><table><thead><tr><th>Name</th><th>City</th><th>Pincode</th><th>Qty</th></tr></thead><tbody>
+          ${R.slice(0, 4).map(r => `<tr><td>${esc(r.name)}</td><td>${esc(r.city)}</td><td>${esc(r.pin)}</td><td>${r.qty}</td></tr>`).join('')}
+        </tbody></table>${R.length > 4 ? `<small>and ${R.length - 4} more</small>` : ''}</div>` : ''}
+      ${E.length ? `<ul class="qup-err">${E.slice(0, 5).map(e => `<li>${esc(e)}</li>`).join('')}${E.length > 5 ? `<li>and ${E.length - 5} more rows to check</li>` : ''}</ul>` : ''}
+      <em class="qerr" data-for="recipients"></em>
+    </div>`;
   }
 
   function render() {
@@ -361,7 +475,13 @@
       if (!F.state) err.state = 'Please choose the state.';
     } else if (step === 2) {
       if (F.delivery === 'single' && !F.sameAddr && !F.shipAddr) err.shipAddr = 'Please enter the delivery address.';
-      if (F.delivery === 'multi' && !(+F.locCount >= 2)) err.locCount = 'Enter 2 or more locations.';
+      if (F.delivery === 'multi') {
+        const R = recipients();
+        if (R.length) {
+          if (rowErrors().length) err.recipients = 'Fix the rows above in your file, then upload it again.';
+          else if (R.length < 2) err.recipients = 'A recipient list needs 2 or more people.';
+        } else if (!(+F.locCount >= 2)) err.locCount = 'Upload a recipient list, or enter 2 or more locations.';
+      }
     } else if (step === 3) {
       if (!selected().length) err._ = 'Add at least one product.';
     }
@@ -451,7 +571,10 @@
     y += 8;
     set(10.5); doc.text('Ship To', L, y); y += 4.8;
     let ship;
-    if (F.delivery === 'multi') {
+    const RL = F.delivery === 'multi' ? recipients() : [];
+    if (RL.length) {
+      ship = [`Individual delivery to ${RL.length} recipients`, `across ${placesOf(RL)} cities, ${unitsOf(RL)} units`, 'Full list in the Annexure'];
+    } else if (F.delivery === 'multi') {
       ship = [`Multiple locations (${F.locCount})`,
               ...String(F.locList || '').split('\n').map(s => s.trim()).filter(Boolean)];
     } else if (F.sameAddr) {
@@ -481,14 +604,15 @@
     // ---- items
     const IMG = 12.5, money = n => n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     // the variant text is often already part of the name; don't print it twice
-    const desc = d => [d.d && !d.n.includes(d.d) ? d.d : '', [d.v, d.c].filter(Boolean).join(' | ')].filter(Boolean).join(' - ');
+    const descOf = d => [d.d && !d.n.includes(d.d) ? d.d : '', [d.v, d.c].filter(Boolean).join(' | ')].filter(Boolean).join(' - ');
+    const desc = ln => descOf(ln.d) + (ln.disc ? ` - volume price, ${ln.disc}% off` : '');
     doc.autoTable({
       startY: y,
       margin: { left: L, right: W - R, bottom: 22, top: 16 },
       head: [['#', 'Item & Description', 'HSN/SAC', 'Qty', 'Rate', 'Amount', '']],
       body: C.lines.map((ln, i) => [
         String(i + 1),
-        ln.d.n + '\n' + doc.splitTextToSize(desc(ln.d), 60).slice(0, 2).join(' '),
+        ln.d.n + '\n' + doc.splitTextToSize(desc(ln), 60).slice(0, 2).join(' '),
         ln.d.h || '',
         money(ln.qty) + '\npcs',
         money(ln.rate),
@@ -522,7 +646,7 @@
           set(9.5); let yy = top;
           doc.splitTextToSize(ln.d.n, c.width - 4).forEach(l => { doc.text(l, x0, yy); yy += 4.2; });
           set(8, 'normal', grey);
-          doc.splitTextToSize(desc(ln.d), c.width - 4).slice(0, 2).forEach(l => { doc.text(l, x0, yy); yy += 3.6; });
+          doc.splitTextToSize(desc(ln), c.width - 4).slice(0, 2).forEach(l => { doc.text(l, x0, yy); yy += 3.6; });
         } else if (h.column.index === 3) {
           const xr = c.x + c.width - 2;
           set(9.5); doc.text(money(C.lines[h.row.index].qty), xr, top, { align: 'right' });
@@ -581,7 +705,30 @@
     BANK.forEach(([k, v]) => { tail(); set(9); doc.text(k, L, y); doc.text(': ' + v, L + 19, y); y += LH; });
     y += 7; tail();
     set(10.5); doc.text('Terms & Conditions', L, y); y += 5;
-    TERMS.forEach(t => { tail(); y = lines([t], L, y, R - L, 8.5); });
+    const terms = [...TERMS];
+    if (F.sample) terms.push('Sample: one branded sample of each item is sent for your approval before bulk production starts.');
+    if (RL.length) terms.push(`Individual delivery: packed and shipped to each of the ${RL.length} addresses in the Annexure; shipping charged at actuals.`);
+    if (C.lines.some(l => l.disc)) terms.push('Volume pricing applied per item: ' + [...TIERS].reverse().map(([m, p]) => `${m}+ units ${p}% off`).join(', ') + '.');
+    terms.forEach(t => { tail(); y = lines([t], L, y, R - L, 8.5); });
+
+    // ---- annexure: the recipient list, one row per delivery
+    if (RL.length) {
+      doc.addPage();
+      set(12, 'bold'); doc.text('Annexure: Delivery list', L, 22);
+      set(9, 'normal', grey); doc.text(`${estNo}  |  ${RL.length} recipients  |  ${unitsOf(RL)} units`, L, 28);
+      doc.autoTable({
+        startY: 33,
+        margin: { left: L, right: W - R, bottom: 22, top: 16 },
+        head: [['#', 'Name', 'Phone', 'Address', 'City', 'Pincode', 'State', 'Qty']],
+        body: RL.map((r, i) => [i + 1, r.name, r.phone, r.addr, r.city, r.pin, r.state, r.qty]),
+        theme: 'plain',
+        styles: { font: 'helvetica', fontSize: 7.8, textColor: ink, cellPadding: 1.6, valign: 'top' },
+        headStyles: { fillColor: [60, 60, 60], textColor: [255, 255, 255], fontStyle: 'normal' },
+        alternateRowStyles: { fillColor: [247, 246, 244] },
+        columnStyles: { 0: { cellWidth: 9 }, 2: { cellWidth: 22 }, 3: { cellWidth: 'auto' }, 4: { cellWidth: 22 },
+                        5: { cellWidth: 16 }, 6: { cellWidth: 22 }, 7: { cellWidth: 10, halign: 'right' } },
+      });
+    }
 
     // ---- footer on every page
     const pages = doc.getNumberOfPages();
@@ -619,7 +766,9 @@
           state: r.buyerState,
           delivery: r.ship.join('\n'),
         },
-        items: r.C.lines.map(l => ({ name: l.d.n, brand: l.d.v, code: l.d.c, qty: l.qty, amount: r2(l.amount * (1 + l.r / 100)) })),
+        sample: !!F.sample,
+        recipientsCsv: F.delivery === 'multi' && recipients().length ? recipientsCsv(recipients()) : '',
+        items: r.C.lines.map(l => ({ name: l.d.n, brand: l.d.v, code: l.d.c, qty: l.qty, amount: r2(l.amount * (1 + l.r / 100)), discount: l.disc })),
         total: r.C.total,
       }),
     });
@@ -672,7 +821,17 @@
     qbody.addEventListener('change', e => {
       // delivery choices re-render the step, so the right fields appear
       if (e.target.name === 'delivery' || e.target.name === 'sameAddr') { collect(); render(); }
-      if (e.target.name === 'state') collect();
+      if (e.target.name === 'state' || e.target.name === 'sample') collect();
+      if (e.target.classList.contains('qcsv')) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        collect();
+        if (file.size > 2 * 1024 * 1024) { f().recipients = []; f().recipErrors = ['That file is over 2 MB. Save just the recipient columns as CSV, or email us the list.']; save(); render(); return; }
+        file.text().then(text => {
+          const { list, errors } = readRecipients(text);
+          f().recipients = list; f().recipErrors = errors; save(); render();
+        }).catch(() => { f().recipErrors = ['Could not read that file. Please save it as CSV and try again.']; save(); render(); });
+      }
     });
     qbody.addEventListener('input', e => {
       if (e.target.name === 'gstin') {
@@ -684,14 +843,18 @@
         const li = e.target.closest('li'), k = li.dataset.k;
         const q = Math.max(1, Math.floor(+e.target.value || 1));
         state.items[k] = q; save();
-        const d = products().get(k);
-        $('.qline', li).textContent = inr(d.p * q);
-        const total = calc(selected()).total;
-        $('.qtotal b', modal).textContent = inr(total);
+        const ln = calc([{ d: products().get(k), qty: q }]).lines[0];
+        $('.qline', li).textContent = inr(ln.unit * q);
+        $('.qname small', li).innerHTML = unitText(ln);
+        $('.qtotal b', modal).textContent = inr(calc(selected()).total);
         renderBar();
       }
     });
     qbody.addEventListener('click', e => {
+      if (e.target.closest('.qtpl')) { download('gifting-needs-recipients-template.csv', TEMPLATE, 'text/csv'); return; }
+      if (e.target.closest('.qcsv-clear')) { collect(); f().recipients = []; f().recipErrors = []; save(); render(); return; }
+      const fill = e.target.closest('.qfill');
+      if (fill) { selected().forEach(x => { state.items[x.k] = +fill.dataset.n; }); save(); renderBar(); render(); return; }
       const rm = e.target.closest('.qrm'); if (!rm) return;
       delete state.items[rm.closest('li').dataset.k]; save(); renderBar();
       if (!selected().length) { close(); return; }
